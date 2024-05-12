@@ -1,0 +1,188 @@
+.thanks, .heading, .sub-heading1, .btn-green {
+	text-transform: uppercase;
+}
+
+.box {
+	margin: auto;
+}
+
+.bi-clipboard{
+	margin-left: 2px;
+	cursor: pointer;
+}
+
+.underlinedInput {
+	display: block;
+	margin: 2em auto;
+	border: none;
+	padding: 0;
+	width: 10.5ch;
+	background: repeating-linear-gradient(90deg, dimgrey 0, dimgrey 1ch, transparent 0, transparent 1.5ch) 0 100%/ 10ch 2px no-repeat;
+	font: 4ch droid sans mono, consolas, monospace;
+	letter-spacing: 0.5ch;
+	color: dodgerblue;
+}
+
+.animatedAppear{
+	animation: fadeIn 0.5s forwards;
+}
+
+.DeanimatedAppear{
+	animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeIn {
+	from {
+	  opacity: 0;
+	}
+	to {
+	  opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	from {
+	  opacity: 1; /* Start with fully opaque */
+	}
+	to {
+	  opacity: 0; /* End with fully transparent */
+	}
+  }
+
+.discountdetails{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.underlinedInput:focus {
+	outline: none;
+	color: dodgerblue;
+}
+
+.heading {
+	font-weight: bold;
+	font-size: 85px;
+	color: #ffffff;
+}
+
+.smaller {
+	font-weight: bold;
+	font-size: 35px;
+	color: #ffffff;
+}
+
+.sub-heading1 {
+	padding: 8px 0 8px 0;
+	margin-bottom: 2px;
+	color: #64FFDA;
+}
+
+.sub-heading2 {
+	padding: 0px 0 8px 0;
+	margin-bottom: 30px;
+	color: #9E9E9E;
+}
+
+.offer-card {
+	padding: 0%;
+	padding-bottom: 30px;
+	padding-top: 35px;
+	margin-top: 60px;
+	margin-bottom: 80px;
+	background-color: #263238;
+	border-radius: 0;
+}
+
+#e-mail {
+	height: 45px;
+}
+
+input.input-box, textarea.input-box {
+	background-color : #ffffff;
+	border: #000000;
+	color: #212121;
+	font-size: 15px;
+	padding: 15px auto 15px auto !important;
+	height: 50px !important;
+}
+
+input.input-box:focus, textarea.input-box:focus {
+	border: 1px solid #64FFDA;
+	color: #212121;
+	box-shadow: 0 0 1px 1px #64FFDA;
+}
+
+.rm-border:focus {
+	border-color: inherit;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+form .form-control::-webkit-input-placeholder { 
+  	color: #9E9E9E;
+}
+
+::-moz-placeholder {
+  	color: #9E9E9E !important;
+}
+
+input.btn-green {
+	background-color: #64FFDA;
+	padding-left: 0px;
+	padding-right: 0px;
+	color: #000000;
+	font-weight: bold;
+	height: 50px;
+}
+
+.thanks {
+	color: #0091EA !important;
+	text-align: center;
+    cursor: pointer;
+}
+
+.thanks:hover {
+	color: #01579B !important;
+	text-decoration: underline;
+}
+
+.conditions {
+	font-size: 12px;
+	color: #546E7A;
+	text-align: center;
+}
+
+.HideIt{
+    display: none;
+}
+
+@media (max-width:550px){
+    #OfferPanel {
+        width: 95%;
+        height: auto;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 99;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@media (min-width:550px){
+    #OfferPanel {
+        width: 80%;
+        height: 800px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 99;
+        transform: translate(-50%, -50%);
+    }
+}
+
+#cancelDiv{
+	float: right;
+	margin-top: -5.4%;
+    cursor: pointer;
+}
