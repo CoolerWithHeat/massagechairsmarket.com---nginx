@@ -2,6 +2,18 @@
 	text-transform: uppercase;
 }
 
+@media (max-height:1000px){
+	.wholeoffercard{
+		margin-top: 50px;
+	}
+}
+
+@media (min-height:1000px){
+	.wholeoffercard{
+		margin-top: 130px;
+	}
+}
+
 .box {
 	margin: auto;
 }
@@ -42,17 +54,42 @@
 
 @keyframes fadeOut {
 	from {
-	  opacity: 1; /* Start with fully opaque */
+		opacity: 1;
 	}
 	to {
-	  opacity: 0; /* End with fully transparent */
+		opacity: 0;
 	}
-  }
+}
 
 .discountdetails{
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	width: 100%;
+}
+
+#CodeAndCopy{
+	display: flex;
+	flex-direction: column;
+	height: 250px;
+}
+
+#DiscountCopyButton{
+	display: block;
+	margin: auto;
+}
+
+#DiscountHolder{
+	width: 278px;
+}
+
+.usage-instruction{
+	width: 90%;
+	display: block;
+	margin: auto;
+	font-size: 12px;
+	color: #546E7A;
+	text-align: center;
 }
 
 .underlinedInput:focus {
@@ -92,6 +129,10 @@
 	margin-bottom: 80px;
 	background-color: #263238;
 	border-radius: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
 }
 
 #e-mail {
@@ -159,17 +200,28 @@ input.btn-green {
 
 @media (max-width:550px){
     #OfferPanel {
-        width: 95%;
+        width: 90%;
         height: auto;
         position: fixed;
         top: 50%;
         left: 50%;
         z-index: 99;
         transform: translate(-50%, -50%);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 999;
     }
+	#FirstOfferRefusal{width: 40px;}
+	#cancelDiv {
+		position: absolute;
+		top: 10px;
+		right: 5px;
+		z-index: 10;
+	}
 }
 
-@media (min-width:550px){
+@media (min-width:550px) and (max-width:750px){
     #OfferPanel {
         width: 80%;
         height: 800px;
@@ -179,10 +231,28 @@ input.btn-green {
         z-index: 99;
         transform: translate(-50%, -50%);
     }
+	#cancelDiv {
+		position: absolute;
+		top: 10px;
+		right: 5px;
+		z-index: 10;
+	}
 }
 
-#cancelDiv{
-	float: right;
-	margin-top: -5.4%;
-    cursor: pointer;
+@media (min-width:750px){
+    #OfferPanel {
+        width: 700px;
+        height: 800px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 99;
+        transform: translate(-50%, -50%);
+    }
+	#cancelDiv {
+		position: absolute;
+		top: 10px;
+		right: 5px;
+		z-index: 10;
+	}
 }

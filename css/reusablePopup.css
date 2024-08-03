@@ -1,0 +1,74 @@
+#Popup {
+    display: none;
+}
+
+#Popup-active{
+    min-width: 460px;
+    min-height: 75%;
+    background-color: rgba(83, 83, 83, 0.349);
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    opacity: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row; 
+    animation: fadeIn 1s forwards;
+}
+
+
+.Popupclosetrigger{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    justify-content: right;
+}
+
+@media (max-width: 460px){
+    .Popupcontent {
+        width: 100%;
+        min-width: 200px;
+        min-height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    .Popupclosetrigger{
+        margin-right: 50px;
+    }
+}
+
+@media (min-width: 460px){
+    .Popupcontent {
+        width: 100%;
+        min-width: 300px;
+        min-height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-items: flex-start;
+        max-height: 760px;
+    }
+}
+
+
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

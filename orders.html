@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/orders.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/order_number_field.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/order_check_error.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/masterCardAnimation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+    <div onclick="GoBack()" style="width: 30px; height: 30px; position: fixed; left: 18px; top: 2%; cursor: pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#464646" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+        </svg>
+    </div>
+    <div id="ErrorWindow"></div>
+    <div id="GeneralLoading"></div>
+    <body style="width: 500px; padding: 24px;">
+        <div id="OrdersList"></div>
+        <div id="OrderNumberField"></div>
+    </body>
+    <script>
+        const GoBack = ()=>{window.history.back()};
+        const host = window.location.protocol + "//" + window.location.host + '/serverdestination/'
+        const order_number_length = 12;
+        const setbodyStyles = (index)=>{const indexes = {1: 'width: 500px;', 2: 'padding: 24px;'};try{const selected_style = indexes[index];document.body.style = selected_style;}catch{};};
+        function goToOrderDetails(orderNumber) {window.location.href = `/Order/${orderNumber}/`};
+        function GetCustomerSessions() {let customerSessions = localStorage.getItem('customer_sessions');return customerSessions ? JSON.parse(customerSessions) : [];}
+        const save_verified_sessions = (sessions)=>{localStorage.setItem('customer_sessions', JSON.stringify(sessions));}
+        const customer_sessions = GetCustomerSessions();
+        const sessions_found = customer_sessions.length || null;
+        const Loading = (enable=true)=>{
+            const window = document.getElementById('GeneralLoading');
+            const loading = `<div id="loader" class="loader"></div>`;
+            if (window && enable){
+                window.classList.add('AbitDown');
+                window.innerHTML = loading;
+            }
+            else{
+                window.classList.remove('AbitDown');
+                window.innerHTML = '';
+            }
+        };
+
+        function importScript(pathname, callback) {
+            const existingScript = document.querySelector(`script[src="${pathname}"]`)
+            if (!existingScript){
+                const script = document.createElement('script');
+                script.src = pathname;
+                script.async = true;
+                script.onload = callback || null;
+                document.head.appendChild(script);
+            }else{
+                if (callback){callback()}
+            }
+        };
+
+		function importCSS(pathname, callback = null) {
+            const existingLink = document.querySelector(`link[href="${pathname}"]`);
+            if (!existingLink){
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = pathname;
+                link.onload = callback; 
+                document.head.appendChild(link);
+            }else{
+                if (callback){callback()}
+            }
+		};
+        function debounce(func, delay) {
+            let timeoutId;
+            return function(...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+        async function MakeRequest(pathname, body, type, callback){
+            const request = await fetch(host+pathname, {'method': type,headers: {'Content-Type': 'application/json'},'body': type == "POST" ? JSON.stringify(body) : null})
+            if ((request.status == 201) || (request.status == 200)){
+                const response = await request.json();
+                callback(response)
+            }
+            else{console.log(request.status)}
+        }
+        const UpdateCurrentSessions = (data, clearAll=false)=>{
+            if (Array.isArray(data) && data.length){const sessions = data.map(each_order=>each_order.session);localStorage.setItem('customer_sessions', JSON.stringify(sessions));}
+            if(clearAll){localStorage.setItem('customer_sessions', JSON.stringify([]));}
+        };
+        const handleSessionVerification = (server_response)=>{
+            if ((server_response.orders_found) && server_response.verified_orders.length){
+                Loading(false)
+                const orders = server_response.verified_orders;
+                DisplayCustomerOrders(orders);
+                UpdateCurrentSessions(orders);
+            }else{
+                Loading(false);
+                UpdateCurrentSessions(null, true);
+                DisplayOrderNumberField();
+            }
+        };
+
+        if (sessions_found){MakeRequest('customer_orders/', customer_sessions, "POST", handleSessionVerification); Loading(true)}else{DisplayOrderNumberField();}
+        
+        const ShowError = (text, remove=false)=>{
+            const errorMessage = `<div id="CustomerActionError" class="error-message">${text}</div>`;
+            if (!remove){
+                const errorwindow = document.getElementById('ErrorWindow');
+                errorwindow.innerHTML = errorMessage;
+            }else{
+                const previousMessage = document.getElementById('CustomerActionError');
+                if (previousMessage)
+                try{
+                    previousMessage.classList.add('remove_error')
+                    setTimeout(() => {
+                        previousMessage.remove();
+                    }, 499);
+                }catch{}
+            }
+            debounce(ShowError, 2999)(null, true)
+        };
+
+        const EnableLoading = (enable = true) => {
+            const alertWindow = document.getElementById('SavingStatusBoundary');
+            const loader = document.getElementById('status-loader')
+            if (enable)
+                alertWindow.innerHTML += '<div id="status-loader" class="loader"></div>';
+            else
+                if (loader)
+                    loader.remove();
+        };
+
+        function DisplayOrderNumberField(show=true){
+            setbodyStyles(1)
+            const window = document.getElementById('OrderNumberField');
+            if (show){
+                const structure = `
+                    <div class="container">
+                        <div class="container__item">
+                            <form class="form">
+                                <input type="email" id="UserManualNumberInput" class="form__field" placeholder="Please Enter Your Order Number" />
+                                <button onclick="CheckOrder();" type="button" class="btn btn--primary btn--inside uppercase">Check</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                window.innerHTML = structure;
+            }else{
+                window.innerHTML = '';
+            }
+        };
+
+        const HandleManualRequest = (response)=>{
+            Loading(false);
+            if (response.orders_found){
+                handleSessionVerification({orders_found:response.orders_found, verified_orders: [response.order]})
+            }else{
+                DisplayOrderNumberField();
+                ShowError('Order Not Found')
+            }
+        };
+
+        const CheckOrder = ()=>{
+            const userInput = document.getElementById('UserManualNumberInput');
+            if (userInput){
+                const enteredNumber = userInput.value; 
+                const validLength = enteredNumber.length == order_number_length;
+                if (validLength){
+                    DisplayOrderNumberField(false);
+                    Loading(true);
+                    MakeRequest(`customer_orders/${enteredNumber}/`, null, "POST", HandleManualRequest); 
+                }else{
+                    ShowError('Please Enter Valid Order Number')
+                }
+            };
+        };
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const year = date.getFullYear(); const month = date.getMonth(); const day = date.getDate();
+            return `${months[month]} ${day}, ${year}`;
+        }
+
+        const DisplayCustomerOrders = (orders = [])=>{
+            setbodyStyles(2)
+            const window = document.getElementById('OrdersList');
+            if (orders.length){
+                const generateOrderCard = (data)=>`
+                    <li>
+                        <p>
+                            <strong>
+                                Order NO: <span class="order-number" onclick="goToOrderDetails('${data.order_number}')">${data.order_number}</span>
+                            </strong>
+                        </p>
+                        <div style="display: flex; justify-content: space-between;">
+                            <div><small>Total: $${data.expected_amount}</small></div>
+                            <div><small>|${formatDate(data.created)}</small></div>
+                        </div>
+                        <br>
+                    </li>
+                `;
+                const customer_orders = orders.map(each=>generateOrderCard(each));
+                const structure = `
+                    <strong>Verified Orders</strong>
+                    <ol class="alternating-colors">
+                        ${customer_orders.join('')}
+                    </ol>
+                `;
+                window.innerHTML = structure;
+            }else{
+                window.innerHTML = `
+                    <h1 style="
+                        text-align: center;
+                        font-family: Arial, sans-serif;
+                        font-size: 24px;
+                        color: #333;
+                        margin-top: 40px;
+                        margin-bottom: 20px;
+                        font-weight: 500;
+                        line-height: 1.2;
+                        padding: 20px;
+                        background-color: #f8f8f8;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    ">
+                        You haven't placed any orders yet.
+                    </h1>
+                `
+            }
+        };
+        importScript('/static/js/analytics.js')
+        importScript('https://www.googletagmanager.com/gtag/js?id=G-YPTBVN0S8C', () => {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() { window.dataLayer.push(arguments); };
+            gtag('js', new Date());
+            gtag('config', 'G-YPTBVN0S8C');
+            window.recordEvent = (event_label, category)=> window.gtag('event', 'click', {
+                    'event_category': category,
+                    'event_label': event_label,
+                });
+            });
+    </script>
+</html>

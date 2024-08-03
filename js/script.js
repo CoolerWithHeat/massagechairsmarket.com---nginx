@@ -85,6 +85,8 @@ function showCart() {
 var total = 1;
 var Result = null;
 
+const formatPrice = (price, total) => {const resulted_price = (price * total).toFixed(2);const formatted_price = resulted_price.endsWith('.00') ? resulted_price.slice(0, -3) : resulted_price;return formatted_price;};
+
 function plus() {
     if (Result == null){
         Result = document.getElementById('quantityHolder');
@@ -94,7 +96,7 @@ function plus() {
     const priceSpan = document.getElementById("amount");
     const price = priceSpan.dataset.price;
     total += 1;
-    const resulted_price = (price*total).toFixed(2);
+    const resulted_price = formatPrice(price, total);
     Result.textContent = total;
     priceSpan.textContent = resulted_price;
     if (total > 1 && deductSpan)
@@ -111,7 +113,7 @@ function minus() {
     if (Number(Result.innerHTML) > 1) {
         const price = priceSpan.dataset.price;
         total -= 1;
-        const resulted_price = (price*total).toFixed(2);
+        const resulted_price = formatPrice(price, total);
         Result.textContent = total;
         priceSpan.textContent = resulted_price;
         if (deductSpan){

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/InsideOrder.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/order_tracking.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/masterCardAnimation.css">
+</head>
+    <body>
+        <div id="Popup"></div>
+        <div id="ThanksMessageWindow"></div>
+        <div onclick="GoBack()" style="width: 30px; height: 30px;position: absolute; cursor: pointer; z-index:999">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#464646" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+        </div>
+        <div id="loader" style="top: 50%; left: 48%; position: absolute;" class="loader"></div>
+        <div id="ReceiptWindow"></div>  
+    </body>
+    <script>
+        const host = window.location.protocol + "//" + window.location.host + '/serverdestination/'
+        const isObject = (obj)=>typeof obj === 'object' && obj !== null;
+        async function MakeRequest(pathname, body, type, callback){
+            const request = await fetch(host+pathname, {method: type,headers: {'Content-Type': 'application/json'},body: type == "POST" ? JSON.stringify(body) : null,})
+            if ((request.status == 201) || (request.status == 200)){const response = await request.json();callback(response)}else{window.location.href = '../../FindProduct/';}
+        }
+        setTimeout(() => {localStorage.setItem('requireModifiedContact', String(window.location.pathname).includes('/Order/'))}, 99);
+        
+        const TrackedOnesFirst = (products_array) => {
+            if (Array.isArray(products_array)) {products_array.sort((a, b) => {if (a.tracking_available && !b.tracking_available) {return -1;} else if (!a.tracking_available && b.tracking_available) {return 1;} else {return 0;}});
+                return products_array;
+            } else {return [];}
+        };
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const year = date.getFullYear(); const month = date.getMonth(); const day = date.getDate();
+            return `${months[month]} ${day}, ${year}`;
+        }
+        const GoBack = ()=>{const previousURL = document.referrer; if (previousURL === ''){window.location.href = '/FindProduct/';}else{window.history.back();}}
+        function getOrderNumberFromUrl() {
+            let url = window.location.href;
+            let parts = url.split('/');
+            let index = parts.indexOf('Order');
+            let orderNumber = parts[index + 1];
+            return orderNumber;
+        }
+        const GetDiscountData = (discount)=>{
+            if (isObject(discount)){
+                const discount_amount = discount.discount_amount
+                const discount_type = discount.discount_type
+                const discount_code = discount.discount_code
+                return [discount_code, `${discount_type == "fixed" ? '$' : ''}${discount_amount}${!(discount_type == "fixed") ? '%' : ''}`]
+            }
+            return null;
+        };
+        function importScript(pathname, callback) {
+            const existingScript = document.querySelector(`script[src="${pathname}"]`)
+            if (!existingScript){
+                const script = document.createElement('script');
+                script.src = pathname;
+                script.async = true;
+                script.onload = callback || null;
+                document.head.appendChild(script);
+            }else{
+                if (callback){callback()}
+            }
+        };
+
+		function importCSS(pathname, callback = null) {
+            const existingLink = document.querySelector(`link[href="${pathname}"]`);
+            if (!existingLink){
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = pathname;
+                link.onload = callback; 
+                document.head.appendChild(link);
+            }else{
+                if (callback){callback()}
+            }
+		};
+
+        function Popup(enable=true, divToPrepare=null){
+            importCSS('/static/css/reusablePopup.css')
+            const PopupWindow = document.getElementById('Popup') || document.getElementById('Popup-active');
+            const PopupBasicContent = `
+                <div class="Popupclosetrigger">
+                    <svg onclick="Popup(false);" style="margin-left: -4px; margin-top:2px;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
+                </div>
+                <div class="Popupcontent">${divToPrepare || ''}</div>
+            `
+            if(PopupWindow && enable){
+                PopupWindow.style.animation = '';
+                PopupWindow.setAttribute('id', 'Popup-active');
+                PopupWindow.innerHTML = PopupBasicContent;
+            }
+            if (PopupWindow && !enable){
+                setTimeout(() => {
+                    PopupWindow.style.animation = 'fadeOut 0.5s forwards';
+                }, 0);
+                setTimeout(() => {
+                    PopupWindow.setAttribute('id', 'Popup');
+                }, 499);
+            }
+        }
+
+        function OpenContactForm(){
+            Popup(true, '<div id="MainContactWindow"></div>')
+            importScript('/static/js/ContactForm.js', ()=>GetContactForm(()=>Popup(false)))
+        }
+
+        function importCSS(pathname, callback = null) {const link = document.createElement('link');link.rel = 'stylesheet';link.type = 'text/css';link.href = pathname;link.onload = callback; document.head.appendChild(link);};
+
+        const TriggerThanksMessage = ()=>{importCSS('/static/css/orderSuccessMessage.css', ()=>ShowThanksMessage())};
+
+        const ShowThanksMessage = ()=>{
+            const window = document.getElementById('ThanksMessageWindow');
+            const structure = `
+                <div id="toastMessage" class="toast active">
+                    <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"><i class="big-gg-check"></i></i>
+                    <div class="message">
+                        <span class="text text-1">Order Confirmed!</span>
+                        <span class="text text-2">Thank you! Your order is confirmed.</span>
+                    </div>
+                    </div>
+                    <i class="fa-solid fa-xmark close"></i>
+                    <div class="progress active"></div>
+                </div>
+            `;
+            if (window){window.innerHTML = structure;}
+            setTimeout(() => {
+                const message = document.getElementById('toastMessage')
+                if (message){
+                    message.classList.add('out')
+                }
+            }, 2999);
+        };
+
+        function importScript(pathname, callback) {
+            const existingScript = document.querySelector(`script[src="${pathname}"]`)
+            if (!existingScript){
+                const script = document.createElement('script');
+                script.src = pathname;
+                script.async = true;
+                script.onload = callback || null;
+                document.head.appendChild(script);
+            }else{
+                if (callback){callback()}
+            }
+        };
+
+		function importCSS(pathname, callback = null) {
+            const existingLink = document.querySelector(`link[href="${pathname}"]`);
+            if (!existingLink){
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = pathname;
+                link.onload = callback; 
+                document.head.appendChild(link);
+            }else{
+                if (callback){callback()}
+            }
+		};
+
+        const order_number = getOrderNumberFromUrl()
+        const HandleOrderDetails = (response)=>{
+            if (isObject(response)){
+                const order = response.order;
+                const order_number = order.order_number;
+                const order_date = formatDate(order.created);
+                const ordered_products = TrackedOnesFirst(response.ordered_products);
+                const discount_used = GetDiscountData(response.discount_used);
+                const subtotal = response.subtotal;
+                const total_paid = response.amount_paid;
+                const first_time_seeing_this = response.first_time_seeing;
+                const shipping = response.shipping_details;
+                if (shipping.firstname){localStorage.setItem('customerName', shipping.firstname);}
+                if (first_time_seeing_this){TriggerThanksMessage()}
+                removeLoading();
+                PlaceInformation({order_number, order_date, ordered_products, total_paid, discount_used, subtotal});
+            }
+        }
+        if (order_number.length == 12){MakeRequest(`order_details/${order_number}/`, null, 'GET', HandleOrderDetails)};
+        
+        const GenerateProductCart = (product_data)=>`
+                <br>
+                <div class="order-card">
+                    <div class="ProductCard">
+                        ${product_data.product_color.product_image ? `
+                        <div class="productImageWindow">
+                            <img class="ProductImage" src="${product_data.product_color.product_image}" alt="">
+                        </div>` : ''}
+                        <div class="productDetailsWindow">
+                            <div class="pricing">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <span id="name">${product_data.product_name}</span>  
+                                    </div>
+                                    <div class="col-3">
+                                        <span id="price">${product_data.product_color.colorname}</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between;" class="row">
+                                    <div>
+                                        <span id="name">$${product_data.product_price}</span>
+                                    </div>
+                                    <div>
+                                        <span id="name">${product_data.product_quantity}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ${product_data.tracking_available ? getTrackingStatus(product_data.tracking_status) : ''}
+                </div>
+            `;
+
+        const PlaceInformation = (order_details)=>{
+            const window = document.getElementById('ReceiptWindow');
+            const getDiscount = (discount_array)=>Array.isArray(discount_array) ? `
+                <div class="col-9">Discount Code Used: ${discount_array[0]}</div>
+                <div class="col-9">Discount Amount Applied: -${discount_array[1]}</div>
+            ` : ''
+            if (window){
+                const products = Array.isArray(order_details.ordered_products) ? order_details.ordered_products.map(each=>GenerateProductCart(each)) : []
+                const structure = `
+                    <div class="card">
+                        <div class="title">Purchase Reciept</div>
+                        <div class="info">
+                            <div class="row">
+                                <div class="col-7">
+                                    <span id="heading">Date</span><br>
+                                    <span id="details">${order_details.order_date}</span>
+                                </div>
+                                <div class="col-5 pull-right">
+                                    <span id="heading">Order No.</span><br>
+                                    <span id="details">${order_details.order_number}</span>
+                                </div>
+                            </div>      
+                        </div>      
+                        ${products.join('')}
+                        <div class="total">
+                            <div class="row">
+                                <div class="col-9">Subtotal: &dollar;${order_details.subtotal}</div>
+                                ${getDiscount(order_details.discount_used)}
+                                <div class="col-9">Shipping: Free</div> 
+                                <div class="col-9">Total: &dollar;${order_details.total_paid}</div>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <div class="row">
+                                <div class="col-2"><img style="width: 160px; height: 60px;" id="LogoPoint" class="brandLogo" src="/static/images/companyLogo.png"></div>
+                                <div class="col-10">Want any help? Please &nbsp; <a style="cursor:pointer;" onclick="OpenContactForm();"> contact us</a></div>
+                            </div>
+                        </div>
+                    </div>
+                `
+                window.innerHTML = structure;
+            }
+        };
+        
+        const getTrackingStatus = (stage=1)=>{
+            const structure = `
+                <div class="tracking-parent">
+                    <div class="track a_bit_upper">
+                        <div class="step ${stage >= 1 ? 'active' : ''}"> <span class="icon ${stage == 1 ? 'at_this_point' : ''}"> ${stage >= 1 ? '<i class="gg-check"></i>' : ''}</span> <span style="font-size:12px;" class="text"> Order Placed </span> </div>
+                        <div class="step ${stage >= 2 ? 'active' : ''}"> <span class="icon ${stage == 2 ? 'at_this_point' : ''}">${stage >= 2 ? '<i class="gg-check"></i>' : ''}</span> <span style="font-size:12px;" class="text"> Processing </span> </div>
+                        <div class="step ${stage >= 3 ? 'active' : ''}"> <span class="icon ${stage == 3 ? 'at_this_point' : ''}">${stage >= 3 ? '<i class="gg-check"></i>' : ''}</span> <span style="font-size:12px;" class="text"> On the way </span> </div>
+                        <div class="step ${stage == 4 ? 'active' : ''}"> <span class="icon ${stage == 4 ? 'at_this_point' : ''}">${stage == 4 ? '<i class="gg-check"></i>' : ''}</span> <span style="font-size:12px;" class="text"> Received </span> </div>
+                    </div>
+                </div>
+            `;
+            return structure
+        };
+
+        const removeLoading = ()=>{const loading = document.getElementById('loader'); if (loading){loading.remove();}};
+        importScript('/static/js/analytics.js')
+        importScript('https://www.googletagmanager.com/gtag/js?id=G-YPTBVN0S8C', () => {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() { window.dataLayer.push(arguments); };
+            gtag('js', new Date());
+            gtag('config', 'G-YPTBVN0S8C');
+            window.recordEvent = (event_label, category)=> window.gtag('event', 'click', {
+                    'event_category': category,
+                    'event_label': event_label,
+                });
+            });
+    </script>
+</html>

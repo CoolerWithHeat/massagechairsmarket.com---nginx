@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 
 <head>
@@ -7,26 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="{% static 'images/Brand.png' %}" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://allyoucan.cloud/cdn/icofont/1.0.1/icofont.css"
-        integrity="sha384-jbCTJB16Q17718YM9U22iJkhuGbS0Gd2LjaWb4YJEZToOPmnKDjySVa323U+W7Fv" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/ratings.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/comments.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/CartAnimation.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/BuyCart.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/productDescriptionStyle.css' %}">
-    <link rel="stylesheet" href="{% static 'css/templatemo-hexashop.css' %}">
+    <link rel="icon" href="/static/images/Brand.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/ratings.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/comments.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/CartAnimation.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/BuyCart.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/productDescriptionStyle.css">
+    <link rel="stylesheet" href="/static/css/templatemo-hexashop.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@5.4.55/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custombuttons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/warnings.css' %}">
-    <link rel="stylesheet" href="{% static 'css/skeletonLoading.css' %}">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/cart.css">
+    <link rel="stylesheet" href="/static/css/slider.css">
+    <link rel="stylesheet" href="/static/css/custombuttons.css">
+    <link rel="stylesheet" href="/static/css/warnings.css">
+    <link rel="stylesheet" href="/static/css/skeletonLoading.css">
 </head>
 
 <body>
@@ -45,14 +41,14 @@
                 <div class="col-12">
                     <nav class="main-nav">
 
-                        <a href="\../" class="logo">
-                            <img id="LogoPoint" class="brandLogo" src="{% static 'images/companyLogo.png' %}">
+                        <a href="\../" class="logo" style="width: 500px;">
+                            <img style="width: 160px; height: 60px;" id="LogoPoint" class="brandLogo" src="/static/images/companyLogo.png">
                         </a>
 
                         <ul class="nav">
                             <li class="scroll-to-section">
                                 <div class="CartBoundary" style="cursor: pointer;">
-                                    <a href="../../Cart">
+                                    <a href="../../Cart/">
                                         <i class="fa" style="font-size:25px">&#xf07a;</i>
                                         <span id="lblCartCount" class='badge badge-warning'> 0 </span>
                                     </a>
@@ -69,15 +65,10 @@
                             </li>
                             <li class="submenu">
                                 <a href="javascript:;">Brands</a>
-                                <ul>
-                                    <li><a href="#">Kahuna</a></li>
-                                    <li><a href="#">Osaki</a></li>
-                                    <li><a href="#">Real Relax</a></li>
-                                    <li><a href="#">Homedics</a></li>
-                                </ul>
+                                <ul id="BrandsSection"></ul>
                             </li>
                             <li class="scroll-to-section onpage"><a href="../../FindProduct/">Explore</a></li>
-                            <li class="scroll-to-section"><a href="../../FindProduct/">Products</a></li>
+                            <li class="scroll-to-section"><a href="/Orders/">Orders</a></li>
                         </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -93,43 +84,23 @@
     <br><br><br><br><br>
     <body>
         <div style="z-index: 9;" class="CartBoundaryMobile MobileCart" style="cursor: pointer;">
-            <a href="../../Cart">
-                <i class="fa" style="font-size:24px">&#xf07a;</i>
+            <a href="../../Cart/">
+                <i class="fa fa-shopping-cart" style="font-size:26px; color:rgb(31, 30, 30);"></i>
                 <span class='badge badge-warning' id='lblCartCount_mobile'> 0 </span>
             </a>
         </div>
         <div class="lightbox" id="lightbox">
             <div class="lightbox-content">
                 <span class="close cursor" onclick="closeModal()">&times;</span>
-                <div class="mySlides">
-                    <img src="https://www.kahunachair.com/wp-content/uploads/2014/12/6800_brown.jpg">
-                </div>
-
-                <div class="mySlides">
-                    <img src="https://www.kahunachair.com/wp-content/uploads/2018/10/kappa_brown.jpg">
-                </div>
-
-                <div class="mySlides">
-                    <img
-                        src="https://images.thdstatic.com/productImages/2f1b7bff-3f5f-4a39-9a78-c5e9cf109cbd/svn/black-white-kahuna-massage-chairs-lm-6800tbw-31_600.jpg">
-                </div>
-
-                <div class="mySlides">
-                    <img
-                        src="https://www.kahunachair.com/wp-content/uploads/2018/10/kappa_brown.jpg">
-                </div>
+                <div class="mySlides"></div>
+                <div class="mySlides"></div>
+                <div class="mySlides"></div>
+                <div class="mySlides"></div>
                 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
                 <a class="next" onclick="plusSlides(1)">&#10095;</a>
             </div>
-            <div id="SpecialViewImages" class="thumbnails cursor">
-                <img src="https://www.kahunachair.com/wp-content/uploads/2014/12/6800_brown.jpg" alt="" class="active" onclick="openModal();currentSlide(1)">
-                <img src="https://www.kahunachair.com/wp-content/uploads/2018/10/kappa_brown.jpg" alt=""
-                    onclick="openModal();currentSlide(2)">
-                <img src="https://images.thdstatic.com/productImages/2f1b7bff-3f5f-4a39-9a78-c5e9cf109cbd/svn/black-white-kahuna-massage-chairs-lm-6800tbw-31_600.jpg"
-                    alt="" onclick="openModal();currentSlide(3)">
-            </div>
+            <div id="SpecialViewImages" class="thumbnails cursor"></div>
         </div>
-
         <div class="cart">
             <div class="CartBoundaryFixed MobileCart" style="cursor: pointer;">
                 <a href="../../Cart">
@@ -138,7 +109,6 @@
                 </a>
             </div>
         </div>
-
         <main>
             <!------------------------------------------- Mobile View -------------------------------------------->
             <div id="MobileVantagePoint">
@@ -149,7 +119,7 @@
                                 <ul class="slider-list">
                                     <li class="slider-item">
                                         <a id="PrimaryWindow">
-                                            <img id="PrimaryMobileChairImage" src="">
+                                            <img id="PrimaryMobileChairImage">
                                         </a>
                                     </li>
                                 </ul>
@@ -176,18 +146,12 @@
                 <div id="ProductInfoSection"></div>
             </div>
 
-
-
         </main>
-
         <div id="ShowcaseHub"></div>
-                
         <br>
         <br>
         <div id="RatingLoadingWindow"></div>
-
         <div id="RatingsClosure"></div>
-
         <hr style="border:3px solid #f1f1f1">
         <div id="ReviewsBody" class="container"></div>
         </div>
@@ -196,15 +160,89 @@
         </div>
     </body>
 
-    <script src="{% static 'js/popper.js' %}"></script>
-    <script src="{% static 'js/jquery-2.1.0.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/owl-carousel.js' %}"></script>
-    <script src="{% static 'js/scrollreveal.min.js' %}"></script>
-    <script src="{% static 'js/custom.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.22.1/dist/algoliasearch.umd.min.js"></script>
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js" defer></script>
+    <script src="/static/js/custom.js" defer></script>
+    <script src="/static/js/script.js" async></script>
 
     <script>
+        function importScript(pathname, callback) {
+            const existingScript = document.querySelector(`script[src="${pathname}"]`)
+            if (!existingScript){
+                const script = document.createElement('script');
+                script.src = pathname;
+                script.async = true;
+                script.onload = callback || null;
+                document.head.appendChild(script);
+            }else{
+                if (callback instanceof Function){callback()}
+            }
+        };
+
+		function importCSS(pathname, callback = null) {
+            const existingLink = document.querySelector(`link[href="${pathname}"]`);
+            if (!existingLink){
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = pathname;
+                link.onload = callback; 
+                document.head.appendChild(link);
+            }else{
+                if (callback){callback()}
+            }
+		};
+
+        function RecordAction(action_index) {
+            const indices = {
+                1: 'add_to_cart',
+                2: 'remove_from_cart',
+            };
+            const record = () => {
+                const url = `${analyticsProtol}//${analyticsServerHost}/analyticsdestination/Interactions/`;
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({ 'action_type': indices[action_index] })
+                });
+            };
+            const checkAndRecord = (retries, delay) => {
+                if (analyticsServerHost) {
+                    record();
+                } else if (retries > 0) {
+                    setTimeout(() => checkAndRecord(retries - 1, delay), delay);
+                } else {
+                    console.error("analyticsServerHost not available within the expected time");
+                }
+            };
+            if (action_index) {
+                checkAndRecord(3, 666);
+            }
+        }
+
+        window.addEventListener('load', function() {
+            var cover = document.querySelector('.cover');
+            if (cover) {
+                var imageSrc = cover.getAttribute('data-image');
+                new Parallax(cover, {
+                    imageSrc: imageSrc,
+                    zIndex: '1'
+                });
+            }
+
+            var preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.transition = 'opacity 600ms';
+
+                setTimeout(function() {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.visibility = 'hidden';
+                        preloader.style.display = 'none';
+                    }, 300);
+                }, 0);
+            }
+        });
 
         $(function () {
             var selectedClass = "";
@@ -220,8 +258,10 @@
             });
         });
         var last_showcase = null;
-        const host = window.location.protocol + "//" + window.location.host
+        const host = window.location.protocol + "//" + window.location.host + '/serverdestination';
         var logoElement = document.getElementById('LogoPoint');
+        var buttonState = 1;
+        let ReviewsFetched;
         window.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => {
                 logoElement.classList.add('active');
@@ -230,6 +270,21 @@
                 logoElement.classList.remove('active');
             }, 1699);
         });
+
+        function GetProductByID(product_ids=[]){
+            const client = algoliasearch('K7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948');
+            const products = client.initIndex('MassageChair');
+            if (product_ids.length){
+                products.getObjects(product_ids).then(({ results }) => {
+                    if (results.length){
+                        PageManagement(results[0])
+                        UpdateProductStatus();
+                        PlaceBrandsAvailable(results[0].FilterOptions.Brands)
+                    }
+                });
+                ScrollToReviewsSection();   
+            }
+        }
 
         function extractIdFromUrl(url) {
             var regex = /\/Buy\/(\d+)\/$/;
@@ -272,10 +327,11 @@
                 }
             }else{
                 if (notAddedYet) {
+                    window.recordEvent('button', 'Add to Cart')
+                    RecordAction(1)
                     savedProducts.push({ product_id, quantity, selectedColor});
                 } else {
-                    // const sameQuantity = savedProducts[index].quantity === quantity;
-                    // console.log(sameQuantity ? 'same quantity': 'quantity is different !!!')
+                    RecordAction(2)
                     savedProducts.splice(index, 1);
                     isRemoved = true;
                 }
@@ -292,7 +348,7 @@
             } else {
                 if (fadeout && div)
                     div.classList.remove('dissappearText')
-                div.classList.add('defaultCartState')
+                    div.classList.add('defaultCartState')
             }
         }
 
@@ -301,7 +357,7 @@
             const DefaultStructure = `
                 <div id="SavingStatusBoundary"></div>  
                 <div id="commentsContent">
-                        <h5 class="mb-4">Leave Comment</h5>
+                        <h5 class="mb-4">Leave a Review</h5>
                         <p class="mb-2">Rate Our Chair</p>
                             <div style="cursor: pointer; width: 135px;" class="mb-4">
                                 <span data-endpoint="0" onclick="SelectRate(event);" data-rate='1' class="fa fa-star"></span>
@@ -318,13 +374,22 @@
                                 <textarea id="UserTextfield" class="form-control"></textarea>
                             </div>
                             <div class="form-group">
-                                <button onclick="SubmitReview();" class="button-23" type="button"> Submit Comment </button>
+                                <button onclick="SubmitReview();" class="button-23" type="button"> Submit </button>
                             </div>
                         </form>  
                 </div>
             `;
             if (window)
                 window.innerHTML = DefaultStructure;
+        }
+        function debounce(func, delay) {
+            let timeoutId;
+            return function(...args) {
+                if (timeoutId) {clearTimeout(timeoutId);}
+                const isFirstCall = !timeoutId;
+                if (isFirstCall) {func.apply(this, args);}
+                timeoutId = setTimeout(() => {timeoutId = null;if (!isFirstCall) {func.apply(this, args);}}, delay);
+            };
         }
 
         function AddToCart(data = {}) {
@@ -347,28 +412,17 @@
             DivpathMobile.classList.add('animateCart');
             Datapath.textContent = total_products;
             DatapathMobile.textContent = total_products;
-            console.log(JSON.parse(localStorage.getItem('MassageCart')))
             fadeAwayText(CartHeader);
             if (result[1]) {
-                targetButton.classList.add('removed');
+                debounce(ButtonStatus, 999)(false, true, false);
             }
             else {
-                targetButton.classList.add('clicked');
+                debounce(ButtonStatus, 999)(true, false, false);
             }
             setTimeout(() => {
                 Divpath.classList.remove('animateCart');
                 DivpathMobile.classList.remove('animateCart');
             }, 999);
-            setTimeout(() => {
-                targetButton.classList.remove('removed');
-                targetButton.classList.remove('clicked');
-                if (result[1]) {
-                    CartHeader.textContent = 'Add to Cart';
-                } else {
-                    CartHeader.textContent = 'Remove From Cart';
-                }
-                fadeAwayText(CartHeader, false);
-            }, 1999);
         }
 
         function UpdateProductStatus() {
@@ -380,9 +434,7 @@
                 const product_id = Number(CartButton.dataset.id);
                 const savedProducts = JSON.parse(localStorage.getItem('MassageCart')) || [];
                 const index = savedProducts.findIndex(product => product.product_id === product_id);
-                if (!(index === -1)) {
-                    CartHeader.innerText = 'Item Added';
-                }
+                debounce(ButtonStatus, 499)(false, false, index === -1);
             }
         }
 
@@ -393,13 +445,6 @@
             const baseButton = document.getElementById('UserCardBase');
             const current_id = baseButton.getAttribute('data-id');
             Datapath.textContent = total_products;
-            const alreadyInCart = CheckifExists(Number(current_id));
-            const statusBase = document.getElementById('CartButtonState');
-            if (alreadyInCart){
-                statusBase.textContent = 'Remove from Cart'
-            }else{
-                statusBase.textContent = 'Add to Cart'
-            }
         }
 
         const SelectRate = (propertyBase) => {
@@ -445,20 +490,23 @@
             return false
         }
 
-        async function MakeRequest(pathname, body, type, callback){
+        async function MakeRequest(pathname, body, type, callback, additional_callback=null){
             const request = await fetch(host+pathname, {
                 'method': type,
                 headers: {
                     'Content-Type': 'application/json'
-                },
+                },  
                 'body': type == "POST" ? JSON.stringify(body) : null,
             })
             if ((request.status == 201) || (request.status == 200)){
                 const response = await request.json();
-                callback(response)
+                if (callback){callback(response)}
+                if (additional_callback){additional_callback()}
             }
-            else{
-                console.log(request.status)
+            else if(callback){
+                try{
+                    callback(false)
+                }catch{console.log(request.status)}
             }
         }
 
@@ -492,6 +540,7 @@
                             EnableLoading(false);
                             LetKnowSuccess();
                             placeReviews([response], false)
+                            UpdateFilteredReviews(response)
                         }, 699);
                     
                     setTimeout(() => {
@@ -500,15 +549,23 @@
                         
                 }
             }
-            if (product_rate && name && text) {
+            if (product_rate && name) {
                 EnableLoading();
                 CloseAlert();
                 const path = window.location.pathname;
                 const product_path = `/RecordReview/${product_id}/`;
-                const expectedForm = { rate: product_rate, sender_name: name, text: text };
+                const expectedForm = {rate: product_rate, sender_name: name};
+                if ((text instanceof String) && (text.length)){expectedForm[text] = text;}
+                console.log(expectedForm)
                 statusWindow.style.display = 'block';
                 commentsField.style.display = 'none';
-                const prepared_data = {poster: name, review_text:text, customer_rate:product_rate}
+                const poster_text_exists = text && String(text).length
+                let prepared_data;
+                if (poster_text_exists){
+                    prepared_data = {poster: name, customer_rate:product_rate, review_text:text}
+                }else{
+                    prepared_data = {poster: name, customer_rate:product_rate}
+                }
                 MakeRequest(product_path, prepared_data, 'POST', placeNewReview)
             } else {
                 errorField.style.removeProperty('display');
@@ -522,6 +579,7 @@
         }
 
         const enableComments = (event) => {
+            window.recordEvent('button', 'Leaving Review')
             const commentsField = document.getElementById('commentsBoundary');
             const loader = document.getElementById('loader')
             if (event)
@@ -556,7 +614,30 @@
                 behavior: 'smooth',
             });
         };
-        
+
+        const OpenReviewsWindow = ()=>{
+            const button = document.getElementById('EnablerButton');
+            if (button){
+                button.click();
+            }
+        };
+
+        function ScrollToReviewsSection(){
+            const CameForReviews = JSON.parse(localStorage.getItem('requestedReviews')) || null;
+            console.log(CameForReviews)
+            if (CameForReviews){
+                const ReviewsScroller = ()=> {
+                    window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                    OpenReviewsWindow();
+                }
+                ManageRatingAndReviews(null, ReviewsScroller);
+                localStorage.removeItem('requestedReviews')
+            }
+        }
+
         const LetKnowSuccess = (enableStatus=true) => {
             const alertWindow = document.getElementById('SavingStatusBoundary');
             if (enableStatus){
@@ -573,7 +654,7 @@
                                 </div>
                                 <div class="check-shadow"></div>
                             </div>
-                            <h1 class='display-5'>Thank You!</h1>
+                            <h1 style="color:hsl(26, 100%, 55%);" class='display-5'>Thank You!</h1>
                             </div>
                         </main>
                     `;
@@ -723,6 +804,12 @@
             return percentages;
         }
 
+        function PlaceBrandsAvailable(data = []) {
+            const getBrandList = (brandName, count) => `<li><a href='/FindProduct/?Brands=${brandName.replace(/ /g, "+")}'>${brandName}</a></li>`;
+            const brandsWindow = document.getElementById('BrandsSection'); 
+            if (Array.isArray(data) && data.length) {const brands = data.map(item => {const brandName = Object.keys(item)[0];const count = item[brandName];return getBrandList(brandName, count);});brandsWindow.innerHTML = brands.join('');}
+        }
+
         const placeReviews = (reviewsList, clearFirst=true) => {
             const commentsWindow = document.getElementById('user-reviews');
             const highlight = !clearFirst ? "HighlightReview" : ''
@@ -746,11 +833,11 @@
                                                 </div>
                                             </span>
                                             <h6 class="mb-1"><a class="text-black" href="#">${Each.poster}</a></h6>
-                                            <h6 style="font-size: 11px;" class="mb-1"><a class="text-black" href="#">${Each.poster_location}</a></h6>
+                                            ${Each.poster_location ? `<h6 style="font-size: 11px;" class="mb-1"><a class="text-black" href="#">${Each.poster_location}</a></h6>` : ''}
                                             <p class="text-gray">${date}</p>
                                         </div>
                                         <div class="reviews-members-body">
-                                            <p>${Each.review_text}</p>
+                                        ${Each.review_text ? `<p>${Each.review_text}</p>` : ''}
                                         </div>
                                         <div id="reviews-members-footer" class="reviews-members-footer">
                                             <div id="usefulness-label">
@@ -764,7 +851,7 @@
                                                         </svg>
                                                      </div>
                                                     <div>
-                                                        <p id="like-${review_id}">${likes_and_dislikes.likes || 0}</p>
+                                                        <p id="like-${review_id}">${likes_and_dislikes ? likes_and_dislikes.likes || 0 : 0}</p>
                                                     </div>
                                                 </div>
                                                 <div id="dislike-label">
@@ -774,7 +861,7 @@
                                                         </svg>
                                                     </div>
                                                     <div>
-                                                        <p id="dislike-${review_id}">${likes_and_dislikes.dislikes || 0}</p>
+                                                        <p id="dislike-${review_id}">${likes_and_dislikes ? likes_and_dislikes.dislikes || 0 : 0}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -792,9 +879,9 @@
             return Cart.includes(Number(id))
         }
 
-        const CheckifExists = (id) => {
+        const CheckifExists = (id, more_details=false) => {
             const Cart = JSON.parse(localStorage.getItem('MassageCart')) || [];
-            return Cart.some(product => product.product_id === id);
+            return more_details ? Cart.filter(product => product.product_id === id) : Cart.some(product => product.product_id === id);
         }
 
         const SetLoading = (Enable = true) => {
@@ -831,6 +918,7 @@
 
 
         function setDownBelowPage(CommentsExist = true) {
+            try{window.recordEvent('interaction', 'scrolled till reviews')}catch{}
             const reviewsSection = document.getElementById('ReviewsBody');
             const ReviewsHeader = `
                 <div class="tab-pane fade active show" id="pills-reviews" role="tabpanel"
@@ -843,9 +931,9 @@
                     </div>
                 </div>
             `;
-            const commentsButton = `
+            const reviewsButton = `
                 <div id="commentsbutton">
-                    <button id="EnablerButton" onclick="enableComments(event);" class="button-23" role="button">${CommentsExist ? 'Leave a Review' : 'Be The First One To Rreview'}</button>
+                    <button id="EnablerButton" onclick="enableComments(event);" class="button-23" role="button">${CommentsExist ? 'Leave a Review' : 'Be The First To Review'}</button>
                     <div id="loader" class="loaderdisabled"></div>
                 </div>
                 <br>
@@ -861,7 +949,7 @@
                             </svg>
                             <i class="fa-light fa-triangle-exclamation"></i>
                         </div>
-                        <p style="min-width: 80%;" id="errorMessageText">Please Fill Out All Fields</a></p>
+                        <p style="min-width: 80%;" id="errorMessageText">Name and rating are required.</a></p>
                         <div onclick="CloseAlert();" style="float: right; right: 0;">
                             <svg style="right: 0;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black"
                                 class="bi bi-x-lg" viewBox="0 0 16 16">
@@ -877,7 +965,7 @@
                 <div id="commentsBoundary" class='invisibleField'>
                     <div id="SavingStatusBoundary"></div>
                     <div id="commentsContent">
-                        <h5 class="mb-4">Leave Comment</h5>
+                        <h5 class="mb-4">Leave a Review</h5>
                         <p class="mb-2">Rate Our Chair</p>
                         <div style="cursor: pointer; width: 135px;" class="mb-4">
                             <span data-endpoint="0" onclick="SelectRate(event);" data-rate='1' class="fa fa-star"></span>
@@ -894,14 +982,14 @@
                                 <textarea id="UserTextfield" class="form-control"></textarea>
                             </div>
                             <div class="form-group">
-                                <button onclick="SubmitReview();" class="button-23" type="button"> Submit Comment </button>
+                                <button onclick="SubmitReview();" class="button-23" type="button"> Submit </button>
                             </div>
                         </form>
                     </div>
                     <br>
             `;
             reviewsSection.innerHTML += ReviewsHeader
-            reviewsSection.innerHTML += commentsButton
+            reviewsSection.innerHTML += reviewsButton
             reviewsSection.innerHTML += errorWindowBody
             reviewsSection.innerHTML += CommentLeavingPanel
         }
@@ -949,12 +1037,12 @@
                         <div class="side">
                             <div>5 <span class="fa fa-star rating_specific"></span></div>
                             </div>
-                            <div style="--progress: ${percentages.five}%;" class="middle">
+                            <div style="--progress:${percentages.five}%;" class="middle">
                                 <div class="bar-container">
                                     <div class="bar-5"></div>
                                 </div>
                             </div>
-                            <div class="side right">
+                            <div style="margin-left:-1px;" class="side right">
                                 <div>${sortedReviews.five}</div>
                             </div>
                         <div class="side">
@@ -966,7 +1054,7 @@
                             </div>
                         </div>
                         <div class="side right">
-                            <div>${sortedReviews.four}</div>
+                            <div> ${sortedReviews.four}</div>
                         </div>
                         <div class="side">
                             <div>3 <span class="fa fa-star rating_specific"></span></div>
@@ -1019,15 +1107,17 @@
             window.innerHTML = loading;
         }
 
+        const guessDirection = ()=>Math.random() < 0.5 ? "right" : "left";
+
         function PlaceShowcaseCard(data) {
             const Showcasehub = document.getElementById('ShowcaseHub');
             const showcase_side = data.side;
+            last_showcase = showcase_side;
             const showcase_headline = data.showcase_headline;
             const showcase_id = data.showcase_id;
             const image_url = data.image_url;
             const showcaseText = data.description;
             const its_video_showcase = data.video_showcase;
-            last_showcase = showcase_side;
             if (its_video_showcase){
                 const video_frame = data.needs_embedding;
                 const framed_video = `
@@ -1082,7 +1172,6 @@
                 `;
                 Showcasehub.innerHTML += showcaseCard;
             }
-
         }
 
         // -------------------------------------------- Text Animation -----------------------------------------------------
@@ -1194,8 +1283,15 @@
             MakeRequest(request_url, action, "POST", handleResponse);
         }
 
+        function UpdateFilteredReviews(newReview){
+            const existingReviews = JSON.parse(localStorage.getItem('filteredReviews')) || [];
+            const updatedReviews = [...existingReviews, newReview]
+            localStorage.setItem('filteredReviews', JSON.stringify(updatedReviews))
+        }
+
 
         function FilterReviews() {
+            window.recordEvent('button', 'top reviews filter')
             const data = localStorage.getItem('filteredReviews')
             const processed_data = data ? JSON.parse(data) : []
             if (processed_data)
@@ -1205,9 +1301,9 @@
                 }, 777);
         }
         
-        const ManageRatingAndReviews = ()=>{
+        const ManageRatingAndReviews = (callback=null, additional_callback=null)=>{
             const url = `/GetReview/${product_id}/`
-            function HandleReiews(data){
+            function HandleReiews(data, post_effect_func){
                 if (data.length){
                     setTimeout(() => {
                         SetLoading(false);
@@ -1221,10 +1317,11 @@
                         setDownBelowPage(data.length);
                     }, 0);
                 }
+                setTimeout(() => {if(post_effect_func){post_effect_func(); ReviewsFetched = true; SetLoading(false);}}, 299);
             }
-            MakeRequest(url, null, "GET", HandleReiews)
+            if (!ReviewsFetched){MakeRequest(url, null, "GET", (response)=>HandleReiews(response, additional_callback))}
         }
-
+        
         const ResetRatingsAndReviews = ()=>{
             const field1 = document.getElementById("RatingLoadingWindow")
             const field2 = document.getElementById("RatingsClosure")
@@ -1233,36 +1330,45 @@
             field2.innerHTML = '';
             field3.innerHTML = '';
         }
-
-        const FetchColorSelector = (color_data) => {
+        
+        const FetchColorSelector = (color_data, selectedColors=[]) => {
             if (Array.isArray(color_data)) {
-                const default_color = color_data[0][0];
-                const colors = color_data.map(each_data => {
+                let selected_color = !selectedColors.length ? color_data[0][0] : null;
+                const colors = color_data.map((each_data, index) => {
                     const color_name = each_data[0];
                     const color_code = each_data[1];
                     const color_image = each_data[2];
-                    return `<img onclick="SetChairColor(event, '${color_name}');" id="${color_name == default_color ? 'color-selected' : ''}" class="ColorImage" src="${color_image}" alt="${color_name}">`;
+                    if (selectedColors.length && !selected_color){
+                        const user_selected_color = selectedColors.filter(each=>each===color_name) || [];
+                        selected_color = user_selected_color[0] || null;
+                    }else{selected_color=color_data[0][0]}
+                    const selectionDesicion = selected_color == color_name ? 'color-selected' : '';
+                    if (selectionDesicion == 'color-selected'){ButtonStatus(false, false, false)}
+                    return `<img onclick="SetChairColor(event, '${color_name}');" id="${selectionDesicion}" class="ColorImage" src="${color_image}" alt="${color_name}">`;
                 });
                 return [colors.join(''), color_data[0][0]];
             }
             return '';
         };
-
+        
         function SetProductDetails(data){
             const is_expected_data = typeof data === 'object' && data !== null;
             if (is_expected_data){
                 const window = document.getElementById('ProductInfoSection');
                 const title = data.title;
                 const product_id = data.id;
-                const brand = data.brand.brand_name;
+                const brand = data.brand;
                 const description = data.description;
                 const discount_amount = Number(data.discount_amount);
                 const price = parseFloat(data.price);
                 const color_options = data.color_options;
                 const discount_tag = discount_amount ? `<small id="deducted" data-amount="${discount_amount}">-$${discount_amount}</small>` : '';
                 const old_price = discount_amount ? `<span id="old-price">$${price+discount_amount}</span>` : '';
-                const colors_available = FetchColorSelector(color_options)[0];
-                const default_color = FetchColorSelector(color_options)[1];
+                const Id = Number(product_id);
+                const id_exists = CheckifExists(Id, true) || [];
+                const color_data = FetchColorSelector(color_options, id_exists.length ? id_exists.map(each=>each.selectedColor) : [])
+                const colors_available = color_data[0];
+                const default_color = color_data[1];
                 const info_body = `
                         <h1 id="name">${title}</h1>
                             <span id="highlight">BY ${brand}</span>
@@ -1275,7 +1381,7 @@
                             </span>
                                 ${old_price}
                             <div id="ProductColorOptionsSection">
-                                <div id="ColorOptionInfo">
+                                <div style="height:60px; width:104%" id="ColorOptionInfo">
                                     <p class="Display-6">Chair Color: <b id="CurrentSelectedColor">${default_color}</b></p>
                                 </div>
                                 <div id="ColorOptionImages">
@@ -1283,15 +1389,20 @@
                                 </div>
                             </div>
                             <div id="Quantity" class="options">
-                                <button id="quantityButton">
-                                    <img src="{% static 'images/BuyPage/icon-minus.svg' %}" alt="" onclick="minus()">
+                                <button id="quantityButton" onclick="minus()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF8300" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
+                                    </svg>
                                 </button>
                                 <button style="width: 5px;" id="result"><h6 id="quantityHolder">1</h6></button>
-                                <button id="quantityButton" onclick="plus()"><img src="{% static 'images/BuyPage/icon-plus.svg' %}" alt=""></button>
-                                <div id="UserCardBase" class="buttons" data-id="${product_id}" data-selectedColor='${default_color}' onclick="AddToCart(event);">
+                                <button id="quantityButton" onclick="plus()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF8300" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                    </svg>
+                                </button>
+                                <div id="UserCardBase" class="buttons" data-id="${product_id}" data-selectedColor='${default_color}' onclick="debounce(AddToCart, 999)(event);">
                                     <button id="MainCartButton" class="cart-button">
                                             <h6 id="CartButtonState" class="defaultCartState">Add to Cart</h6> 
-                                            <i class="fa fa-shopping-cart"></i> <i class="fa fa-square"></i>
                                     </button> 
                                 </div>
                             </div>
@@ -1300,9 +1411,10 @@
                     window.innerHTML = info_body;
                 }
         }
-
+        
         function SetChairColor(event, color){
-            SetImageAsMain(event);
+            window.recordEvent('color button', 'product color selection')
+            SetImageAsMain(event, false);
             const color_indicator = document.getElementById('CurrentSelectedColor');
             const all = document.getElementsByClassName("ColorImage");
             const effected_tag = event.target;
@@ -1324,7 +1436,8 @@
             color_indicator.textContent = selected_color;
         };
 
-        function SetImageAsMain(event){
+        function SetImageAsMain(event, record=true){
+            if (record){window.recordEvent('button', 'Checking Product Images')}
             const image_tag = event.target;
             if (image_tag){
                 const primaryMobileView = document.getElementById('PrimaryWindow');
@@ -1369,61 +1482,32 @@
         }
 
         function PageManagement(response){
-            const available_colors = response.available_colors.map(each_color=>each_color.image)
-            const additional_images = response.additional_images
+            const available_colors = response.available_colors_found.map(each_color=>each_color.image)
+            const additional_images = response.additional_images_found
             const all_images_combined = [...additional_images, ...available_colors]
-            if (response.video_demonstrations){
-                HandleShowcase(response.video_demonstrations, true);
-            };
-            if (response.chair_features){
-                HandleShowcase(response.chair_features);
-            };
+            if (response.video_demonstrations_found){HandleShowcase(response.video_demonstrations_found, true);};
+            if (response.chair_features_found){HandleShowcase(response.chair_features_found);};
             setMobileView(all_images_combined);
             SettleDesktopView(all_images_combined);
             SetProductDetails(response)
+            SetLoading();
+            SetProductCart()
+            loadReviewsWhenInterested();
         }
-
-        function resetCartButton(){
-            const button = document.getElementById('CartButtonState')
-            if (button){
-                const MainButton = document.getElementById('MainCartButton');
-                MainButton.classList.add('buttonresetanimation');
-                setTimeout(() => {
-                    MainButton.classList.remove('buttonresetanimation');
-                }, 599);
-                setTimeout(() => {
-                    button.textContent = 'Add to Cart';
-                }, 299);
-            }
-        };
-
-        function revertCartButton(){
-            const button = document.getElementById('CartButtonState')
-            if (button){
-                const MainButton = document.getElementById('MainCartButton');
-                MainButton.classList.add('buttonresetanimation');
-                setTimeout(() => {
-                    MainButton.classList.remove('buttonresetanimation');
-                }, 599);
-                setTimeout(() => {
-                    button.textContent = 'Remove From Cart';
-                }, 299);
-            }
-        };
-
-
+        
         function ManageChanges(easyCheck=true){
             const ID_holder = document.getElementById('UserCardBase');
             if (ID_holder){
-                const product_id = ID_holder.getAttribute('data-id')
+                const product_id = ID_holder.getAttribute('data-id');
                 if (product_id){
                     const Id = Number(product_id);
-                    const exists = CheckifExists(Id);
-                    if (exists){
+                    const id_exists = CheckifExists(Id);
+                    if (id_exists){
                         const requested_color = ID_holder.dataset.selectedcolor;
                         const Datapath = document.getElementById('lblCartCount');
                         const DatapathMobile = document.getElementById('lblCartCount_mobile');
                         const button_reset_needed = ManageCart({id: Id, selectedColor:requested_color}, easyCheck);
+                        if(easyCheck){ButtonStatus(false, false, button_reset_needed)}
                         if (!easyCheck){
                             const wasDeleted = button_reset_needed[1];
                             const resultedProductsInCart = button_reset_needed[0];
@@ -1432,17 +1516,10 @@
                                 const DatapathMobile = document.getElementById('lblCartCount_mobile');
                                 Datapath.textContent = resultedProductsInCart;
                                 DatapathMobile.textContent = resultedProductsInCart;
-                                resetCartButton();
                             }
-                        }else{
-                            if (button_reset_needed)
-                                resetCartButton();
-                            else
-                                revertCartButton();
                         }
-                        AddToCart
                     }
-                }
+                };
             }
         }
 
@@ -1454,11 +1531,19 @@
                 return 'right';
             }
         }
+        function isNumericString(value) {
+            if (typeof value !== 'string') {
+                return false;
+            }
+            value = value.trim();
+            return !isNaN(value) && value !== '';
+        }
 
         function GenerateVideoFrame(platformName, videoId) {
             const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
             const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
             let url;
+            console.log(platformName)
             if (platformName.toLowerCase() === 'youtube') {
                 url = `https://www.youtube.com/embed/${videoId}`;
                 return `<iframe style="border-radius: 18px;" width="105%" height="105%" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
@@ -1515,14 +1600,69 @@
             }
         }
 
-        window.addEventListener('pageshow', function(event) {
-            setTimeout(() => {
-                SetProductCart();
-            }, 399);
-        });
+        GetProductByID([product_id]);
 
-        MakeRequest(`/GetProduct/${product_id}/`, null, "GET", PageManagement)
-        setTimeout(() => {
+        const ButtonStatus = (animate=true, deanimate=false, add_status_text=false)=>{
+            const GenerateCartButton = (textML, caratAddAnim=null)=>{
+                return `
+                    <button id="MainCartButton" class="cart-button ${!(animate || deanimate) ? 'buttonresetanimation' : ''} ${caratAddAnim ? caratAddAnim=='addition' ? 'clicked' : 'removed' : ''}">
+                            ${caratAddAnim ? '<i class="fa fa-shopping-cart"></i><i class="fa fa-square"></i>' : textML }
+                    </button> 
+                `
+            }
+            
+            const GenerateButtonStatusText = (text)=>`<h6 id="CartButtonState" class="defaultCartState">${text}</h6>`;
+            const buttonHub = document.getElementById('UserCardBase');
+            const requested_state = add_status_text ? 1 : 2;
+            const already_that_state = requested_state == buttonState;
+            if (buttonHub){
+                let requested_text =  GenerateButtonStatusText(add_status_text ? 'Add to Cart' : 'Remove from Cart');
+                if (animate){
+                    buttonHub.innerHTML = '';
+                    const button =  GenerateCartButton(GenerateButtonStatusText(add_status_text ? 'Add to Cart' : 'Remove from Cart'), 'addition');
+                    buttonHub.innerHTML = button;
+                    buttonState = requested_state;
+                    setTimeout(() => {
+                        const CartButton = document.getElementById('MainCartButton');
+                        if (CartButton){CartButton.innerHTML = GenerateButtonStatusText('Remove from Cart');
+                    }}, 1799);
+                    return 0;
+                }
+                if (deanimate){
+                    buttonHub.innerHTML = '';
+                    const button =  GenerateCartButton(GenerateButtonStatusText(add_status_text ? 'Add to Cart' : 'Remove from Cart'), 'removal');
+                    buttonHub.innerHTML = button;
+                    buttonState = requested_state;
+                    setTimeout(() => {const CartButton = document.getElementById('MainCartButton');CartButton.innerHTML = GenerateButtonStatusText('Add to Cart');}, 1799);
+                    return 0;
+                }
+                if (!animate && !deanimate){
+                    let ButtonText = null;
+                    if (add_status_text){
+                        if (buttonState == 2){
+                            buttonHub.innerHTML = '';
+                            ButtonText = 'Add to Cart';
+                            const button =  GenerateCartButton(GenerateButtonStatusText(ButtonText), false);
+                            buttonHub.innerHTML = button;
+                        };
+                        buttonState = 1;
+                    }
+                    else{
+                        if (buttonState == 1){
+                            buttonHub.innerHTML = '';
+                            ButtonText = 'Remove from Cart'
+                            const button =  GenerateCartButton(GenerateButtonStatusText(ButtonText), false);
+                            buttonState = 2
+                            buttonHub.innerHTML = button;
+                        }
+                        buttonState = 2;
+                    }
+                }
+            }
+        };
+
+        
+        function loadReviewsWhenInterested(){
             const targetElement = document.getElementById('RevealTriggerPoint');
             const secondaryDesktopWindow = document.getElementById('SecondaryProductView');
 
@@ -1549,10 +1689,20 @@
                 }
             }
             window.addEventListener('scroll', TriggerReviews);
-        }, 799);
-        SetLoading();
-        UpdateProductStatus();
+        }
 
+        importScript('/static/js/analytics.js')
+        importScript('https://www.googletagmanager.com/gtag/js?id=G-YPTBVN0S8C', () => {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() { window.dataLayer.push(arguments); };
+            gtag('js', new Date());
+            gtag('config', 'G-YPTBVN0S8C');
+
+            window.recordEvent = (event_label, category)=> window.gtag('event', 'click', {
+                    'event_category': category,
+                    'event_label': event_label,
+                });
+            });
 
     </script>
 

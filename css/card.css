@@ -17,6 +17,8 @@ a
     text-decoration: none;
 }
 
+@media (max-width: 991px){.companyInformation{margin-top: 35px;}}
+
 @media (max-width:450px){
     .product-card {
         min-width: 335px;

@@ -97,13 +97,13 @@
 .cart-button span.added {
     opacity: -1
 }
-
-.cart-button.clicked .fa-shopping-cart {
-    animation: cart 2s ease-in forwards
+.cart-button.clicked .fa-shopping-cart{
+  position: absolute;
+  animation: cart 1.8s ease-in forwards
 }
 
 .cart-button.clicked .fa-square {
-    animation: box 2s ease-in forwards
+    animation: box 1.76s ease-in forwards
 }
 
 .cart-button.clicked span.add-to-cart {
@@ -121,7 +121,7 @@
 
     40%,
     60% {
-        left: 50%
+        left: 45%
     }
 
     100% {
@@ -190,21 +190,23 @@
     }
 }
 
-.dissappearText{
-    animation: fadeOut 0.7s ease-in-out forwards;
-}
+  .dissappearText{
+      animation: fadeOut 0.7s ease-in-out forwards;
+  }
 
-.defaultCartState{
-    animation: fadeIn 0.7s ease-in-out forwards;
-}
+  .defaultCartState{
+      animation: fadeIn 0.7s ease-in-out forwards;
+  }
 
-/* //////////////////////////////////////////////// Removing Animation ///////////////////////////////////////////////////// */
-.cart-button.removed .fa-shopping-cart {
-    animation: cart-reverse 2s ease-in forwards;
-}
+  /* //////////////////////////////////////////////// Removing Animation ///////////////////////////////////////////////////// */
+
+  .cart-button.removed .fa-shopping-cart {
+      position: absolute;
+      animation: cart-reverse 1.92s ease-in;
+  }
   
   .cart-button.removed .fa-square {
-    animation: trial-reverse 2s ease-in forwards;
+    animation: trial-reverse 1.96s ease-in;
   }
   
   .cart-button.removed span.add-to-cart {
@@ -241,7 +243,7 @@
   
     60%,
     40% {
-      left: 50%;
+      left: 45%;
     }
   
     0% {
@@ -333,7 +335,7 @@
 
 @media (min-width:360px) and (max-width:767px){
   #AllImagesWindow {
-    width: 34.5vh;
+    width: 40.5vh;
     height: 80px;
     overflow-x: auto;
     white-space: nowrap;
@@ -389,9 +391,16 @@
   margin: 5px;
 }
 
+@media (max-width:460px){
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+}
 
-::-webkit-scrollbar {
-  width: 12px;
+@media (min-width:460px){
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
 }
 
 ::-webkit-scrollbar-track {

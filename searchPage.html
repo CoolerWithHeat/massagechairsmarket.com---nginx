@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -43,7 +42,7 @@
                                         <i class="fa" style="font-size:25px">&#xf07a;</i>
                                         <span id="lblCartCount" class='badge badge-warning'> 0 </span>
                                     </a>
-                                </div>                  
+                                </div>
                             </li>
                             <li class="scroll-to-section"><a href="#top">Home</a></li>
                                 <li class="submenu">
@@ -56,15 +55,10 @@
                                 </li>
                             <li class="submenu">                               
                                 <a href="javascript:;">Brands</a>
-                                <ul>
-                                    <li><a href="#">Kahuna</a></li>
-                                    <li><a href="#">Osaki</a></li> 
-                                    <li><a href="#">Real Relax</a></li>
-                                    <li><a href="#">Homedics</a></li>
-                                </ul>
+                                <ul id="BrandsSection"></ul>
                             </li>
                             <li class="scroll-to-section onpage"><a href="#explore">Explore</a></li>
-                            <li class="scroll-to-section"><a href="/productsPage">Products</a></li>
+                            <li class="scroll-to-section"><a href="/Orders/">Orders</a></li>
                         </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -87,8 +81,8 @@
         </div>
         <div id='CartHub'>
             <div class="CartBoundaryFixed MobileCart" style="cursor: pointer;">
-                <a href="../../Cart">
-                    <i class="fa" style="font-size:24px;">&#xf07a;</i>
+                <a href="../../Cart/">
+                    <i class="fa fa-shopping-cart" style="font-size:24px; color:rgb(31, 30, 30);"></i>
                     <span id="lblCartCountMobile" class='badge badge-warning'> 0 </span>
                 </a>
             </div>
@@ -123,27 +117,62 @@
                 </div>
             </div>
         </div>
-        
+        <div class="col-lg-12">
+            <div class="pagination">
+                <ul>
+                    <li>
+                        <a href="#">1</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">2</a>
+                    </li>
+                    <li>
+                        <a href="#">3</a>
+                    </li>
+                    <li>
+                        <a href="#">4</a>
+                    </li>
+                    <li>
+                        <a href="#">&gt;</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </section>
 
     <script src="/static/js/jquery-2.1.0.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.js?features=Promise%2CObject.entries%2CObject.assign"></script>
     <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.22.1/dist/algoliasearch.umd.min.js"></script>
-    <script src="/static/js/popper.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/owl-carousel.js"></script>
-    <script src="/static/js/accordions.js"></script>
-    <script src="/static/js/datepicker.js"></script>
-    <script src="/static/js/scrollreveal.min.js"></script>
-    <script src="/static/js/waypoints.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script>
-    <script src="/static/js/isotope.js"></script>
-    <script src="/static/js/custom.js"></script>
-    <script src="/static/js/SliderHandler.js"></script>
+    <script src="/static/js/bootstrap.min.js" async></script>
+    <script src="/static/js/SliderHandler.js" async></script>
+    <script src="/static/js/custom.js" async></script>
     <script>
+        window.addEventListener('load', function() {
+            var cover = document.querySelector('.cover');
+            if (cover) {
+                var imageSrc = cover.getAttribute('data-image');
+                new Parallax(cover, {
+                    imageSrc: imageSrc,
+                    zIndex: '1'
+                });
+            }
+            var preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.transition = 'opacity 600ms';
+
+                setTimeout(function() {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.visibility = 'hidden';
+                        preloader.style.display = 'none';
+                    }, 300);
+                }, 0);
+            }
+        });
+
         var MinPriceDemonstration;
         var MaxPriceDemonstration;
         var WindowFilters;
+        let requested_page = 0;
         const host = window.location.protocol + "//" + window.location.host + '/serverdestination/'
         function debounce(func, delay) {
             let timeoutId;
@@ -159,20 +188,47 @@
             return typeof data === 'string' ? [data] : data
         }
 
+        function EnableErrorForProductContainer(enable=true){
+            const productContainer = document.getElementById('ProductContainer');
+            if (productContainer && enable){
+                productContainer.style.display = 'flex';
+                productContainer.style.justifyContent = 'center';
+            }else if(!enable){productContainer.removeAttribute('style')}
+            return productContainer;
+        }
+
+        function ShowNoResults(unmatchedKeyword=null){
+            const container = EnableErrorForProductContainer();
+            const onBigDisplay = window.innerWidth >= 770;
+            const keywordFocused = unmatchedKeyword ? `for "${unmatchedKeyword}"` : '';
+            if (container){
+                const error = `
+                    <div id="NoResultsError" style="width: 180px; display: block; text-align: center; margin-top:${onBigDisplay ? 140 : 90}px">
+                        <div style="display: block; margin: auto;">
+                            <img src="/static/images/binoculars.jpg" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: auto;" alt="Not Found">
+                        </div>
+                        <div>
+                            <p style="margin-top: 7px; font-size: 16px; font-weight: 390;">No results found ${keywordFocused}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = error;
+            }
+        }
+
         let filtersReady = false;
         function searchAlgoliaWithParams(RequestedProperties){
             UpdateLoadingStatus(false);
-            const client = algoliasearch('K7LWE7RYA4', 'dd84d643cb097b484b87bf0a2c35d742');
+            const client = algoliasearch('K7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948');
             const products = client.initIndex('MassageChair');
             const minPrice = parseFloat(RequestedProperties.minPrice)  || 0;
             const maxPrice = parseFloat(RequestedProperties.maxPrice) || 16000;
             const brandFilters = ValidateSearchParam(RequestedProperties.Brands); 
             const KeywordSearch = RequestedProperties.SearchKey || '*';
-            const featureFilters = ValidateSearchParam(RequestedProperties.Features); 
+            const featureFilters = ValidateSearchParam(RequestedProperties.Features);
             let brand_filters = '';
             let feature_filters = '';
             const price_filters = `${brandFilters ? ' AND ' : ''}(price > ${minPrice} AND price <= ${maxPrice})${featureFilters ? ' AND ' : ''}`;
-            let search_filter = `(brand: 'Osaki' OR brand:Kahuna) AND (price > ${minPrice} AND price <= ${maxPrice})`
             
             if (brandFilters && Array.isArray(brandFilters)){
                 const filter = brandFilters.map(each=>`brand: '${each}' `)
@@ -187,26 +243,33 @@
             }
             
             const searchOptions = {
-                hitsPerPage: 100,
+                hitsPerPage: 12,
                 filters: brand_filters+price_filters+feature_filters,
+                page: requested_page,
             };
-
             if (searchOptions.filters){
                 products.search(KeywordSearch, searchOptions).then((response) => {
                     const hits = response.hits;
-                    console.log('search triggered')
+                    const current_pagination_page = response.page;
+                    const pagination_pages_left = response.nbPages;
+                    generatePagination(Number(current_pagination_page), Number(pagination_pages_left));
                     setTimeout(() => {
                         UpdateLoadingStatus(true);
                         if (hits.length) {
                             hits.forEach(Each => {
-                                if (!filtersReady){if (Each.FilterOptions) PlaceSubFilters(Each.FilterOptions); filtersReady=true}
-                                const container = document.getElementById('ProductContainer');
+                                if (!filtersReady){if (Each.FilterOptions) PlaceSubFilters(Each.FilterOptions); PlaceBrandsAvailable(Each.FilterOptions.Brands); filtersReady=true};
+                                const container = EnableErrorForProductContainer(false);
                                 const product = extractProductData(Each);
                                 container.innerHTML += product;
                             });
-                    }else{
-                        PlaceSubFiltersByCache();
-                    }
+                        }else{
+                            const SearchKeywordHolder = document.getElementById('SearchKeywordHolder');
+                            const currentKeywordValue = SearchKeywordHolder.value;
+                            const searchKeywordFound = KeywordSearch && `${KeywordSearch}`.length && !(KeywordSearch == '*')
+                            ShowNoResults(searchKeywordFound ? KeywordSearch: null);
+                            PlaceSubFiltersByCache();
+                            if (window.innerWidth >= 770){OpenSearchBar(true, true);}
+                        }
                     }, 499);
                 })
                 .catch(error => {
@@ -214,6 +277,82 @@
                 });
             }
         }
+
+        function generatePagination(currentPage, totalPages) {
+            const paginationContainer = document.querySelector('.pagination ul');
+            paginationContainer.innerHTML = '';
+        
+            const maxVisiblePages = 5;
+
+            if (currentPage > 0) {
+                const prevLi = document.createElement('li');
+                const prevLink = document.createElement('a');
+                prevLink.href = '#';
+                prevLink.innerHTML = '&lt;';
+                prevLink.addEventListener('click', () => {
+                    requested_page = currentPage - 1;
+                    window.recordEvent('button', 'pagination')
+                    TriggerFilter();
+                });
+                prevLi.appendChild(prevLink);
+                paginationContainer.appendChild(prevLi);
+            }
+
+            let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = startPage + maxVisiblePages;
+
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(0, endPage - maxVisiblePages);
+            }
+
+            for (let i = startPage; i < endPage; i++) {
+                const pageLi = document.createElement('li');
+                if (i === currentPage) {
+                    pageLi.classList.add('active');
+                }
+                const pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.textContent = (i + 1).toString();
+                pageLink.addEventListener('click', () => {
+                    requested_page = i;
+                    window.recordEvent('button', 'pagination')
+                    TriggerFilter();
+                });
+                pageLi.appendChild(pageLink);
+                paginationContainer.appendChild(pageLi);
+            }
+
+            if (currentPage < totalPages - 1) {
+                const nextLi = document.createElement('li');
+                const nextLink = document.createElement('a');
+                nextLink.href = '#';
+                nextLink.innerHTML = '&gt;';
+                nextLink.addEventListener('click', () => {
+                    requested_page = currentPage + 1;
+                    window.recordEvent('button', 'pagination')
+                    TriggerFilter();
+                });
+                nextLi.appendChild(nextLink);
+                paginationContainer.appendChild(nextLi);
+            }
+        }
+
+        const GetOnlyAvailable = (brandData)=>{
+            if (Array.isArray(brandData)){
+                return brandData.filter(each=>each[Object.keys(each)[0]])
+            }
+            return null;
+        }
+
+        function PlaceBrandsAvailable(brandNames=[]){
+            const getBrandList = (brandName)=>`<li><a href='?Brands=${brandName.replace(/ /g, "+")}'>${brandName}</a></li>`;
+            const brandsWindow = document.getElementById('BrandsSection');
+            const validBrands = GetOnlyAvailable(brandNames) || [];
+            if (validBrands.length && Array.isArray(validBrands)){
+                const brands = validBrands.map(each_brand_name=>getBrandList(Object.keys(each_brand_name)[0])); brandsWindow.innerHTML = brands.join('');
+            };
+        };
         
         function removeLatestAlert() {
             var element = document.getElementById("LatestAlert");
@@ -227,16 +366,23 @@
             const price = algoliaData.price;
             const description = algoliaData.description;
             const brand = algoliaData.brand;
-            const availableColors = algoliaData.color_options;
+            const availableColors = algoliaData.color_options || [];
             const features = algoliaData.chair_features; 
             const purchased = algoliaData.purchased;
             const rating = algoliaData.rating;
             const posted = algoliaData.posted;
             const product_id = algoliaData.objectID;
-            const rating_stars = getRating(rating);
+            const was_reviewed = algoliaData.has_reviewers
+            console.log('-----------------------------')
+            console.log(title)
+            console.log(availableColors)
+            console.log(algoliaData.id)
+            console.log('-----------------------------')
+            if (!title || !brand || !price || !availableColors.length){console.log('invalid product found'); return '';}
+            const rating_stars = was_reviewed ? getRating(rating) : null;
             const Cart = JSON.parse(localStorage.getItem('MassageCart')) || [];
             const style = Cart.some(item => item.product_id === 2) ? "color: rgb(127,255,212);" : null;
-            const blackColor_Url = availableColors ? availableColors[0][2] : '';
+            const blackColor_Url = availableColors.length ? availableColors[0][2] : '';
             if (blackColor_Url){
                 const Products = `
                     <div class="col-lg-4">
@@ -245,8 +391,8 @@
                                 <div class="hover-content">
                                     <ul>
                                         <li><a href="../Buy/${product_id}/"><i class="fa fa-eye"></i></a></li>
-                                        <li><a href="../Buy/${product_id}/"><i class="fa fa-star"></i></a></li>
-                                        <li><a href="#"><i data-id="${product_id}" data-type="listed-product" data-color="${availableColors ? availableColors[0][0] : ''}" onclick="AddToCard(event)" class="fa fa-shopping-cart"></i></a></li>
+                                        <li><a data-id="${product_id}" onclick="RedirectToReviews('../Buy/${product_id}/');" href="javascript:void(0)"><i class="fa fa-star"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i data-id="${product_id}" data-type="listed-product" data-color="${availableColors ? availableColors[0][0] : ''}" onclick="AddToCard(event)" class="fa fa-shopping-cart"></i></a></li>
                                     </ul>
                                 </div>
                                 <img src="${blackColor_Url}" alt="">
@@ -255,7 +401,7 @@
                                 <h4>${title}</h4>
                                 <span>$${Number(price).toFixed(2)}</span>
                                 <br>
-                                ${rating_stars.outerHTML}
+                                ${rating_stars ? rating_stars.outerHTML : ''}
                             </div>
                         </div>
                     </div>
@@ -320,6 +466,12 @@
             window.history.pushState({ path: url.href }, '', url.href);
         }
 
+        function RedirectToReviews(url){
+            window.recordEvent('button', 'product direct review')
+            localStorage.setItem('requestedReviews', true)
+            window.location.href = url;
+        };
+
 
         function addPriceFilters(maxPrice, minPrice = 0) {
             if (maxPrice){
@@ -360,7 +512,7 @@
             const StarsHub = document.createElement('ul');
             StarsHub.className = 'stars';
             const wholeRating = Math.floor(rating);
-            const hasHalfStar = rating % 1 >= 0.5;
+            const hasHalfStar = rating % 1 >= 0.1;
 
             for (let i = 0; i < wholeRating; i++) {
                 const star = document.createElement('li');
@@ -369,14 +521,14 @@
                 star.appendChild(icon);
                 StarsHub.appendChild(star);
             }
-            
-            const classname = hasHalfStar ? 'fa fa-star' : 'fa fa-star-half';
-            const halfStar = document.createElement('li');
-            const halfStarIcon = document.createElement('i');
-            halfStarIcon.className = classname;
-            halfStar.appendChild(halfStarIcon);
-            StarsHub.appendChild(halfStar);
-
+            if (hasHalfStar){
+                const classname = hasHalfStar ? 'fa fa-star' : 'fa fa-star-half';
+                const halfStar = document.createElement('li');
+                const halfStarIcon = document.createElement('i');
+                halfStarIcon.className = classname;
+                halfStar.appendChild(halfStarIcon);
+                StarsHub.appendChild(halfStar);
+            }
             return StarsHub;
         };
         var logoElement = document.getElementById('LogoPoint');
@@ -396,6 +548,32 @@
             }, 1000);
         }
 
+        function RecordAction(action_index) {
+            const indices = {
+                1: 'add_to_cart',
+                2: 'remove_from_cart',
+            };
+            const record = () => {
+                const url = `${analyticsProtol}//${analyticsServerHost}/analyticsdestination/Interactions/`;
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({ 'action_type': indices[action_index] })
+                });
+            };
+            const checkAndRecord = (retries, delay) => {
+                if (analyticsServerHost) {
+                    record();
+                } else if (retries > 0) {
+                    setTimeout(() => checkAndRecord(retries - 1, delay), delay);
+                } else {
+                    console.error("analyticsServerHost not available within the expected time");
+                }
+            };
+            if (action_index) {
+                checkAndRecord(3, 666);
+            }
+        }
+
         function ManageCart(product) {
             const product_id = product.id
             const quantity = product.quantity || 1
@@ -406,8 +584,11 @@
             const index = savedProducts.findIndex(product => product.product_id === product_id);
 
             if (index === -1) {
+                window.recordEvent('button', 'Add to Cart')
+                RecordAction(1);
                 savedProducts.push({ product_id, quantity, selectedColor});
             } else {
+                RecordAction(2);
                 savedProducts.splice(index, 1);
                 isRemoved = true;
             }
@@ -417,7 +598,8 @@
             return [savedProducts.length, isRemoved];
         }
 
-        function OpenSearchBar(fadeout=true){
+        function OpenSearchBar(fadeout=true, OpenOnlyIfValue=false){
+            window.recordEvent('button', 'search bar open')
             const url_params = getUrlParams();
             const first_time = url_params.SearchKey == undefined;
             const searchBar = document.getElementsByClassName('searchBox')[0];
@@ -425,20 +607,26 @@
             const SearchKeywordHolder = document.getElementById('SearchKeywordHolder');
             const currentKeywordValue = SearchKeywordHolder.value;
             const same = url_params.SearchKey == currentKeywordValue;
-
-            if ((first_time && !currentKeywordValue)){}
-            
-            else{
-                if (!same){
-                    AddSearchKeyword(currentKeywordValue);
-                    setTimeout(() => {
-                        searchBar.classList.remove('openedSearch')
-                    }, 333);
+            if (OpenOnlyIfValue){
+                if (currentKeywordValue.length){
+                    searchBar.classList.add('openedSearch')
+                    AnimateSearchIcon();
+                }
+            }else{
+                if ((first_time && !currentKeywordValue)){}
+                else{
+                    if (!same){
+                        AddSearchKeyword(currentKeywordValue);
+                        setTimeout(() => {
+                            searchBar.classList.remove('openedSearch')
+                        }, 333);
+                    }
+                }
+                if (in_closed_state){
+                    searchBar.classList.add('openedSearch')
+                    AnimateSearchIcon();
                 }
             }
-            if (in_closed_state)
-                searchBar.classList.add('openedSearch')
-                AnimateSearchIcon();
         }
 
         const FadaAwaySearch = (fadeout=true)=>{
@@ -701,6 +889,7 @@
         };
 
         function HandleFilterCheckbox(event){
+            window.recordEvent('checkbox', 'Filter Option')
             const target_tag = event.target
             const is_checked = target_tag.checked
             const filterData = target_tag.name  
@@ -742,7 +931,7 @@
                     const amount = amountAvailable ? amountAvailable : (29 + (Math.floor(Math.random() * 8) + -1))
                     return  `   <label class="custom-control custom-checkbox">
                                     <input onchange='HandleFilterCheckbox(event)' ${already_activated ? 'checked' : ''} name='${optionName}' data-parent='${filterName}' type="checkbox" class="custom-control-input">
-                                    <div style="cursor:pointer;" class="custom-control-label">${optionName}<b class="badge badge-pill badge-info float-right">${amount}</b></div>
+                                    <div style="cursor:pointer;" class="custom-control-label">${optionName} <b class="badge badge-pill badge-info float-right">${amount}</b></div>
                                 </label>
                             `
             }
@@ -758,7 +947,8 @@
                             for (const key in obj) {
                                 if (obj.hasOwnProperty(key)) {
                                     const value = obj[key];
-                                    processedOptions.push(getOption(key, value, filterName))
+                                    if (value)
+                                        processedOptions.push(getOption(key, value, filterName))
                                 }
                             }
                         }
@@ -928,10 +1118,10 @@
                 MinPriceDemonstration = document.getElementById("MinPriceHub");
                 MaxPriceDemonstration = document.getElementById("MaxPriceHub");   
                 setTimeout(() => {
-                        MaxPriceRepresentor.addEventListener('onchange', debounce(handleSlider, 599))
+                    MaxPriceRepresentor.addEventListener('onchange', debounce(handleSlider, 599))
                 }, 399);
                 setTimeout(() => {
-                        MinPriceDemonstration.addEventListener('onchange', debounce(handleSlider, 599))
+                    MinPriceDemonstration.addEventListener('onchange', debounce(handleSlider, 599))
                 }, 399);
                 
             }, 111);
@@ -953,21 +1143,31 @@
         }
 
         function importScript(pathname, callback) {
-            const script = document.createElement('script');
-            script.src = pathname;
-            script.async = true;
-            script.onload = callback || null; 
-            document.head.appendChild(script);
-        };;
-
-        function importCSS(pathname, importType='text/css') {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = importType;
-            link.href = pathname;
-            document.head.appendChild(link);
+            const existingScript = document.querySelector(`script[src="${pathname}"]`)
+            if (!existingScript){
+                const script = document.createElement('script');
+                script.src = pathname;
+                script.async = true;
+                script.onload = callback || null;
+                document.head.appendChild(script);
+            }else{
+                if (callback instanceof Function){callback()}
+            }
         };
 
+		function importCSS(pathname, callback = null) {
+            const existingLink = document.querySelector(`link[href="${pathname}"]`);
+            if (!existingLink){
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = pathname;
+                link.onload = callback; 
+                document.head.appendChild(link);
+            }else{
+                if (callback){callback()}
+            }
+		};
         function EnableDiscountBanner(discountData={}){
             const available = (functionName) => typeof window[functionName] === 'function';
             if (available('importCSS') && available('importScript') ){
@@ -994,7 +1194,17 @@
                 HandleSearchBarState();
             }, 699);
         });
-        
+        importScript('/static/js/analytics.js')
+        importScript('https://www.googletagmanager.com/gtag/js?id=G-YPTBVN0S8C', () => {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() { window.dataLayer.push(arguments); };
+            gtag('js', new Date());
+            gtag('config', 'G-YPTBVN0S8C');
+            window.recordEvent = (event_label, category)=> window.gtag('event', 'click', {
+                    'event_category': category,
+                    'event_label': event_label,
+                });
+            });
     </script>
 
 </body>

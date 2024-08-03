@@ -539,7 +539,7 @@
 @media (max-width:460px){
   .fa-shopping-cart:before {
     content: "\f07a";
-    font-size: 20px;
+    font-size: 24px;
     cursor:pointer;
   }
 }

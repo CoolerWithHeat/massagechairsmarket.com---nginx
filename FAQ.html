@@ -1,33 +1,20 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
-<style>
-    .card {
-        width: 300px;
-        height: 200px;
-        background-color: lightblue;
-        margin: 20px;
-        transition: background-color 0.3s ease-in-out;
-    }
-    .in-view {
-        background-color: lightgreen;
-    }
-</style>
 <head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="{% static 'images/Brand.png' %}" type="image/x-icon">
+    <link rel="icon" href="/images/Brand.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,700&subset=latin-ext" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/contactPopup.css' %}">
-    <link rel="stylesheet" href="{% static 'css/FAQ_style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/templatemo-hexashop.css' %}">
-    </head>
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/css/contactPopup.css">
+    <link rel="stylesheet" href="/css/FAQ_style.css">
+    <link rel="stylesheet" href="/css/templatemo-hexashop.css">
+</head>
     
     <body>
 
@@ -38,92 +25,41 @@
             <div></div>
         </div>
     </div>
-
-    <header class="header-area header-sticky">
+    <section class="faq">
         <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-8 text-center">
+                    <div class="section-title">
+                        <h4>FAQ's</h4>
+                        <h2>Frequently Asking <span>Question’s</span></h2>
+                    </div>
+                </div>
+            </div>
+    
+
+
+
+
+            
             <div class="row">
-                <div class="col-12">
-                    <nav class="main-nav">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="accordion" id="accordionExample">
+                        <div class="row">
+                            <div id="LeftSide_FAQ" class="col-xl-6 col-lg-6">
 
-                        <a href="\../" class="logo">
-                            <img id="LogoPoint" class="brandLogo" src="{% static 'images/companyLogo.png' %}">   
-                        </a>
-
-                        <ul class="nav">
-                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
-                            <li class="submenu">
-                                <a href="javascript:;">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="products.html">Products</a></li>
-                                    <li><a href="single-product.html">Single Product</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                </ul>
-                            </li>
-                            <li class="submenu">
-                                <a href="javascript:;">Brands</a>
-                                <ul>
-                                    <li><a href="#">Kahuna</a></li>
-                                    <li><a href="#">Osaki</a></li> 
-                                    <li><a href="#">Real Relax</a></li>
-                                    <li><a href="#">Homedics</a></li>
-                                </ul>
-                            </li>
-                            <li class="scroll-to-section"><a href="#explore">Explore</a></li>
-                            <li class="scroll-to-section"><a href="/productsPage">Products</a></li>
-                        </ul>        
-                        <a class='menu-trigger'>
-                            <span>Menu</span>
-                        </a>
-                    </nav>
+                            </div>
+    
+                            <div id="RightSide_FAQ" class="col-xl-6 col-lg-6">
+                                
+                            </div>
+                        </div>
+    
+                    </div>
+    
                 </div>
             </div>
         </div>
-    </header>
-    <br><br><br><br><br><br><br>
-    <div class='faq'>
-        <input id='faq-a' type='checkbox'>
-        <label for='faq-a'>
-          <p class="faq-heading">Is this Dropbox upgrade safe?</p>
-          <div class='faq-arrow'></div>
-            <br>
-            <br>
-            <p class="faq-text">It is completely safe and totally legal! There will is no record of this process to your shared Dropbox users.</p>
-        </label>
-        <input id='faq-b' type='checkbox'>
-        <label for='faq-b'>
-          <p class="faq-heading">How long does it take to upgrade my Dropbox?</p>
-          <div class='faq-arrow'></div>
-            <br>
-            <br>
-            <p class="faq-text">Upgrading is a slow process and will take around 3-10 days. <strong>In order to control the risk and secure the space you earned, we will gradually process it.</strong> during this time you can still use your account as normal as usual.</p>
-        </label>
-        <input id='faq-c' type='checkbox'>
-        <label for='faq-c'>
-          <p class="faq-heading">What do you need to do the upgrade?</p>
-          <div class='faq-arrow'></div>
-            <br>
-            <br>
-            <p class="faq-text">NO ACCESS TO YOUR PERSONAL ACCOUNT OR INFO IS REQUIRED! All I need from you is your Dropbox referral link.</p>
-        </label>
-        <input id='faq-d' type='checkbox'>
-        <label for='faq-d'>
-          <p class="faq-heading">Where do I find my personal Dropbox referral link?</p>
-          <div class='faq-arrow'></div>
-            <br>
-            <br>
-            <p class="faq-text">Log in to the Dropbox website and get your referral link: www.dropbox.com/referral. Copy the link (example link: <strong>https://db.tt/xYxYzyXy</strong>) and send it via eBay message. </p>
-        </label>
-        <input id='faq-e' type='checkbox'>
-        <label for='faq-e'>
-          <p class="faq-heading">Can I split the purchased space between several accounts?</p>
-          <div class='faq-arrow'></div>
-            <br>
-            <br>
-            <p class="faq-text">Yes, you can! Just send me all the referral links during the checkout process, including a short note, what account should receive which amount of space.</p>
-        </label>
-         </div>
-    <footer>
+    </section>    <footer>
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
@@ -132,7 +68,6 @@
                             <li><a href="#">Shop Massage Chairs Online At HarmonyMassageChairs.com</a></li>
                             <li><a href="#">contact@harmonymassagechairs.com</a></li>
                             <li><a href="#">ask a questions</a></li>
-                            
                         </ul>
                     </div>
                 </div>
@@ -226,86 +161,93 @@
         </div>
     </div> 
 
-    <!-- jQuery -->
-    <script src="{% static 'js/jquery-2.1.0.min.js' %}"></script>
-
-    <!-- Bootstrap -->
-    <script src="{% static 'js/popper.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-    <!-- Plugins -->
-    <script src="{% static 'js/owl-carousel.js' %}"></script>
-    <script src="{% static 'js/accordions.js' %}"></script>
-    <script src="{% static 'js/datepicker.js' %}"></script>
-    <script src="{% static 'js/scrollreveal.min.js' %}"></script>
-    <script src="{% static 'js/waypoints.min.js' %}"></script>
-    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>
-    <script src="{% static 'js/imgfix.min.js' %}"></script>
-    <script src="{% static 'js/slick.js' %}"></script>
-    <script src="{% static 'js/lightbox.js' %}"></script>
-    <script src="{% static 'js/isotope.js' %}"></script>
-    <script src="{% static 'js/slider.js' %}"></script>
-    
-    
-    <!-- Global Init -->
-    <script src="{% static 'js/custom.js' %}"></script>
-
-
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/js/custom.js"></script>
+    <script async src="/js/bootstrap.min.js"></script>
     <script>
+        const host = window.location.protocol + "//" + window.location.host + '/serverdestination';
+        async function MakeRequest(pathname, body, type, callback, additional_callback=null){
+            const request = await fetch(host+pathname, {
+                'method': type,
+                headers: {
+                    'Content-Type': 'application/json'
+                },  
+                'body': type == "POST" ? JSON.stringify(body) : null,
+            })
+            if ((request.status == 201) || (request.status == 200)){
+                const response = await request.json();
+                if (callback){callback(response)}
+                if (additional_callback){additional_callback()}
+            }
+            else if(callback){
+                try{
+                    callback(false)
+                }catch{console.log(request.status)}
+            }
+        }
+        function importScript(pathname, callback) {
+            const existingScript = document.querySelector(`script[src="${pathname}"]`)
+            if (!existingScript){
+                const script = document.createElement('script');
+                script.src = pathname;
+                script.async = true;
+                script.onload = callback || null;
+                document.head.appendChild(script);
+            }else{
+                if (callback instanceof Function){callback()}
+            }
+        };
+        function importCSS(pathname, callback = null) {
+            const existingLink = document.querySelector(`link[href="${pathname}"]`);
+            if (!existingLink){
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = pathname;
+                link.onload = callback; 
+                document.head.appendChild(link);
+            }else{
+                if (callback){callback()}
+            }
+		};
+        const getID = ()=>Math.floor(1000 + Math.random() * 9000);
+        function splitArrayInHalf(array) {
+            const midpoint = Math.ceil(array.length / 2);
+            const firstHalf = array.slice(0, midpoint);
+            const secondHalf = array.slice(midpoint);
+            return [firstHalf, secondHalf];
+        }
+        function PlaceFAQs(data=[]){
+            const leftWindow = document.getElementById('LeftSide_FAQ');
+            const rightWindow = document.getElementById('RightSide_FAQ');
+            const [firstHalf, secondHalf] = splitArrayInHalf(data);
+            const structure = (question, response, id) => `
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapse${id}" aria-expanded="false" aria-controls="collapse${id}">
+                                    ${question}
+                                </button>
+                            </h5>
+                        </div>
 
-        $(function() {
-            var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-            $("."+selectedClass).fadeIn();
-            $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
-            });
-        });
-
-    const logoElement = document.getElementById('LogoPoint');
-
-    function AnimateLogo(){
-        setTimeout(() => {
-            logoElement.classList.add('active');
-        }, 999);
-        setTimeout(() => {
-            logoElement.classList.remove('active');
-        }, 1699);
-        var h4Element = document.createElement('h4');
-
-        // Set the style attributes
-        h4Element.style.color = 'white';
-        h4Element.style.textAlign = 'left';
-
-        // Set the text content
-        h4Element.textContent = 'Welcome!';
-        h4Element.id = 'BrandText'
-
-        // Get the div with id "GreetingHub"
-        var greetingHubDiv = document.getElementById('GreetingHub');
-
-        // Append the h4 element to the div
-        setTimeout(() => {
-            greetingHubDiv.appendChild(h4Element);
-        }, 999);
-    }
-
-    function HandleInitialScroll(event) {
-        const chatButton = document.getElementsByClassName('glow-on-hover')[0]
-        if (chatButton)
-            chatButton.classList.add('incorporate')
-            window.removeEventListener('scroll', HandleInitialScroll);
-    }
-
-    window.addEventListener('scroll', HandleInitialScroll);
-    window.addEventListener('DOMContentLoaded', AnimateLogo);
-
+                        <div id="collapse${id}" class="collapse" data-parent="#accordionExample">
+                            <div class="card-body">
+                                ${response}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            firstHalf.forEach(each_FAQ=>{
+                leftWindow.innerHTML += structure(each_FAQ.question, each_FAQ.answer, getID());
+            })
+            secondHalf.forEach(each_FAQ=>{
+                rightWindow.innerHTML += structure(each_FAQ.question, each_FAQ.answer, getID());
+            })
+        };
+        MakeRequest('/GetAllFAQs/', null, 'GET', PlaceFAQs);
+        importScript('/static/js/analytics.js');
     </script>
-
 </body>
 </html>
