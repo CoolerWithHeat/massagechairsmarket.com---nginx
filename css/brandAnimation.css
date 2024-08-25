@@ -1,17 +1,80 @@
-.brandLogo {
-    border-radius: 10px;
-    transform: perspective(400px) rotate3d(var(--r,1,-1),0,calc(var(--i,1)*1deg));
-    -webkit-mask: linear-gradient(135deg, #000c 40%, #000, #000c 60%) 100% 100%/250% 250%;
-    transition: .4s;
+#LogoPoint {
+    width: 175px;
+    height: 65px;
+    margin-top: 12px;
+    position: relative;
+    --i: 0;
+    transform: perspective(400px) rotate3d(var(--r, 1, -1), 0, calc(var(--i, 1) * 1deg));
+    /* Adjusted the gradient for a more visible shiny effect */
+    -webkit-mask: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 25%, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0.8) 75%) 100% 100% / 250% 250%;
+    -webkit-mask-position: 100% 100%;
+    overflow: hidden;
     cursor: pointer;
-}
+    transition: transform 0.5s ease, -webkit-mask-position 0.5s ease;
+  }
+  
+  #LogoPoint img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  
+  #LogoPoint:hover{
+    --i: -20;
+    transform: perspective(400px) rotate3d(var(--r, 1, -1), 0, calc(var(--i, 1) * 1deg));
+    -webkit-mask-position: 0 0;
+  }
+  
+  #LogoPoint.animateBrand {
+    --i: -20;
+    transform: perspective(400px) rotate3d(var(--r, 1, -1), 0, calc(var(--i, 1) * 1deg));
+    -webkit-mask-position: 0 0;
+  }
+  
 
-.brandLogo:hover{
---i: -20; 
--webkit-mask-position: 0 0;
-}
+  /* Small Logo  */
 
-.active{
---i: -20; 
--webkit-mask-position: 0 0;
-}
+  #LogoPointSmall {
+    width: 115px;
+    height: 50px;
+    margin-top: 12px;
+    position: relative;
+    --i: 0;
+    transform: perspective(400px) rotate3d(var(--r, 1, -1), 0, calc(var(--i, 1) * 1deg));
+    /* Adjusted the gradient for a more visible shiny effect */
+    -webkit-mask: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 25%, rgba(255, 255, 255, 0.5) 50%, rgba(0, 0, 0, 0.8) 75%) 100% 100% / 250% 250%;
+    -webkit-mask-position: 100% 100%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.5s ease, -webkit-mask-position 0.5s ease;
+  }
+  
+  #LogoPointSmall img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  
+  #LogoPointSmall:hover{
+    --i: -20;
+    transform: perspective(400px) rotate3d(var(--r, 1, -1), 0, calc(var(--i, 1) * 1deg));
+    -webkit-mask-position: 0 0;
+  }
+  
+  #LogoPointSmall.animateBrand {
+    --i: -20;
+    transform: perspective(400px) rotate3d(var(--r, 1, -1), 0, calc(var(--i, 1) * 1deg));
+    -webkit-mask-position: 0 0;
+  }

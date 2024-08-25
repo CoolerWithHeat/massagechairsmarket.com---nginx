@@ -1,3 +1,4 @@
+window.recordEvent = ()=>{};
 (function ($) {
 
 	$(window).scroll(function() {

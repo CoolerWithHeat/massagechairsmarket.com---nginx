@@ -1,0 +1,1514 @@
+window.recordEvent = ()=>{};
+function RecordAction(action_index) {
+    const indices = {
+        1: 'add_to_cart',
+        2: 'remove_from_cart',
+    };
+    const record = () => {
+        const url = `${analyticsProtol}//${analyticsServerHost}/analyticsdestination/Interactions/`;
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({ 'action_type': indices[action_index] })
+        });
+    };
+    const checkAndRecord = (retries, delay) => {
+        if (analyticsServerHost) {
+            record();
+        } else if (retries > 0) {
+            setTimeout(() => checkAndRecord(retries - 1, delay), delay);
+        } else {
+            console.error("analyticsServerHost not available within the expected time");
+        }
+    };
+    if (action_index) {
+        checkAndRecord(3, 666);
+    }
+}
+
+window.addEventListener('load', function() {
+    var cover = document.querySelector('.cover');
+    if (cover) {
+        var imageSrc = cover.getAttribute('data-image');
+        new Parallax(cover, {
+            imageSrc: imageSrc,
+            zIndex: '1'
+        });
+    }
+
+    var preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.transition = 'opacity 600ms';
+
+        setTimeout(function() {
+            preloader.style.opacity = '0';
+            setTimeout(function() {
+                preloader.style.visibility = 'hidden';
+                preloader.style.display = 'none';
+            }, 300);
+        }, 0);
+    }
+});
+
+$(function () {
+    var selectedClass = "";
+    $("p").click(function () {
+        selectedClass = $(this).attr("data-rel");
+        $("#portfolio").fadeTo(50, 0.1);
+        $("#portfolio div").not("." + selectedClass).fadeOut();
+        setTimeout(function () {
+            $("." + selectedClass).fadeIn();
+            $("#portfolio").fadeTo(50, 1);
+        }, 500);
+
+    });
+});
+var last_showcase = null;
+const host = window.location.protocol + "//" + window.location.host + '/serverdestination';
+var logoElement = document.getElementById('LogoPoint');
+var buttonState = 1;
+let ReviewsFetched;
+window.addEventListener('DOMContentLoaded', function () {
+    setTimeout(() => {
+        logoElement.classList.add('active');
+    }, 999);
+    setTimeout(() => {
+        logoElement.classList.remove('active');
+    }, 1699);
+});
+
+function setProductMetaTags(metaData){function setMetaTag(name,content){let tag=document.querySelector(`meta[name="${name}"]`);if(tag){tag.setAttribute('content',content);}else{tag=document.createElement('meta');tag.setAttribute('name',name);tag.setAttribute('content',content);document.head.appendChild(tag);}}function setOgTag(property,content){let tag=document.querySelector(`meta[property="${property}"]`);if(tag){tag.setAttribute('content',content);}else{tag=document.createElement('meta');tag.setAttribute('property',property);tag.setAttribute('content',content);document.head.appendChild(tag);}}if(metaData.meta_description){setMetaTag('description',metaData.meta_description);}if(metaData.meta_keywords){setMetaTag('keywords',metaData.meta_keywords);}if(metaData.og_title){setOgTag('og:title',metaData.og_title);}if(metaData.og_description){setOgTag('og:description',metaData.og_description);}if(metaData.og_image){setOgTag('og:image',metaData.og_image);}if(metaData.og_url){setOgTag('og:url',metaData.og_url||window.location.href);}if(metaData.og_type){setOgTag('og:type',metaData.og_type);}}
+
+function GetProductByID(product_ids=[]){
+    const client = algoliasearch('K7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948');
+    const products = client.initIndex('MassageChair');
+    if (product_ids.length){
+        products.getObjects(product_ids).then(({ results }) => {
+            if (results.length){
+                const productFound = results[0];
+                if (productFound){
+                    const productMetaData = productFound ? productFound.meta_data : null;
+                    console.log(productFound)
+                    if (productMetaData){setProductMetaTags(productMetaData)};
+                    PageManagement(productFound)
+                    UpdateProductStatus();
+                    PlaceBrandsAvailable(productFound.FilterOptions.Brands)
+                }else{
+                    window.location.href = '/FindProduct/';
+                }
+            }
+        });
+        ScrollToReviewsSection();   
+    }
+}
+
+function extractIdFromUrl(url) {
+    var regex = /^\/Buy\/(\d+)\/([a-zA-Z0-9\-]+)\/$/;
+    var match = regex.exec(url);
+    if (match && match.length > 1) {
+        var id = match[1];
+        return id;
+    } else {
+        return null;
+    }
+};
+
+const product_id = extractIdFromUrl(window.location.pathname);
+
+function AnimateLogo() {
+    const logoPointElement = document.getElementById('LogoPoint');
+    if(logoPointElement){
+        logoPointElement.classList.add('animateBrand');
+        setTimeout(() => {
+            logoPointElement.classList.remove('animateBrand');
+        }, 999);
+    }
+}
+
+function ManageCart(product, forVerification=false) {
+    const product_id = product.id
+    const quantity = product.quantity || 1
+    const selectedColor = product.selectedColor
+    const savedProducts = JSON.parse(localStorage.getItem('MassageCart')) || [];
+    let isRemoved = false;
+    let sameColorRequested = false;
+    const index = savedProducts.findIndex(product => {
+        if (sameColorRequested){sameColorRequested = product.selectedColor == selectedColor}
+        return product.product_id === product_id && product.selectedColor === selectedColor
+    });
+    const notAddedYet = index === -1;
+    if (forVerification){
+        if (notAddedYet) {
+            return true;
+        }
+        else{
+            return false
+        }
+    }else{
+        if (notAddedYet) {
+            window.recordEvent('button', 'Add to Cart')
+            RecordAction(1)
+            savedProducts.push({ product_id, quantity, selectedColor});
+        } else {
+            RecordAction(2)
+            savedProducts.splice(index, 1);
+            isRemoved = true;
+        }
+
+        localStorage.setItem('MassageCart', JSON.stringify(savedProducts));
+    }
+    return [savedProducts.length, isRemoved];
+}
+
+const fadeAwayText = (div, fadeout = true) => {
+    if (fadeout && div) {
+        div.classList.remove('defaultCartState')
+        div.classList.add('dissappearText')
+    } else {
+        if (fadeout && div)
+            div.classList.remove('dissappearText')
+            div.classList.add('defaultCartState')
+    }
+}
+
+const ResetCommentFields = () => {
+    const window = document.getElementById('commentsBoundary');
+    const DefaultStructure = `
+        <div id="SavingStatusBoundary"></div>  
+        <div id="commentsContent">
+                <h5 class="mb-4">Leave a Review</h5>
+                <p class="mb-2">Rate Our Chair</p>
+                    <div style="cursor: pointer; width: 135px;" class="mb-4">
+                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='1' class="fa fa-star"></span>
+                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='2' class="fa fa-star"></span>
+                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='3' class="fa fa-star"></span>
+                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='4' class="fa fa-star"></span>
+                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='5' class="fa fa-star"></span>
+                    </div>
+                <form>
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input id="Namefield" style="width: 175px;" class="form-control"></input>
+                        <label>Your Comment</label>
+                        <textarea id="UserTextfield" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="SubmitReview();" class="button-23" type="button"> Submit </button>
+                    </div>
+                </form>  
+        </div>
+    `;
+    if (window)
+        window.innerHTML = DefaultStructure;
+}
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        if (timeoutId) {clearTimeout(timeoutId);}
+        const isFirstCall = !timeoutId;
+        if (isFirstCall) {func.apply(this, args);}
+        timeoutId = setTimeout(() => {timeoutId = null;if (!isFirstCall) {func.apply(this, args);}}, delay);
+    };
+}
+
+function AddToCart(data = {}) {
+    const ProductIdBase = document.getElementById('UserCardBase');
+    const savedProducts = JSON.parse(localStorage.getItem('MassageCart')) || [];
+    const targetButton = document.getElementsByClassName('cart-button')[0];
+    const CartHeader = document.getElementById('CartButtonState');
+    const product_id = ProductIdBase.dataset.id ? Number(ProductIdBase.dataset.id) : null;
+    const requested_color = ProductIdBase.dataset.selectedcolor;
+    const quantity = document.getElementById('quantityHolder');
+    const result = ManageCart({id: product_id, quantity:Number(quantity.textContent), selectedColor:requested_color});
+    const total_products = result[0];
+    const current_color = result[1] ? 'rgb(127,255,212)' : '#343a40';
+    const element = data.target;
+    const Datapath = document.getElementById('lblCartCount')
+    const DatapathMobile = document.getElementById('lblCartCount_mobile')
+    const Divpath = document.getElementsByClassName('CartBoundary')[0];
+    const DivpathMobile = document.getElementsByClassName('MobileCart')[0];
+    Divpath.classList.add('animateCart');
+    DivpathMobile.classList.add('animateCart');
+    Datapath.textContent = total_products;
+    DatapathMobile.textContent = total_products;
+    fadeAwayText(CartHeader);
+    if (result[1]) {
+        debounce(ButtonStatus, 999)(false, true, false);
+    }
+    else {
+        debounce(ButtonStatus, 999)(true, false, false);
+    }
+    setTimeout(() => {
+        Divpath.classList.remove('animateCart');
+        DivpathMobile.classList.remove('animateCart');
+    }, 999);
+}
+
+function UpdateProductStatus() {
+    const PricePoint = document.getElementById('amount');
+    const CartButton = document.getElementById('UserCardBase');
+    const CartHeader = document.getElementById('CartButtonState');
+    const DeductionIndicator = document.getElementById('deducted');
+    if (CartButton){
+        const product_id = Number(CartButton.dataset.id);
+        const savedProducts = JSON.parse(localStorage.getItem('MassageCart')) || [];
+        const index = savedProducts.findIndex(product => product.product_id === product_id);
+        debounce(ButtonStatus, 499)(false, false, index === -1);
+    }
+}
+
+function SetProductCart() {
+    const Cart = JSON.parse(localStorage.getItem('MassageCart')) || [];
+    const total_products = Cart.length;
+    const Datapath = window.innerWidth > 767 ? document.getElementById('lblCartCount') : document.getElementById('lblCartCount_mobile');
+    const baseButton = document.getElementById('UserCardBase');
+    const current_id = baseButton.getAttribute('data-id');
+    Datapath.textContent = total_products;
+}
+
+const SelectRate = (propertyBase) => {
+    const currenRate = propertyBase.target.dataset.rate;
+    const maxRate = currenRate ? Number(currenRate) : null;
+    if (maxRate) {
+        for (let id = 1; id <= 5; id++) {
+            const starElement = document.querySelector(`[data-rate="${id}"]`);
+            if (id <= maxRate) {
+                starElement.classList.add('checked');
+                if (id == maxRate) {
+                    starElement.setAttribute('data-endpoint', '1');
+                } else {
+                    starElement.setAttribute('data-endpoint', '0');
+                }
+            }
+            else
+                starElement.classList.remove('checked');
+        }
+    }
+}
+
+const GetRate = () => {
+    const search = document.querySelectorAll('[data-endpoint="1"]');
+    const rateTag = search.length > 0 ? search[search.length - 1] : null;
+    const FinalRate = rateTag ? rateTag.dataset.rate : null;
+    return FinalRate ? FinalRate : 0;
+}
+
+const GetName = () => {
+    const field = document.getElementById('Namefield');
+    if (field)
+        if (field.value)
+            return field.value
+    return false
+}
+
+const GetText = () => {
+    const field = document.getElementById('UserTextfield');
+    if (field)
+        if (field.value)
+            return field.value
+    return false
+}
+
+async function MakeRequest(pathname, body, type, callback, additional_callback=null){
+    const request = await fetch(host+pathname, {
+        'method': type,
+        headers: {
+            'Content-Type': 'application/json'
+        },  
+        'body': type == "POST" ? JSON.stringify(body) : null,
+    })
+    if ((request.status == 201) || (request.status == 200)){
+        const response = await request.json();
+        if (callback){callback(response)}
+        if (additional_callback){additional_callback()}
+    }
+    else if(callback){
+        try{
+            callback(false)
+        }catch{console.log(request.status)}
+    }
+}
+
+function SubmitReview() {
+    const wholeWindow = document.getElementById('commentsBoundary');
+    const statusWindow = document.getElementById('SavingStatusBoundary');
+    const commentsField = document.getElementById('commentsContent');
+    const Button = document.getElementById('EnablerButton');
+    const errorField = document.getElementById('errorMessage');
+    const product_rate = GetRate();
+    const name = GetName();
+    const text = GetText();
+    function placeNewReview(response){
+        if (response.is_the_first){
+            setTimeout(() => {
+                EnableLoading(false);
+            }, 699);
+            setTimeout(() => {
+                LetKnowSuccess();
+            }, 599);
+            setTimeout(() => {
+                ResetRatingsAndReviews();
+                SetLoading(true);
+            }, 1799);
+            setTimeout(() => {
+                ManageRatingAndReviews();
+            }, 2399);
+        }
+    else{
+            setTimeout(() => {
+                    EnableLoading(false);
+                    LetKnowSuccess();
+                    placeReviews([response], false)
+                    UpdateFilteredReviews(response)
+                }, 699);
+            
+            setTimeout(() => {
+                LetKnowSuccess(false);
+            }, 1999);
+                
+        }
+    }
+    if (product_rate && name) {
+        EnableLoading();
+        CloseAlert();
+        const path = window.location.pathname;
+        const product_path = `/RecordReview/${product_id}/`;
+        const expectedForm = {rate: product_rate, sender_name: name};
+        if ((text instanceof String) && (text.length)){expectedForm[text] = text;}
+        console.log(expectedForm)
+        statusWindow.style.display = 'block';
+        commentsField.style.display = 'none';
+        const poster_text_exists = text && String(text).length
+        let prepared_data;
+        if (poster_text_exists){
+            prepared_data = {poster: name, customer_rate:product_rate, review_text:text}
+        }else{
+            prepared_data = {poster: name, customer_rate:product_rate}
+        }
+        MakeRequest(product_path, prepared_data, 'POST', placeNewReview)
+    } else {
+        errorField.style.removeProperty('display');
+        setTimeout(() => {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth',
+            });
+        }, 333);
+    }
+}
+
+const enableComments = (event) => {
+    window.recordEvent('button', 'Leaving Review')
+    const commentsField = document.getElementById('commentsBoundary');
+    const loader = document.getElementById('loader')
+    if (event)
+        event.target.style.display = 'none';
+    if (loader) {
+        loader.classList.add('loader')
+        setTimeout(() => {
+            commentsField.classList.remove('invisibleField');
+            commentsField.classList.add('visibleField');
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth',
+            });
+        }, 777);
+        setTimeout(() => {
+            loader.classList.remove('loader');
+        }, 999);
+    }
+    else
+        commentsField.classList.remove('invisibleField');
+    commentsField.classList.add('visibleField');
+};
+
+const CloseAlert = () => {
+    const errorField = document.getElementById('errorMessage');
+    errorField.classList.add('popDissappear')
+    setTimeout(() => {
+        errorField.style.display = 'none';
+    }, 666);
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth',
+    });
+};
+
+const OpenReviewsWindow = ()=>{
+    const button = document.getElementById('EnablerButton');
+    if (button){
+        button.click();
+    }
+};
+
+function ScrollToReviewsSection(){
+    const CameForReviews = JSON.parse(localStorage.getItem('requestedReviews')) || null;
+    console.log(CameForReviews)
+    if (CameForReviews){
+        const ReviewsScroller = ()=> {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+            OpenReviewsWindow();
+        }
+        ManageRatingAndReviews(null, ReviewsScroller);
+        localStorage.removeItem('requestedReviews')
+    }
+}
+
+const LetKnowSuccess = (enableStatus=true) => {
+    const alertWindow = document.getElementById('SavingStatusBoundary');
+    if (enableStatus){
+        if (alertWindow)
+            alertWindow.innerHTML +=  `
+                <main id="statusManagementAnimation" class="cd__main">
+                    <div class="main-container">
+                    <div class="check-container">
+                        <div class="check-background">
+                            <svg viewBox="0 0 65 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 25L27.3077 44L58.5 7" stroke="white" stroke-width="13" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div class="check-shadow"></div>
+                    </div>
+                    <h1 style="color:hsl(26, 100%, 55%);" class='display-5'>Thank You!</h1>
+                    </div>
+                </main>
+            `;
+    }
+    else{
+        const animation = document.getElementById('statusManagementAnimation') 
+        if (animation)
+            animation.remove();
+        if (alertWindow)
+            alertWindow.remove();
+    }
+};
+
+
+const EnableLoading = (enable = true) => {
+    const alertWindow = document.getElementById('SavingStatusBoundary');
+    const loader = document.getElementById('status-loader')
+    if (enable)
+        alertWindow.innerHTML += '<div id="status-loader" class="loader"></div>';
+    else
+        if (loader)
+            loader.remove();
+};
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const year = date.getFullYear();
+    const monthIndex = date.getMonth();
+    const day = date.getDate();
+    const formattedDate = ` ${months[monthIndex]}, ${year}`;
+    return formattedDate;
+}
+
+
+const getRation = (reviews) => {
+    var five = 0;
+    var four = 0;
+    var three = 0;
+    var two = 0;
+    var one = 0;
+    if (Array.isArray(reviews))
+        reviews.forEach(each => {
+            if (each.customer_rate == 5)
+                five += 1;
+            if (each.customer_rate == 4)
+                four += 1;
+            if (each.customer_rate == 3)
+                three += 1;
+            if (each.customer_rate == 2)
+                two += 1;
+            if (each.customer_rate == 1)
+                one += 1;
+        })
+    return { five, four, three, two, one };
+};
+
+const getPercentRation = (reviews) => {
+    var five = 0;
+    var four = 0;
+    var three = 0;
+    var two = 0;
+    var one = 0;
+    if (Array.isArray(reviews))
+        reviews.forEach(each => {
+            if (each.customer_rate == 5)
+                five += 1;
+            if (each.customer_rate == 4)
+                four += 1;
+            if (each.customer_rate == 3)
+                three += 1;
+            if (each.customer_rate == 2)
+                two += 1;
+            if (each.customer_rate == 1)
+                one += 1;
+        })
+    return { five, four, three, two, one };
+};
+
+const generateOverviewStar = (half = false) => {
+    var starElement = document.createElement('span');
+    if (half) {
+        starElement.classList.add('fa', 'fa-star-half', 'checked');
+        return starElement.outerHTML;
+    }
+    else {
+        starElement.classList.add('fa', 'fa-star', 'checked');
+        return starElement.outerHTML;
+    }
+};
+
+const generateStar = (lit_up = true, forGeneral = false) => {
+    var starElement = document.createElement('span');
+    if (forGeneral) {
+        starElement.classList.add('fa', 'fa-star-half', 'checked');
+        return starElement.outerHTML;
+    } else {
+        starElement.classList.add('fa', 'fa-star');
+        if (!lit_up) {
+            starElement.classList.add('checked');
+        }
+        return starElement.outerHTML;
+    }
+};
+
+const makeGeneralStar = (max_rate) => {
+    var stringStars = ``;
+    const needHalf = max_rate % 1 !== 0;
+    const maxRate = Number(max_rate);
+    for (let rate = 1; rate <= maxRate; rate++) {
+        stringStars += generateOverviewStar(false);
+    }
+    if (needHalf)
+        stringStars += generateOverviewStar(true);
+    return stringStars;
+};
+
+const makeStar = (max_rate) => {
+    var stringStars = ``;
+    for (let rate = 1; rate <= 5; rate++) {
+        stringStars += generateStar(rate > max_rate);
+    }
+    return stringStars;
+};
+
+const reviewsRate = (reviews) => {
+    let ratingSum = 0;
+    if (Array.isArray(reviews))
+        if (reviews.length >= 1)
+            reviews.forEach(EachReview => {
+                ratingSum += EachReview.customer_rate
+            })
+    return [(ratingSum / reviews.length).toFixed(1), reviews.length]
+    return [0, 0]
+}
+
+function calculatePercentages(totalReviews, starsObject) {
+    const percentages = {};
+    for (const key in starsObject) {
+        if (Object.hasOwnProperty.call(starsObject, key)) {
+            percentages[key] = Math.round((starsObject[key] / totalReviews) * 100);
+        }
+    }
+    return percentages;
+}
+
+function PlaceBrandsAvailable(data = []) {
+    const getBrandList = (brandName, count) => `<li><a href='/FindProduct/?Brands=${brandName.replace(/ /g, "+")}'>${brandName}</a></li>`;
+    const brandsWindow = document.getElementById('BrandsSection'); 
+    if (Array.isArray(data) && data.length) {const brands = data.map(item => {const brandName = Object.keys(item)[0];const count = item[brandName];return getBrandList(brandName, count);});brandsWindow.innerHTML = brands.join('');}
+}
+
+const placeReviews = (reviewsList, clearFirst=true) => {
+    const commentsWindow = document.getElementById('user-reviews');
+    const highlight = !clearFirst ? "HighlightReview" : ''
+    if (clearFirst)
+        commentsWindow.innerHTML = '';
+    if (Array.isArray(reviewsList)) {
+        if (commentsWindow && reviewsList.length >= 1)
+            reviewsList.forEach(Each => {
+                const likes_and_dislikes = Each.customers_reaction;
+                const review_id = Each.id;
+                const date = formatDate(Each.posted_date)
+                const stars = makeGeneralStar(Each.customer_rate);
+                const Review = `
+                    <div id="${highlight}" class="reviews-members pt-4 pb-4">
+                        <div class="media">
+                            <div class="media-body">
+                                <div class="reviews-members-header">
+                                    <span class="star-rating float-right">
+                                        <div id="StarsBoundary">
+                                            ${stars}
+                                        </div>
+                                    </span>
+                                    <h6 class="mb-1"><a class="text-black" href="#">${Each.poster}</a></h6>
+                                    ${Each.poster_location ? `<h6 style="font-size: 11px;" class="mb-1"><a class="text-black" href="#">${Each.poster_location}</a></h6>` : ''}
+                                    <p class="text-gray">${date}</p>
+                                </div>
+                                <div class="reviews-members-body">
+                                ${Each.review_text ? `<p>${Each.review_text}</p>` : ''}
+                                </div>
+                                <div id="reviews-members-footer" class="reviews-members-footer">
+                                    <div id="usefulness-label">
+                                        Was this Review Useful?
+                                    </div>
+                                    <div id="like-dislike-boundary">
+                                        <div id="like-label">
+                                            <div">
+                                                <svg onclick="HandleUsefulnes(${review_id});" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 16 16">
+                                                    <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a10 10 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733q.086.18.138.363c.077.27.113.567.113.856s-.036.586-.113.856c-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.2 3.2 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.8 4.8 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z"/>
+                                                </svg>
+                                             </div>
+                                            <div>
+                                                <p id="like-${review_id}">${likes_and_dislikes ? likes_and_dislikes.likes || 0 : 0}</p>
+                                            </div>
+                                        </div>
+                                        <div id="dislike-label">
+                                            <div>
+                                                <svg onclick="HandleUsefulnes(${review_id}, false);" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-down-fill" viewBox="0 0 16 16">
+                                                    <path d="M6.956 14.534c.065.936.952 1.659 1.908 1.42l.261-.065a1.38 1.38 0 0 0 1.012-.965c.22-.816.533-2.512.062-4.51q.205.03.443.051c.713.065 1.669.071 2.516-.211.518-.173.994-.68 1.2-1.272a1.9 1.9 0 0 0-.234-1.734c.058-.118.103-.242.138-.362.077-.27.113-.568.113-.856 0-.29-.036-.586-.113-.857a2 2 0 0 0-.16-.403c.169-.387.107-.82-.003-1.149a3.2 3.2 0 0 0-.488-.9c.054-.153.076-.313.076-.465a1.86 1.86 0 0 0-.253-.912C13.1.757 12.437.28 11.5.28H8c-.605 0-1.07.08-1.466.217a4.8 4.8 0 0 0-.97.485l-.048.029c-.504.308-.999.61-2.068.723C2.682 1.815 2 2.434 2 3.279v4c0 .851.685 1.433 1.357 1.616.849.232 1.574.787 2.132 1.41.56.626.914 1.28 1.039 1.638.199.575.356 1.54.428 2.591"/>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p id="dislike-${review_id}">${likes_and_dislikes ? likes_and_dislikes.dislikes || 0 : 0}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                commentsWindow.innerHTML += Review;
+            })
+    }
+};
+
+const CheckIfAdded = (id) => {
+    const Cart = JSON.parse(localStorage.getItem('MassageCart')) || [];
+    return Cart.includes(Number(id))
+}
+
+const CheckifExists = (id, more_details=false) => {
+    const Cart = JSON.parse(localStorage.getItem('MassageCart')) || [];
+    return more_details ? Cart.filter(product => product.product_id === id) : Cart.some(product => product.product_id === id);
+}
+
+const SetLoading = (Enable = true) => {
+    const SkilitonWindow = document.getElementById('RatingLoadingWindow');
+    const SkilitonBody = !Enable ? '' : `
+            <div class="skeleton-container-header">
+                <div class="box">
+                    <div class="skeleton-left-header">
+                        <div class="line-right-modified"></div>
+                        <div class="line-right-modified-down"></div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="skeleton-container">
+                <div class="box">
+                    <div class="skeleton">
+                        <div class="skeleton-left">
+                            <div class="square"></div>
+                        </div>
+                        <div class="skeleton-right">
+                            <div class="line-right h20 w60 m10"></div>
+                            <div class="line-right h20 w60 m10"></div>
+                            <div class="line-right h20 w60 m10"></div>
+                            <div class="line-right h20 w60 m10"></div>
+                            <div id="RevealTriggerPoint" class="line-right h20 w60 m10"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    SkilitonWindow.innerHTML = SkilitonBody;
+}
+
+
+function setDownBelowPage(CommentsExist = true) {
+    try{window.recordEvent('interaction', 'scrolled till reviews')}catch{}
+    const reviewsSection = document.getElementById('ReviewsBody');
+    const ReviewsHeader = `
+        <div class="tab-pane fade active show" id="pills-reviews" role="tabpanel"
+            aria-labelledby="pills-reviews-tab">
+            <div id="ReviewsWindow"
+                class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                ${CommentsExist ? `<a onclick="FilterReviews();" class="btn btn-outline-primary btn-sm float-right">Top Rated</a>` : ''}
+                ${CommentsExist ? `<h5 class="mb-1">All Ratings and Reviews</h5><br><hr>` : ''}
+                <div id="user-reviews"></div>
+            </div>
+        </div>
+    `;
+    const reviewsButton = `
+        <div id="commentsbutton">
+            <button id="EnablerButton" onclick="enableComments(event);" class="button-23" role="button">${CommentsExist ? 'Leave a Review' : 'Be The First To Review'}</button>
+            <div id="loader" class="loaderdisabled"></div>
+        </div>
+        <br>
+    `;
+    const errorWindowBody = `
+        <div style="display: none; margin: auto;" id="errorMessage">
+            <div style="margin: auto;" id="errorCard" class="alert alert-warning">
+                <div class="icon__wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white"
+                        class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                    </svg>
+                    <i class="fa-light fa-triangle-exclamation"></i>
+                </div>
+                <p style="min-width: 80%;" id="errorMessageText">Name and rating are required.</a></p>
+                <div onclick="CloseAlert();" style="float: right; right: 0;">
+                    <svg style="right: 0;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black"
+                        class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path
+                            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <br>
+    `;
+    const CommentLeavingPanel = `
+        <div id="commentsBoundary" class='invisibleField'>
+            <div id="SavingStatusBoundary"></div>
+            <div id="commentsContent">
+                <h5 class="mb-4">Leave a Review</h5>
+                <p class="mb-2">Rate Our Chair</p>
+                <div style="cursor: pointer; width: 135px;" class="mb-4">
+                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='1' class="fa fa-star"></span>
+                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='2' class="fa fa-star"></span>
+                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='3' class="fa fa-star"></span>
+                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='4' class="fa fa-star"></span>
+                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='5' class="fa fa-star"></span>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input id="Namefield" style="width: 175px;" class="form-control"></input>
+                        <label>Your Comment</label>
+                        <textarea id="UserTextfield" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="SubmitReview();" class="button-23" type="button"> Submit </button>
+                    </div>
+                </form>
+            </div>
+            <br>
+    `;
+    reviewsSection.innerHTML += ReviewsHeader
+    reviewsSection.innerHTML += reviewsButton
+    reviewsSection.innerHTML += errorWindowBody
+    reviewsSection.innerHTML += CommentLeavingPanel
+}
+
+function sortReviewsByRating(reviews) {
+    reviews.sort((a, b) => b.customer_rate - a.customer_rate);
+    return reviews;
+}
+
+function RemoveReviews() {
+    const reviewsWindow = document.getElementById('RatingsClosure');
+    const RatingLoadingWindow = document.getElementById('RatingsClosure');
+    reviewsWindow.innerHTML = '';
+    RatingLoadingWindow.innerHTML = '';
+    return true
+}
+
+function setRating(data) {
+    const reviews = data;
+    const rating_space = document.getElementById('RatingsClosure');
+    const rateBase = reviewsRate(reviews);
+    const rate = rateBase[0];
+    const reviews_count = rateBase[1];
+    const ratingRations = getRation(reviews);
+    const overviewStars = makeGeneralStar(rate);
+    const percentages = calculatePercentages(reviews_count, ratingRations);
+    const sortedReviews = getPercentRation(reviews);
+    const ratingStructure = `
+        <div class="ratingsSign">
+            <span class="heading">User Rating</span>
+            ${overviewStars}
+            <p>${rate} average based on ${reviews_count} reviews.</p>
+        </div>
+        <div class="ratings">
+            <div class="firstReviewSection">
+                <h1 style="text-align: center;" class="display-3">${rate}</h1>
+                ${overviewStars}
+                <div>
+                    <br>
+                    <h1 style="text-align: center; font-size: 15px;" class="display-6">${reviews_count} Reviews</h1>
+                </div>
+            </div>
+            <div class="secondReviewSection">
+                <div class="row">
+                <div class="side">
+                    <div>5 <span class="fa fa-star rating_specific"></span></div>
+                    </div>
+                    <div style="--progress:${percentages.five}%;" class="middle">
+                        <div class="bar-container">
+                            <div class="bar-5"></div>
+                        </div>
+                    </div>
+                    <div style="margin-left:-1px;" class="side right">
+                        <div>${sortedReviews.five}</div>
+                    </div>
+                <div class="side">
+                    <div>4 <span class="fa fa-star rating_specific"></span></div>
+                </div>
+                <div class="middle">
+                    <div style="--progress: ${percentages.four}%;" class="bar-container animate_charts">
+                    <div class="bar-4"></div>
+                    </div>
+                </div>
+                <div class="side right">
+                    <div> ${sortedReviews.four}</div>
+                </div>
+                <div class="side">
+                    <div>3 <span class="fa fa-star rating_specific"></span></div>
+                </div>
+                <div class="middle">
+                    <div style="--progress: ${percentages.three}%;" class="bar-container">
+                    <div class="bar-3"></div>
+                    </div>
+                </div>
+                <div class="side right">
+                    <div>${sortedReviews.three}</div>
+                </div>
+                <div class="side">
+                    <div>2 <span class="fa fa-star rating_specific"></span></div>
+                </div>
+                <div class="middle">
+                    <div style="--progress: ${percentages.two}%;" class="bar-container">
+                    <div class="bar-2"></div>
+                    </div>
+                </div>
+                <div class="side right">
+                    <div>${sortedReviews.two}</div>
+                </div>
+                <div class="side">
+                    <div> 1 <span class="fa fa-star rating_specific"> </span></div>
+                </div>
+                <div class="middle">
+                    <div style="--progress: ${percentages.one}%;" class="bar-container">
+                    <div class="bar-1"></div>
+                    </div>
+                </div>
+                <div class="side right">
+                    <div>${sortedReviews.one}</div>
+                </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    rating_space.innerHTML = ratingStructure;
+    placeReviews(reviews);
+    localStorage.setItem('filteredReviews', JSON.stringify(sortReviewsByRating(data)))
+}
+
+function PlaceCommentProcessingLoading() {
+    const window = document.getElementById('user-reviews')
+    const loading = `
+        <div id="status-loader" class="loader"></div>
+    `
+    window.innerHTML = loading;
+}
+
+const guessDirection = ()=>Math.random() < 0.5 ? "right" : "left";
+
+function PlaceShowcaseCard(data) {
+    const Showcasehub = document.getElementById('ShowcaseHub');
+    const showcase_side = data.side;
+    last_showcase = showcase_side;
+    const showcase_headline = data.showcase_headline;
+    const showcase_id = data.showcase_id;
+    const image_url = data.image_url;
+    const showcaseText = data.description;
+    const its_video_showcase = data.video_showcase;
+    if (its_video_showcase){
+        const video_frame = data.needs_embedding;
+        const framed_video = `
+            <div class="product-img">
+                ${video_frame}
+            </div>
+        `;
+        const information_tag = `
+            <div class="product-info">
+                <div class="product-text">
+                    <br>
+                    <p id="ProductShowcaseDescription">${showcase_headline}</p>
+                </div>
+            </div>
+        `;
+        const showcaseCard = `
+            <div class="ProductShowcase">
+                <div>
+                    <div class="wrapper">
+                        ${showcase_side == "left" ? framed_video : information_tag}
+                        ${showcase_side == "right" ? framed_video : information_tag}
+                    </div>
+                </div>
+            </div>
+        `;
+        Showcasehub.innerHTML += showcaseCard;
+    }
+    else{
+        const image_tag = `
+            <div class="product-img">
+                <img id="showcaseImage" src="${image_url}" height="420" width="327" alt="Feature Image">
+            </div>
+        `;
+        const description_tag = `
+            <div class="product-info">
+                <div class="product-text">
+                <h1 id="ProductShowcaseHeader-${showcase_id}">${showcase_headline}</h1>
+                <br>
+                <p id="ProductShowcaseDescription-${showcase_id}">${showcaseText}</p>
+                </div>
+            </div>
+        `;
+        const showcaseCard = `
+            <div class="ProductShowcase">
+                <div>
+                    <div class="wrapper">
+                        ${showcase_side == "left" ? image_tag : description_tag}
+                        ${showcase_side == "right" ? image_tag : description_tag}
+                    </div>
+                </div>
+            </div>
+        `;
+        Showcasehub.innerHTML += showcaseCard;
+    }
+}
+
+// -------------------------------------------- Text Animation -----------------------------------------------------
+
+function HandletextReveal(list_of_ids = []) {
+    if (list_of_ids.length >= 1)
+        list_of_ids.forEach(each => {
+            var productShowcaseHeader = document.getElementById(`ProductShowcaseHeader-${each}`);
+            var productShowcaseDescription = document.getElementById(`ProductShowcaseDescription-${each}`);
+            var textRevealed = false;
+
+            function revealText() {
+                if (textRevealed) return;
+                var headerRect = productShowcaseHeader.getBoundingClientRect();
+                var descriptionRect = productShowcaseDescription.getBoundingClientRect();
+
+                if (!textRevealed && headerRect.top < window.innerHeight - headerRect.height / 2) {
+                    productShowcaseHeader.classList.add("text-reveal");
+                    productShowcaseDescription.classList.add("text-reveal");
+                    textRevealed = true;
+                }
+
+                if (!textRevealed && descriptionRect.top < window.innerHeight - descriptionRect.height / 2) {
+                    productShowcaseHeader.classList.add("text-reveal");
+                    productShowcaseDescription.classList.add("text-reveal");
+                    textRevealed = true;
+                }
+            }
+
+            window.addEventListener("scroll", revealText);
+            revealText();
+        })
+}
+
+function generateRandomId() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomId = '';
+    for (let i = 0; i < 10; i++) {
+        randomId += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return randomId;
+}
+
+function getUserIdentity() {
+    const cookieName = 'user_identity';
+    const cookies = document.cookie.split('; ');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const [name, value] = cookie.split('=');
+        if (name === cookieName) {
+            return decodeURIComponent(value);
+        }
+    }
+    const newUserIdentity = generateRandomId();
+    const expirationDays = 365;
+    const date = new Date();
+    date.setTime(date.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = cookieName + "=" + encodeURIComponent(newUserIdentity) + ";" + expires + ";path=/";
+    return newUserIdentity;
+}
+
+function HandleUsefulnes(review_id, was_liked = true) {
+    const user_cookie = getUserIdentity();
+    const request_url = `/RecordUserReaction/${review_id}/`;
+    const previous_action = localStorage.getItem('previous-action');
+    const like_count_p = document.getElementById(`like-${review_id}`);
+    const dislike_count_p = document.getElementById(`dislike-${review_id}`);
+
+    const AdjustLikeCount = (increment = true) => {
+        let like_count = Number(like_count_p.innerText);
+        if (!increment && like_count > 0) {
+            like_count--;
+        } else if (increment) {
+            like_count++;
+        }
+        like_count_p.innerText = like_count;
+    };
+
+    const AdjustDislikeCount = (increment = true) => {
+        let dislike_count = Number(dislike_count_p.innerText);
+        if (!increment && dislike_count > 0) {
+            dislike_count--;
+        } else if (increment) {
+            dislike_count++;
+        }
+        dislike_count_p.innerText = dislike_count;
+    };
+
+    const handleResponse = (server_response)=>{
+        console.log(server_response)
+        if (server_response.needs_increment === "like"){
+            AdjustLikeCount();
+        }
+        if (server_response.needs_increment === "dislike"){
+            AdjustDislikeCount();
+        }
+        if (server_response.needs_decrement === "like"){
+            AdjustLikeCount(false);
+        }
+        if (server_response.needs_decrement === "dislike"){
+            AdjustDislikeCount(false);
+        }
+    };
+    const action = {
+        'user_identity': user_cookie,
+        'action': was_liked ? 'like' : 'dislike',
+    };
+    MakeRequest(request_url, action, "POST", handleResponse);
+}
+
+function UpdateFilteredReviews(newReview){
+    const existingReviews = JSON.parse(localStorage.getItem('filteredReviews')) || [];
+    const updatedReviews = [...existingReviews, newReview]
+    localStorage.setItem('filteredReviews', JSON.stringify(updatedReviews))
+}
+
+
+function FilterReviews() {
+    window.recordEvent('button', 'top reviews filter')
+    const data = localStorage.getItem('filteredReviews')
+    const processed_data = data ? JSON.parse(data) : []
+    if (processed_data)
+        PlaceCommentProcessingLoading();
+        setTimeout(() => {
+            placeReviews(processed_data);
+        }, 777);
+}
+
+const ManageRatingAndReviews = (callback=null, additional_callback=null)=>{
+    const url = `/GetReview/${product_id}/`
+    function HandleReiews(data, post_effect_func){
+        if (data.length){
+            setTimeout(() => {
+                SetLoading(false);
+                setDownBelowPage(data.length);
+                setRating(data);
+            }, 0);
+        }
+        else{
+            setTimeout(() => {
+                SetLoading(false);
+                setDownBelowPage(data.length);
+            }, 0);
+        }
+        setTimeout(() => {if(post_effect_func){post_effect_func(); ReviewsFetched = true; SetLoading(false);}}, 299);
+    }
+    if (!ReviewsFetched){MakeRequest(url, null, "GET", (response)=>HandleReiews(response, additional_callback))}
+}
+
+const ResetRatingsAndReviews = ()=>{
+    const field1 = document.getElementById("RatingLoadingWindow")
+    const field2 = document.getElementById("RatingsClosure")
+    const field3 = document.getElementById("ReviewsBody")
+    field1.innerHTML = '';
+    field2.innerHTML = '';
+    field3.innerHTML = '';
+}
+
+const FetchColorSelector = (color_data, selectedColors=[]) => {
+    if (Array.isArray(color_data)) {
+        let selected_color = !selectedColors.length ? color_data[0][0] : null;
+        const colors = color_data.map((each_data, index) => {
+            const color_name = each_data[0];
+            const color_code = each_data[1];
+            const color_image = each_data[2];
+            if (selectedColors.length && !selected_color){
+                const user_selected_color = selectedColors.filter(each=>each===color_name) || [];
+                selected_color = user_selected_color[0] || null;
+            }else{selected_color=color_data[0][0]}
+            const selectionDesicion = selected_color == color_name ? 'color-selected' : '';
+            if (selectionDesicion == 'color-selected'){ButtonStatus(false, false, false)}
+            return `<img onclick="SetChairColor(event, '${color_name}');" id="${selectionDesicion}" class="ColorImage" src="${color_image}" alt="${color_name}">`;
+        });
+        return [colors.join(''), color_data[0][0]];
+    }
+    return '';
+};
+
+function SetProductDetails(data){
+    const is_expected_data = typeof data === 'object' && data !== null;
+    if (is_expected_data){
+        const window = document.getElementById('ProductInfoSection');
+        const title = data.title;
+        const product_id = data.id;
+        const brand = data.brand;
+        const description = data.description;
+        const discount_amount = Number(data.discount_amount);
+        const price = parseFloat(data.price);
+        const color_options = data.color_options;
+        const discount_tag = discount_amount ? `<small id="deducted" data-amount="${discount_amount}">-$${discount_amount}</small>` : '';
+        const old_price = discount_amount ? `<span id="old-price">$${price+discount_amount}</span>` : '';
+        const Id = Number(product_id);
+        const id_exists = CheckifExists(Id, true) || [];
+        const color_data = FetchColorSelector(color_options, id_exists.length ? id_exists.map(each=>each.selectedColor) : [])
+        const colors_available = color_data[0];
+        const default_color = color_data[1];
+        const info_body = `
+                <h1 id="name">${title}</h1>
+                    <span id="highlight">BY ${brand}</span>
+                    <p id="productDescription">
+                        ${description}  
+                    </p>
+                    <span id="price">
+                        <h2>$<span data-price="${price}" id="amount">${price}</span></h2>
+                        ${discount_tag}
+                    </span>
+                        ${old_price}
+                    <div id="ProductColorOptionsSection">
+                        <div style="height:60px; width:104%" id="ColorOptionInfo">
+                            <p class="Display-6">Chair Color: <b id="CurrentSelectedColor">${default_color}</b></p>
+                        </div>
+                        <div id="ColorOptionImages">
+                            ${colors_available}
+                        </div>
+                    </div>
+                    <div id="Quantity" class="options">
+                        <button id="quantityButton" onclick="minus()" aria-label="Decrease quantity">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF8300" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
+                            </svg>
+                        </button>
+                        <button style="width: 5px;" id="result"><h6 id="quantityHolder">1</h6></button>
+                        <button id="quantityButton" onclick="plus()" aria-label="Increase quantity">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF8300" class="bi bi-plus" viewBox="0 0 16 16">
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                            </svg>
+                        </button>
+                        <div id="UserCardBase" class="buttons" data-id="${product_id}" data-selectedColor='${default_color}' onclick="debounce(AddToCart, 999)(event);">
+                            <button id="MainCartButton" class="cart-button">
+                                    <h6 id="CartButtonState" class="defaultCartState">Add to Cart</h6> 
+                            </button> 
+                        </div>
+                    </div>
+            `;
+
+            window.innerHTML = info_body;
+        }
+}
+
+function SetChairColor(event, color){
+    window.recordEvent('color button', 'product color selection')
+    SetImageAsMain(event, false);
+    const color_indicator = document.getElementById('CurrentSelectedColor');
+    const all = document.getElementsByClassName("ColorImage");
+    const effected_tag = event.target;
+    const selected_color = color;
+    for (color_tag of all){
+        if (color_tag == effected_tag){
+            const already_selected = effected_tag.getAttribute('id') ? true : false;
+            if (!already_selected){
+                const cartButton = document.getElementById('UserCardBase');
+                effected_tag.setAttribute("id", "color-selected");
+                cartButton.setAttribute('data-selectedColor', selected_color);
+                ManageChanges();
+            }
+        }
+        else{
+            color_tag.removeAttribute("id");
+        }
+    }
+    color_indicator.textContent = selected_color;
+};
+
+function SetImageAsMain(event, record=true){
+    if (record){window.recordEvent('button', 'Checking Product Images')}
+    const image_tag = event.target;
+    if (image_tag){
+        const primaryMobileView = document.getElementById('PrimaryWindow');
+        const primaryDekstopView = document.getElementById('PrimaryDesktopChairImage');
+        const mobile_image = `<img id='PrimaryMobileChairImage' class="fade-appear" src="${image_tag.src}" alt="New Product" />`;
+        const desktop_image = `<img id='PrimaryDesktopChairImage' class="fade-appear" src="${image_tag.src}" alt="New Product" />`;
+        primaryMobileView.innerHTML = mobile_image;
+        primaryDekstopView.innerHTML = desktop_image;
+    }
+}
+
+function setMobileView(data=[]){
+    if (data.length){
+        const window = document.getElementById('AllImagesWindow');
+        data.forEach(each_url=>{
+            const image_tag = `<img id="SecondaryImages" src="${each_url}" alt="L/T" onclick="SetImageAsMain(event);">`;
+            window.innerHTML += image_tag;
+        })
+    }
+}
+
+function serPrimaryImage(image_url){
+    const primary_image = document.getElementById('PrimaryChairImage');
+    const primary_mobile_image = document.getElementById('PrimaryMobileChairImage');
+    primary_image.setAttribute('src', image_url);
+    primary_mobile_image.setAttribute('src', image_url);
+}
+
+function SettleDesktopView(data=[]){
+    const SecondaryProductView = document.getElementById('SecondaryProductView');
+    const SpecialViewImages = document.getElementById('SpecialViewImages');
+    var times = 0;
+    if (data.length)
+        serPrimaryImage(data[0]);
+        const processedData_view = data.map(each_url=>`<img id="SecondaryImages" src="${each_url}" alt="L/T" onclick="SetImageAsMain(event);">`)
+        const body_form_1 = `
+                <div id="imagesScrollableWindow">
+                    ${processedData_view.join('')}
+                </div>
+        `
+        SecondaryProductView.innerHTML = body_form_1;
+}
+
+function PageManagement(response){
+    const available_colors = response.available_colors_found.map(each_color=>each_color.image)
+    const additional_images = response.additional_images_found
+    const all_images_combined = [...additional_images, ...available_colors]
+    setPageTitle(response.title)
+    if (response.video_demonstrations_found){HandleShowcase(response.video_demonstrations_found, true);};
+    if (response.chair_features_found){HandleShowcase(response.chair_features_found);};
+    setMobileView(all_images_combined);
+    SettleDesktopView(all_images_combined);
+    SetProductDetails(response)
+    SetLoading();
+    SetProductCart()
+    loadReviewsWhenInterested();
+}
+
+function ManageChanges(easyCheck=true){
+    const ID_holder = document.getElementById('UserCardBase');
+    if (ID_holder){
+        const product_id = ID_holder.getAttribute('data-id');
+        if (product_id){
+            const Id = Number(product_id);
+            const id_exists = CheckifExists(Id);
+            if (id_exists){
+                const requested_color = ID_holder.dataset.selectedcolor;
+                const Datapath = document.getElementById('lblCartCount');
+                const DatapathMobile = document.getElementById('lblCartCount_mobile');
+                const button_reset_needed = ManageCart({id: Id, selectedColor:requested_color}, easyCheck);
+                if(easyCheck){ButtonStatus(false, false, button_reset_needed)}
+                if (!easyCheck){
+                    const wasDeleted = button_reset_needed[1];
+                    const resultedProductsInCart = button_reset_needed[0];
+                    if (wasDeleted){
+                        const Datapath = document.getElementById('lblCartCount');
+                        const DatapathMobile = document.getElementById('lblCartCount_mobile');
+                        Datapath.textContent = resultedProductsInCart;
+                        DatapathMobile.textContent = resultedProductsInCart;
+                    }
+                }
+            }
+        };
+    }
+}
+
+function getRandomDirection() {
+    var randomNumber = Math.random();
+    if (randomNumber < 0.5) {
+        return 'left';
+    } else {
+        return 'right';
+    }
+}
+function isNumericString(value) {
+    if (typeof value !== 'string') {
+        return false;
+    }
+    value = value.trim();
+    return !isNaN(value) && value !== '';
+}
+
+function GenerateVideoFrame(platformName, videoId) {
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    let url;
+    console.log(platformName)
+    if (platformName.toLowerCase() === 'youtube') {
+        url = `https://www.youtube.com/embed/${videoId}`;
+        return `<iframe style="border-radius: 18px; width:105%; height: 105%; min-height:250px" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+    } else if (platformName.toLowerCase() === 'vimeo') {
+        const window = document.getElementsByClassName('videoShowcaseFrame');
+        const frameWindow = window ? window[0] : null;
+        let height = screenWidth > 768 ? 600 : 200;
+        url = `https://player.vimeo.com/video/${videoId}`;
+        return `<iframe src="${url}" style="border-radius: 18px;" width="800px" height="${height}px" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`
+    } else {
+        console.error('Invalid platform name');
+        return null;
+    }
+}
+
+function HandleShowcase(showcaseList, video=false){
+    const isValidForm = Array.isArray(showcaseList);
+    function GenerateShowcaseSide(){
+        const previousSide = last_showcase;
+        let finalDecision = '';
+        if (previousSide == null || previousSide == 'any side'){
+            const generatedSide = getRandomDirection();
+            finalDecision = generatedSide;
+        }
+        else{
+            const options = {
+                'left' : 'right',
+                'right' : 'left',
+            };
+            finalDecision = options[previousSide];
+        }
+        return finalDecision;
+    }
+    if (video && isValidForm){
+        showcaseList.forEach(eachVideo=>{
+            const embedding_code = GenerateVideoFrame(eachVideo.platform, eachVideo.video_id)
+            const video_text = eachVideo.information;
+            const video_side = eachVideo.video_side == "any side" ? GenerateShowcaseSide() : eachVideo.video_side;
+            if (embedding_code)
+                PlaceShowcaseCard({ showcase_headline:video_text, needs_embedding: embedding_code, side: video_side, video_showcase:true})
+        })
+    }
+    if (!video && isValidForm){
+        if (Array.isArray(showcaseList)){
+            let text_IDs = [];
+            showcaseList.forEach(eachFeature=>{
+                text_IDs.push(eachFeature.id)
+                const decided_side = eachFeature.showcase_side == "any side" ? GenerateShowcaseSide() : eachFeature.showcase_side;
+                PlaceShowcaseCard({ showcase_headline:eachFeature.called, image_url: eachFeature.image, description: eachFeature.information, showcase_id: eachFeature.id, side: decided_side})
+            })
+            if (text_IDs.length)
+                document.addEventListener("DOMContentLoaded", HandletextReveal(text_IDs));
+        }
+    }
+}
+
+GetProductByID([product_id]);
+
+const ButtonStatus = (animate=true, deanimate=false, add_status_text=false)=>{
+    const GenerateCartButton = (textML, caratAddAnim=null)=>{
+        return `
+            <button id="MainCartButton" class="cart-button ${!(animate || deanimate) ? 'buttonresetanimation' : ''} ${caratAddAnim ? caratAddAnim=='addition' ? 'clicked' : 'removed' : ''}">
+                    ${caratAddAnim ? '<i class="fa fa-shopping-cart"></i><i style="font-size: 0.8em;" class="fa fa-square"></i>' : textML }
+            </button> 
+        `
+    }
+    
+    const GenerateButtonStatusText = (text)=>`<h6 id="CartButtonState" class="defaultCartState">${text}</h6>`;
+    const buttonHub = document.getElementById('UserCardBase');
+    const requested_state = add_status_text ? 1 : 2;
+    const already_that_state = requested_state == buttonState;
+    if (buttonHub){
+        let requested_text =  GenerateButtonStatusText(add_status_text ? 'Add to Cart' : 'Remove from Cart');
+        if (animate){
+            buttonHub.innerHTML = '';
+            const button =  GenerateCartButton(GenerateButtonStatusText(add_status_text ? 'Add to Cart' : 'Remove from Cart'), 'addition');
+            buttonHub.innerHTML = button;
+            buttonState = requested_state;
+            setTimeout(() => {
+                const CartButton = document.getElementById('MainCartButton');
+                if (CartButton){CartButton.innerHTML = GenerateButtonStatusText('Remove from Cart');
+            }}, 1799);
+            return 0;
+        }
+        if (deanimate){
+            buttonHub.innerHTML = '';
+            const button =  GenerateCartButton(GenerateButtonStatusText(add_status_text ? 'Add to Cart' : 'Remove from Cart'), 'removal');
+            buttonHub.innerHTML = button;
+            buttonState = requested_state;
+            setTimeout(() => {const CartButton = document.getElementById('MainCartButton');CartButton.innerHTML = GenerateButtonStatusText('Add to Cart');}, 1799);
+            return 0;
+        }
+        if (!animate && !deanimate){
+            let ButtonText = null;
+            if (add_status_text){
+                if (buttonState == 2){
+                    buttonHub.innerHTML = '';
+                    ButtonText = 'Add to Cart';
+                    const button =  GenerateCartButton(GenerateButtonStatusText(ButtonText), false);
+                    buttonHub.innerHTML = button;
+                };
+                buttonState = 1;
+            }
+            else{
+                if (buttonState == 1){
+                    buttonHub.innerHTML = '';
+                    ButtonText = 'Remove from Cart'
+                    const button =  GenerateCartButton(GenerateButtonStatusText(ButtonText), false);
+                    buttonState = 2
+                    buttonHub.innerHTML = button;
+                }
+                buttonState = 2;
+            }
+        }
+    }
+};
+
+
+function loadReviewsWhenInterested(){
+    const targetElement = document.getElementById('RevealTriggerPoint');
+    const secondaryDesktopWindow = document.getElementById('imagesScrollableWindow');
+
+    secondaryDesktopWindow.addEventListener('mouseenter', function() {
+        secondaryDesktopWindow.addEventListener('wheel', handleScroll);
+    });
+
+    secondaryDesktopWindow.addEventListener('mouseleave', function() {
+        secondaryDesktopWindow.removeEventListener('wheel', handleScroll);
+    });
+
+    function handleScroll(event) {
+        event.preventDefault();
+        const scrollSpeed = 260;
+        const scrollDirection = event.deltaY > 0 ? 1 : -1;
+        secondaryDesktopWindow.scrollLeft += scrollDirection * scrollSpeed;
+    }
+
+    function TriggerReviews() {
+        const bounding = targetElement.getBoundingClientRect();
+        if (bounding.top >= 0 && bounding.top <= window.innerHeight) {
+            ManageRatingAndReviews();
+            window.removeEventListener('scroll', TriggerReviews);
+        }
+    }
+    window.addEventListener('scroll', TriggerReviews);
+}
+setTimeout(() => {
+    AnimateLogo();
+}, 999);

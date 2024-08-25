@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My Orders | Massage Chairs Market</title>
+    <link rel="icon" href="/static/images/MC-logo.png" type="image/png">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"></noscript>
     <link rel="stylesheet" type="text/css" href="/static/css/orders.css">
     <link rel="stylesheet" type="text/css" href="/static/css/order_number_field.css">
     <link rel="stylesheet" type="text/css" href="/static/css/order_check_error.css">
@@ -101,27 +104,27 @@
                 Loading(false);
                 UpdateCurrentSessions(null, true);
                 DisplayOrderNumberField();
-            }
+            };
         };
-
-        if (sessions_found){MakeRequest('customer_orders/', customer_sessions, "POST", handleSessionVerification); Loading(true)}else{DisplayOrderNumberField();}
         
+        if (sessions_found){MakeRequest('customer_orders/', customer_sessions, "POST", handleSessionVerification); Loading(true)}else{DisplayOrderNumberField(); setTimeout(() => {ShowError("We couldn't find any orders")}, 999);}
+        let previousMessageID;
         const ShowError = (text, remove=false)=>{
-            const errorMessage = `<div id="CustomerActionError" class="error-message">${text}</div>`;
+            const getMessageID = ()=>Math.floor(Math.random() * 900) + 100;
             if (!remove){
+                previousMessageID = getMessageID();
+                const errorMessage = `<div id="CustomerActionError-${previousMessageID}" class="error-message">${text}</div>`;
+                console.log('setting message id', previousMessageID)
                 const errorwindow = document.getElementById('ErrorWindow');
+                errorwindow.innerHTML = '';
                 errorwindow.innerHTML = errorMessage;
+                debounce(ShowError, 2499)(null, true)
             }else{
-                const previousMessage = document.getElementById('CustomerActionError');
-                if (previousMessage)
-                try{
-                    previousMessage.classList.add('remove_error')
-                    setTimeout(() => {
-                        previousMessage.remove();
-                    }, 499);
-                }catch{}
+                console.log('removing message id', previousMessageID)
+                const previousMessage = document.getElementById(`CustomerActionError-${previousMessageID}`);
+                console.log(previousMessage)
+                if (previousMessage){previousMessage.classList.add('remove_error'); previousMessage.remove()};
             }
-            debounce(ShowError, 2999)(null, true)
         };
 
         const EnableLoading = (enable = true) => {

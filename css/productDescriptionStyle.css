@@ -1,152 +1,151 @@
-
 .wrapper {
-    width: 90%;
-    margin: 50px auto;
-    border-radius: 7px;
-    box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
-    overflow: hidden; /* Ensures the shadow is not clipped */
-    display: flex;
+  width: 90%;
+  margin: 50px auto;
+  border-radius: 7px;
+  box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+}
+
+.product-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 50%;
+  max-height: 100%;
+}
+
+.product-img img {
+  width: 80%;
+  max-width: 80%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 7px 0 0 7px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.product-info {
+  width: 50%;
+  min-height: 300px;
+  border-radius: 0 7px 7px 0;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; /* Added padding to ensure proper spacing */
+}
+
+.product-info-video {
+  width: 50%;
+  min-height: 300px;
+  height: auto;
+  border-radius: 0 7px 7px 0;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; /* Added padding to ensure proper spacing */
+}
+
+.product-text {
+  padding: 10px;
+  width: 80%;
+  text-align: left;
+}
+
+.product-text h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.product-text p {
+  margin: 10px 0;
+}
+
+.product-price-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+}
+
+.product-price-btn button {
+  height: 50px;
+  width: 176px;
+  margin-left: 16px;
+  border: transparent;
+  border-radius: 60px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #ffffff;
+  background-color: #9cebd5;
+  cursor: pointer;
+  outline: none;
+}
+
+.product-price-btn button:hover {
+  background-color: #79b0a1;
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
   }
-  
+
   .product-img {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: auto;
-    width: 50%;  
+    height: 100%;
+    width: 100%;
   }
 
-  
   .product-img img {
-    width: 80%;
-    max-width: 80%;
+    width: 85%;
+    max-width: 85%;
     height: auto;
     object-fit: cover;
     border-radius: 7px 0 0 7px;
     max-width: 100%;
-    max-height: 100%;  
+    max-height: 100%;
+    margin: auto;
   }
-  
+
   .product-info {
-    position: relative;
-    width: 50%;
-    height: 500px;
-    border-radius: 0 7px 7px 0;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
+    width: 100%;
+    border-radius: 7px;
+    min-height: 250px;
   }
-  
+
   .product-text {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 20px;
-    width: 80%;
-    text-align: left;
+    padding: 16px;
+    min-height: 250px;
   }
-  
-  .product-text h1 {
-    margin: 0;
-    font-size: 24px;
-  }
-  
-  .product-text p {
-    margin: 10px 0;
-  }
-  
-  .product-price-btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 20px;
-  }
-  
-  .product-price-btn button {
-    height: 50px;
-    width: 176px;
-    margin-left: 16px;
-    border: transparent;
-    border-radius: 60px;
-    font-family: 'Raleway', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: #ffffff;
-    background-color: #9cebd5;
-    cursor: pointer;
-    outline: none;
-  }
-  
-  .product-price-btn button:hover {
-    background-color: #79b0a1;
+}
+
+@keyframes textReveal {
+  from {
+    opacity: 0;
+    transform: translateY(75%);
   }
 
-    /* <div class="ProductShowcase">
-      <div>
-          <div class="wrapper">
-                      
-            <div class="product-img">
-              <iframe style="border-radius: 18px;" width="105%" height="99%" src="https://player.vimeo.com/video/913507481" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            </div>
-
-                      
-            <div class="product-info">
-              <div class="product-text">
-              <p id="ProductShowcaseDescription">Discover a new realm of relaxation and rejuvenation with the Super Novo 2.0 Massage Chair. This state-of-the-art chair takes massage technology to unprecedented heights, offering an unparalleled experience that will leave you feeling invigorated and refreshed.
-
-            Indulge in the luxury of choice with 38 auto-wellness programs. Whether you're in need of deep tissue therapy, full-body immersion, or simply desire a moment of blissful relaxation, the Super Novo has you covered. This comprehensive collection of therapeutic programs ensures that you'll find the perfect massage experience tailored to your specific needs and preferences.</p>
-              </div>
-            </div>
-
-          </div>
-      </div>
-    </div> */
-  
-  @media screen and (max-width: 768px) {
-    .wrapper {
-      flex-direction: column;
-    }
-    .product-img {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      width: 100%;  
-    }
-    
-    .product-img img {
-      width: 85%;
-      max-width: 85%;
-      height: auto;
-      object-fit: cover;
-      border-radius: 7px 0 0 7px;
-      max-width: 100%;
-      max-height: 100%; 
-      margin: auto; 
-    }
-    .product-info {
-      width: 100%;
-      border-radius: 7px;
-    }
-    .product-text {
-      padding: 20px;
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
 
-  @keyframes textReveal {
-    from {
-      opacity: 0;
-      transform: translateY(75%);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .text-reveal {
-    animation: textReveal 0.7s;
-  }
+.text-reveal {
+  animation: textReveal 0.7s;
+}
+
+#ProductShowcaseDescription {
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}

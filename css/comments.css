@@ -5,7 +5,12 @@
     gap: 5px;
     width: fit-content;
 }
-    
+
+#ProductColorOptionsSection{
+    min-width: 100%;
+    min-height: 100%;
+}
+
 .ColorImage {
     width: 55px;
     height: 55px;

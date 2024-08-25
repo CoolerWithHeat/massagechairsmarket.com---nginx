@@ -1,9 +1,3 @@
-var MinPriceRepresentor;
-var MaxPriceRepresentor;
-setTimeout(() => {
-  MinPriceRepresentor = document.getElementById("MinPriceHub");
-  MaxPriceRepresentor = document.getElementById("MaxPriceHub");
-}, 333);
 
 $(document).ready(function() {
     $('.noUi-handle').on('click', function() {
@@ -47,17 +41,8 @@ $(document).ready(function() {
             rangeSlider.noUiSlider.set([concluded_price, counterpart_price]);
         }
     }
-    setTimeout(() => {
-        if (MaxPriceRepresentor) {
-          MaxPriceRepresentor.addEventListener('input', (event)=>AdjustPriceSlider(event, true));
-        }
-
-      if (MinPriceRepresentor) {
-          MinPriceRepresentor.addEventListener('input', (event)=>AdjustPriceSlider(event, false));
-      }
-      MaxPriceRepresentor.value = formattedMax;
-      MinPriceRepresentor.value = formattedMin;
-    }, 333);
+    if (MaxPriceRepresentor){MaxPriceRepresentor.addEventListener('input', (event)=>AdjustPriceSlider(event, true));MaxPriceRepresentor.value = formattedMax;}
+    if (MinPriceRepresentor){MinPriceRepresentor.addEventListener('input', (event)=>AdjustPriceSlider(event, false));MinPriceRepresentor.value = formattedMin;}
 
     function RangerHandler(values, handle) {
       if (MaxPriceRepresentor && MinPriceRepresentor){
@@ -80,9 +65,7 @@ $(document).ready(function() {
           document.getElementsByName('max-value').value = formattedMax;
       }
     }
-    if (ready){
-      rangeSlider.noUiSlider.on('update', RangerHandler);
-    }
+    rangeSlider.noUiSlider.on('update', RangerHandler);
 });
 
   // https://refreshless.com/nouislider/

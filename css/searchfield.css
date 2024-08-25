@@ -112,7 +112,7 @@
 }
 
 
-#additionalSubFilters{
+.additionalSubFilters{
   opacity: 0;
   animation: dropAnimation 0.7s forwards ease-in-out;
 }

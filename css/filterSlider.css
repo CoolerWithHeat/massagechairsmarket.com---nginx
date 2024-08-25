@@ -1,10 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
-
 ::selection {
   color: #fff;
   background: #17a2b8;
 }
-
 .ParentDropDown{
     display: flex;
     justify-content: left;
@@ -43,23 +40,26 @@
 }
 
 @media (min-width:260px) and (max-width:770px){
-
     .Filters_And_Products_Together{
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-width: 100%;
+      min-height: 100%;
+      justify-content: center;
     }
     
     .filterWindow{
-        width: 270px;
+        width: 80%;
+        min-height: 50px;
         margin: auto;
     }
     
     .ProductsListingWindow{
-        width: 75%;
-        margin-left: 15px;
-        margin: auto;
+      min-width: 100%;
+      min-height: 667px;
+      margin-left: 15px;
+      margin: auto;
+        
     }
     .FiltersParent{
         width: 100%;
@@ -70,7 +70,45 @@
 
 }
 
-@media (min-width:770px) and (max-width:1500px){
+@media (min-width:770px) and (max-width:900px){
+  .MaxLabel, .MinLabel{
+    background: #995afd;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px;
+    max-width: 28px;
+    max-height: 21px;
+    text-align: center;
+    display: none;
+  }
+  .Filters_And_Products_Together{
+    display: flex;
+    justify-content: right;
+    width: 100%;
+    height: 100%;
+  }
+  .filterWindow{
+      width: 39%;
+      position: fixed;
+      left: 0;
+  }
+  .ProductsListingWindow{
+      width: 60%;
+      margin-right: 15px;
+  }
+}
+
+@media (min-width:900px) and (max-width:1500px){
+    .MaxLabel, .MinLabel{
+      background: #995afd;
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      width: 35px;
+      height: 12px;
+      text-align: center;
+      display: none;
+    }
     .Filters_And_Products_Together{
         display: flex;
         justify-content: right;
@@ -78,12 +116,12 @@
         height: 100%;
     }
     .filterWindow{
-        width: 30%;
+        width: 39%;
         position: fixed;
         left: 0;
     }
     .ProductsListingWindow{
-        width: 65%;
+        width: 60%;
         margin-right: 15px;
     }
 }

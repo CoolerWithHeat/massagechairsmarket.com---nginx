@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="icon" href="/static/images/MC-logo.png" type="image/png">
+    <title>Order Receipt | Massage Chairs Market</title>
     <link rel="stylesheet" type="text/css" href="/static/css/InsideOrder.css">
     <link rel="stylesheet" type="text/css" href="/static/css/order_tracking.css">
     <link rel="stylesheet" type="text/css" href="/static/css/masterCardAnimation.css">
@@ -11,7 +12,7 @@
     <body>
         <div id="Popup"></div>
         <div id="ThanksMessageWindow"></div>
-        <div onclick="GoBack()" style="width: 30px; height: 30px;position: absolute; cursor: pointer; z-index:999">
+        <div onclick="GoBack()" style="width: 30px; height: 30px; margin-left:10px; margin-top:12px; position: absolute; cursor: pointer; z-index:999">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#464646" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
                 <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
             </svg>
@@ -201,15 +202,15 @@
                         <div class="productDetailsWindow">
                             <div class="pricing">
                                 <div class="row">
-                                    <div class="col-9">
+                                    <div class="col-12">
                                         <span id="name">${product_data.product_name}</span>  
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-12">
                                         <span id="price">${product_data.product_color.colorname}</span>
                                     </div>
                                 </div>
                                 <div style="display:flex; justify-content:space-between;" class="row">
-                                    <div>
+                                    <div class="col-6">
                                         <span id="name">$${product_data.product_price}</span>
                                     </div>
                                     <div>
@@ -249,16 +250,20 @@
                         ${products.join('')}
                         <div class="total">
                             <div class="row">
-                                <div class="col-9">Subtotal: &dollar;${order_details.subtotal}</div>
+                                <div class="col-12">Subtotal: &dollar;${order_details.subtotal}</div>
                                 ${getDiscount(order_details.discount_used)}
-                                <div class="col-9">Shipping: Free</div> 
-                                <div class="col-9">Total: &dollar;${order_details.total_paid}</div>
+                                <div class="col-12">Shipping: Free</div> 
+                                <div class="col-12">Total: &dollar;${order_details.total_paid}</div>
                             </div>
                         </div>
+                        <a style="margin-left:7%;" href="../" class="logo">
+                            <div id="LogoPointSmall">
+                                <img id="BrandImage" src="/static/images/companyLogo.png" alt="Brand Logo">
+                            </div> 
+                        </a>
                         <div class="footer">
                             <div class="row">
-                                <div class="col-2"><img style="width: 160px; height: 60px;" id="LogoPoint" class="brandLogo" src="/static/images/companyLogo.png"></div>
-                                <div class="col-10">Want any help? Please &nbsp; <a style="cursor:pointer;" onclick="OpenContactForm();"> contact us</a></div>
+                                <div class="col-10">Want any help? Please &nbsp; <a href="javascript:void();" style="cursor:pointer;" onclick="OpenContactForm();"> contact us</a></div>
                             </div>
                         </div>
                     </div>
@@ -280,8 +285,10 @@
             `;
             return structure
         };
-
+        importCSS('/static/css/bootstrap.min.css')  
+        importCSS('/static/css/templatemo-hexashop.css')  
         const removeLoading = ()=>{const loading = document.getElementById('loader'); if (loading){loading.remove();}};
+        importCSS('/static/css/brandAnimation.css')
         importScript('/static/js/analytics.js')
         importScript('https://www.googletagmanager.com/gtag/js?id=G-YPTBVN0S8C', () => {
             window.dataLayer = window.dataLayer || [];

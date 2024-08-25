@@ -393,13 +393,15 @@
 
 @media (max-width:460px){
   ::-webkit-scrollbar {
-    width: 3px;
+    max-height: 4px;
+    max-width: 4px;
   }
 }
 
 @media (min-width:460px){
   ::-webkit-scrollbar {
-    width: 7px;
+    max-height: 7px;
+    max-width: 7px;
   }
 }
 

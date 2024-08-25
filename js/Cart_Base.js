@@ -1,0 +1,724 @@
+const host = window.location.protocol + "//" + window.location.host + '/serverdestination/'
+let saved_address;
+var discountCode;
+var customerEmail;
+var discountSignature;
+var customerName;
+var imported_confirmation_assets = false;
+var message_id = 0;
+$(function() {
+    var selectedClass = "";
+    $("p").click(function(){
+    selectedClass = $(this).attr("data-rel");
+    $("#portfolio").fadeTo(50, 0.1);
+        $("#portfolio div").not("."+selectedClass).fadeOut();
+    setTimeout(function() {
+    $("."+selectedClass).fadeIn();
+    $("#portfolio").fadeTo(50, 1);
+    }, 500);
+        
+    });
+});
+
+importScript('/static/js/analytics.js');
+importScript('https://www.googletagmanager.com/gtag/js?id=G-YPTBVN0S8C', () => {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() { window.dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', 'G-YPTBVN0S8C');
+    window.recordEvent = (event_label, category)=> window.gtag('event', 'click', {
+            'event_category': category,
+            'event_label': event_label,
+        });
+    });
+
+const removeCheckoutPanel = ()=>{const removalWindow = document.getElementById('HtmlCardBase'); if (removalWindow){removalWindow.style.display = 'none';};};
+
+function AnimateLogo() {
+const logoElement = document.getElementById('LogoPointSmall');
+console.log(logoElement)
+if (logoElement){
+    logoElement.classList.add('animateBrand');
+    setTimeout(() => {
+      logoElement.classList.remove('animateBrand');
+    }, 499);
+}
+}
+
+const ReLoad = ()=>location.reload()
+
+const makeProduct = (productData)=>{
+const window = document.getElementById('CartProductsClosure');
+const productStructure = `
+  <br>
+  <div class="card mb-3 mb-lg-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div class="d-flex flex-row align-items-center">
+            <div>
+              <img src="${productData.image}" class="rounded-3" alt="Shopping item" style="width: 65px;">
+            </div>
+            <div class="ms-3">
+              <h6>${productData.title}</h6>
+              <p class="small mb-0">$${productData.price}</p>
+              <p class="small mb-0">${productData.color}</p>
+            </div>
+          </div>
+          <div style="margin-top: -20px;" class="d-flex flex-row align-items-center">
+              <p class="small mb-0">${productData.quantity}</p>
+          </div>      
+        </div>
+        <div id="app-cover">
+          <input data-id="${productData.id}" onclick="RemoveOuttaCart(event);" type="checkbox" id="checkbox">
+          <div id="bin-icon">
+            <div id="lid"></div>
+            <div id="box">
+              <div id="box-inner">
+                <div id="bin-lines"></div>
+              </div>
+            </div>
+          </div>
+          <div id="layer"></div>
+        </div>
+      </div>
+    </div>`;
+if (window)
+window.innerHTML += productStructure;
+};
+var concluded_price;
+const FetchCart = async (UsersCart)=>{
+const verifiedResponse = await fetch(host+'VerifyCart/', {
+method: "POST",
+body: JSON.stringify({cart: UsersCart, discount_details:{requested_code:discountCode, customer_email:customerEmail}})
+});
+console.log({cart: UsersCart, discount_details:{requested_code:discountCode, customer_email:customerEmail}})
+if (verifiedResponse.status == 200){
+const parsedData = await verifiedResponse.json();
+if (parsedData.cart){
+  concluded_price = parsedData.total_price;
+  const total_price = parsedData.total_price;
+  const verified_products = parsedData.verified_products;
+  const discount = parsedData.discount_applied;
+  const server_message = parsedData.message_to_customer;
+  const after_discount = parsedData.after_discount;
+  const verificationSignature = parsedData.discount_signature;
+  if(parsedData.update_data){updateCartProducts(parsedData.update_data)};
+  if(discount && verificationSignature){discountSignature = discount.code};
+  setOuterDetails({total_price, verified_products, discount, after_discount, server_message});
+  if (Array.isArray(parsedData.cart))parsedData.cart.forEach(each=>makeProduct(each))}
+else{ResetCart()}
+}
+lockwindow(false);
+};
+
+const getCartProducts = ()=>JSON.parse(localStorage.getItem('MassageCart')) || [];
+const updateCartProducts = (data)=>{if(Array.isArray(data)){localStorage.setItem('MassageCart',  JSON.stringify(data))}};
+
+const getCheckData = (completeLock=true)=>{
+if(completeLock){lockwindow();}
+resetProductWindow();
+const Cart = getCartProducts();
+if (Cart)
+FetchCart(Cart)
+};
+
+const CalculateDiscount = (discount_data)=>discount_data.type == "percentage" ? `${discount_data.amount}%` : `$${discount_data.amount}`;
+
+const resetProductWindow = ()=>{
+const window = document.getElementById('CartProductsClosure');
+window.innerHTML = `
+<h5 class="mb-3">
+  <a style="cursor:pointer;" onclick="goBack();" class="text-body">
+    <i class="fas fa-long-arrow-alt-left me-2"></i>
+    Continue shopping
+    </a>
+</h5>
+<hr>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <p class="mb-1">Shopping cart</p>
+    <p id="AmountDetails" class="mb-0"></p>
+  </div>
+</div>`;
+return true;
+};
+
+const resetPaymentDetails = ()=>{
+const priceHeader = document.getElementById('HtmlCardBase');
+priceHeader.innerHTML = '';
+}
+
+const getDiscountIfApplied = (discount_code, amount_deducted)=> amount_deducted ? `
+  <div class="d-flex justify-content-between mb-4">
+    <p class="mb-2">Discount</p>
+    <p class="mb-2" id="Final">${amount_deducted}</p>
+  </div>` : null;
+
+const setOuterDetails = (outerDetails)=>{
+const amountHeader = document.getElementById('AmountDetails');
+const priceHeader = document.getElementById('HtmlCardBase');
+const amount = outerDetails.verified_products;
+const discount = outerDetails.discount ? CalculateDiscount(outerDetails.discount) :  null;
+const shipping_cost = outerDetails.shipping || 0;
+const total = outerDetails.total_price || 0;
+const after_discount = outerDetails.after_discount;
+const possible_message = outerDetails.server_message;
+const customer_has_products = amount;
+amountHeader.innerText = customer_has_products ? `You have ${amount} items in your cart` : `Your cart is empty`;
+const dicount = getDiscountIfApplied('no code for now', discount);
+const dicount_details = dicount ? dicount : `  <div id="discountaddtrigger">
+                                                <div id="firstWindowDiscount">
+                                                  <div id="both_container" class="form__group field">
+                                                    <input maxlength="8" oninput="trackDiscountInput(event);" type="input" class="form__field allUpperCase" placeholder="Discount Code ?" name="name" id='name' required />
+                                                    <label id="fieldLabel" for="name" class="form__label">Discount Code ?</label>
+                                                  </div>
+                                                </div>
+                                                <div id="secondWindowDiscount">
+                                                    <i onclick="applyDiscount(event);" id="additionIcon" class="fa-regular fa-square-plus defaultAddition"></i>
+                                                </div> 
+                                              </div>
+                                              <br>
+                                            `
+const priceStructure = `
+    <hr class="my-4">
+      <div class="d-flex justify-content-between">
+        <p class="mb-2">Subtotal</p>
+        <p class="mb-2" id="Subtotal">$${total}</p>
+      </div>
+      <div class="d-flex justify-content-between">
+        <p class="mb-2">Shipping</p>
+        <p class="mb-2" id="shipping">${shipping_cost ? `$${shipping_cost}` : 'Free'}</p>
+      </div>
+      ${dicount_details}
+      <div class="d-flex justify-content-between mb-4">
+        <p class="mb-2">Total(Incl. taxes)</p>
+        <p class="mb-2" id="Final">$${after_discount || total}</p>
+      </div>
+
+      <button onclick="showShipmentForm();" class="btn btn-info btn-block btn-lg">
+        <div class="d-flex justify-content-between">
+          <span id="FinalPrice">$${after_discount || total}</span>
+          <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+        </div>
+    </button>`;
+
+const structure = `
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">Card details</h5>
+              <a href="../" class="logo">
+                  <div id="LogoPointSmall">
+                      <img id="BrandImage" src="/static/images/companyLogo.png">
+                  </div> 
+              </a>
+          </div>
+
+          <p class="small mb-2">Card type</p>
+
+          <i class="fab fa-cc-mastercard fa-2x me-2"></i>
+          <i class="fab fa-cc-visa fa-2x me-2"></i>
+          <i class="fab fa-cc-amex fa-2x me-2"></i>
+          <i style="color:black; background:white; border-radius:3px; font-size:30px;" class="fab fa-google-pay fa-2x me-2"></i>
+          <i class="fab fa-cc-discover fa-2x"></i>
+            
+          <div id="PriceHolder">
+              <div id="errorWindowForCart">${possible_message ? displayErrorMessage(possible_message, false) : ''}</div>
+              ${priceStructure}
+          </div>
+        </div>
+  `;
+if (customer_has_products){
+priceHeader.innerHTML = structure;
+animateBrandOnClick()
+} 
+else{
+resetPaymentDetails();
+removeCheckoutPanel();
+}
+}
+
+const displayErrorMessage = (message, directlyAssert=false)=>{
+const formedMessage = `<div id="errorMessageBoundary"><h4 id="textErrorMessage">${message}</h4></div>`
+if (directlyAssert){
+const window = document.getElementById('errorWindowForCart');
+if (window)
+  window.innerHTML = formedMessage;
+}
+else{ return formedMessage;} ;
+};
+
+const widenField = ()=>{
+const field = document.getElementById('firstWindowDiscount')
+field.id = 'forEmailFied'
+field.classList.add('flipComplete')
+};
+
+function CheckEmail(event) {
+const data = event.target;
+const update = document.getElementById('fieldLabel');
+if (/(^\w.*@\w+\.\w)/.test(data.value)) {
+    update.textContent = 'Your Email';
+    ShowAddition(true);
+    customerEmail = data.value;
+} else {
+    ShowAddition(false);
+    update.textContent = 'Keep Going...';
+}
+};
+
+function shiftToEmail(){
+const possible_last_operation = localStorage.getItem('lastSuccessfulOperation')
+const retrievedOperation = possible_last_operation ? JSON.parse(possible_last_operation) : null
+const customer_email = retrievedOperation ? retrievedOperation.email : null
+ShowAddition(false);
+const iconField = document.getElementById('additionIcon');
+iconField.setAttribute('data-isemail', 'true')
+const field = document.getElementById('both_container');
+field.innerHTML = `
+  <input oninput="CheckEmail(event);" type="input" class="form__field" placeholder="Your Email" value="${customer_email ? customer_email : ''}" name="name" id='name' required />
+  <label id="fieldLabel" for="name" class="form__label">Your Email</label>
+`
+widenField();
+if (customer_email){
+const inputEvent = new Event('input', {
+  bubbles: true,
+  cancelable: true,
+});
+const modified_field = document.getElementById('name');
+setTimeout(() => {
+  modified_field.dispatchEvent(inputEvent);
+}, 799);
+}
+};
+
+const validDiscount = (data)=>data.length == 8;
+
+const trackDiscountInput = (event)=>{
+const value = event.target.value;
+const rightForm = validDiscount(value);
+if (value.length > 8) {
+  event.target.value = value.slice(0, 8);
+}
+if (rightForm)
+  ShowAddition(true);
+else
+  ShowAddition(false);
+
+if(rightForm){discountCode = value;}
+};
+
+const applyDiscount = (event)=>{
+const isFromEmail = event ? event.target.getAttribute('data-isemail') : null;
+if (isFromEmail){
+setPaymentLoading(); 
+window.recordEvent('button', 'last discount process');
+setTimeout(() => {
+  getCheckData(false);
+}, 299);
+}else{window.recordEvent('button', 'first discount process'); shiftToEmail();}
+}
+
+
+const ShowAddition = (enable=false)=>{
+const additionHolder = document.getElementById('additionIcon');
+if (enable){
+    additionHolder.classList.remove('defaultAddition')
+    additionHolder.classList.add('flipAround')
+}
+else{
+    additionHolder.classList.remove('flipAround')
+    additionHolder.classList.add('defaultAddition')
+}
+};
+
+function ManageCart(product_id, quantity = 1) {
+    const savedProducts = JSON.parse(localStorage.getItem('MassageCart')) || [];
+    let isRemoved = false;
+
+    const index = savedProducts.findIndex(product => product.product_id === product_id);
+
+    if (index === -1) {
+        savedProducts.push({ product_id: Number(product_id), quantity: Number(quantity) });
+    } else {
+        RecordAction(2);
+        savedProducts.splice(index, 1);
+        isRemoved = true;
+    }
+
+    localStorage.setItem('MassageCart', JSON.stringify(savedProducts));
+
+    return [savedProducts.length, isRemoved];
+}
+
+const RemoveOuttaCart = (event)=>{
+const savedProducts = JSON.parse(localStorage.getItem('MassageCart')) || [];
+const id = event.target ? Number(event.target.dataset.id) : null;
+console.log(id)
+if (id){
+  ManageCart(id);
+  setTimeout(() => {
+    lockwindow();
+  }, 799);
+  setTimeout(() => {
+    getCheckData();
+  }, 799);
+}
+};
+function RecordAction(action_index) {
+  const indices = {
+      1: 'add_to_cart',
+      2: 'remove_from_cart',
+  };
+  const record = () => {
+      const url = `${analyticsProtol}//${analyticsServerHost}/analyticsdestination/Interactions/`;
+      fetch(url, {
+          method: 'POST',
+          body: JSON.stringify({ 'action_type': indices[action_index] })
+      });
+  };
+  const checkAndRecord = (retries, delay) => {
+      if (analyticsServerHost) {
+          record();
+      } else if (retries > 0) {
+          setTimeout(() => checkAndRecord(retries - 1, delay), delay);
+      } else {
+          console.error("analyticsServerHost not available within the expected time");
+      }
+  };
+  if (action_index) {
+      checkAndRecord(3, 666);
+  }
+}
+const setPaymentLoading = ()=>{
+const window = document.getElementById('confirmation-window');
+const loading = '<br><br><br><br><div id="loader" class="loader"></div><br><br><br>';
+if (window){window.innerHTML = loading;}
+};
+
+async function MakeRequest(pathname, body, type, callback){
+const request = await fetch(host+pathname, {
+    'method': type,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    'body': type == "POST" ? JSON.stringify(body) : null,
+})
+if ((request.status == 201) || (request.status == 200)){
+    const response = await request.json();
+    callback(response)
+}
+else{
+    console.log(request.status)
+}
+}
+
+function ManageSession(session) {
+let customerSessions = localStorage.getItem('customer_sessions');
+customerSessions = customerSessions ? JSON.parse(customerSessions) : [];
+if (!customerSessions.includes(session)) {
+  customerSessions.push(session);
+  localStorage.setItem('customer_sessions', JSON.stringify(customerSessions));
+}
+}
+
+function InitiatePayment(data){
+var stripe = Stripe('pk_test_51P4rPa03nbzcvY4RjXQ1HB1Zwv17Q6t1XqfyIRuwArK5qQ84SNAb18JijIlRk52qY2XSHgltnSsFKKDy3RXmdXue00efTfvi7i');
+const customer_session = data.sessionId;
+stripe.redirectToCheckout({
+  sessionId: customer_session,
+}).then(function (result) {
+  console.log(result)
+});
+ManageSession(customer_session);
+}
+
+const handleCheckout =()=>{
+window.recordEvent('button', 'went to stripe checkout')
+if (customerName){localStorage.setItem('customerName', customerName)};
+AnimateLogo();
+const final = parseFloat(concluded_price);
+if (final > 0){
+  const products = getCartProducts();
+  const body = {
+      'amount': final*100,
+      'cartProducts':products,
+      'shipping_information': saved_address,
+      'discountVerfication': discountSignature ? {code: discountSignature, email:customerEmail} : null,
+  };
+  setPaymentLoading();
+  MakeRequest('initiate_checkout/', body, 'POST', InitiatePayment);
+}
+};
+
+const ResetCart = (event)=>{
+localStorage.setItem('MassageCart', JSON.stringify([]));
+};
+
+const lockwindow = (lockit=true)=>{
+const window = document.getElementById('loadingWindow');
+if (lockit)
+window.classList.remove('invisibleField')
+else
+window.classList.add('invisibleField')
+};
+
+function goBack() {
+window.history.back();
+return false;
+}
+const FieldWarning = (field, show=true)=>{
+if (show){
+field.style.color = '#FF7F50';
+field.classList.add('wobble');
+}else{
+field.removeAttribute('style')
+field.classList.remove('wobble')
+}
+};
+
+const ShowShippingFormFieldError = (label_class, show=true, textual_error=null)=>{
+const fieldLabel = document.getElementById(`${label_class}_label`);
+if (show){
+  FieldWarning(fieldLabel, false)
+  setTimeout(() => {
+    FieldWarning(fieldLabel, true)
+  }, 99);
+  if (textual_error){fieldLabel.innerText = textual_error}
+}
+else{
+  fieldLabel.removeAttribute('style')
+  fieldLabel.classList.remove('wobble')
+}
+};
+
+function debounce(func, delay) {
+let timeout;
+return function(...args) {
+  const context = this;
+  if (!timeout) {
+      func.apply(context, args);
+  }
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+      timeout = null;
+  }, wait);
+};
+}
+
+const ShowFirstStepLoading = ()=>{
+const window = document.getElementById('PriceHolder');
+const loading = '<br><br><br><br><div id="loader" class="loader"></div><br><br><br>';
+if (window){window.innerHTML = loading}
+};
+
+const ShowInputError = (text, remove=false)=>{
+if (text && !remove){
+  message_id += 1;
+  const errorMessage = `
+    <div id="CustomerActionError-${message_id}" class="error-message" >
+        ${text}
+    </div>
+`;
+  const errorwindow = document.getElementById('ErrorWindow');
+  errorwindow.innerHTML = '';
+  setTimeout(() => {
+    errorwindow.innerHTML = errorMessage;
+  }, 99);
+}else{
+  const previousMessage = document.getElementById(`CustomerActionError-${message_id}`);
+  if (previousMessage)
+    try{
+      previousMessage.classList.remove('remove_error'); setTimeout(() => {previousMessage.classList.add('remove_error')}, 99); setTimeout(() => {previousMessage.remove();}, 499);
+    }catch{}
+}
+setTimeout(() => {
+  ShowError(null, true);
+}, 2299);
+};
+
+function validateUSPhoneNumber(phoneNumber) {const phoneRegex = /^\+1\s?\d{3}\s?\d{3}\s?\d{4}$/;const numericPhone = phoneNumber.replace(/\D/g, '');return phoneRegex.test(phoneNumber) && numericPhone.length === 11;}
+function validateUSZipcode(zipcode) {const basicZipCodePattern = /^[0-9]{5}(?:-[0-9]{4})?$/;if (basicZipCodePattern.test(zipcode)) {return true;} else {return false;}}
+const ShowError = debounce(ShowInputError, 399)
+const ValidData = (field)=>field.value ? field.value.length > 0 : false
+
+const resetErrorState = (fieldLabelClass, text)=>{
+if (fieldLabelClass && text){
+const fieldLabel = document.getElementById(`${fieldLabelClass}_label`);
+if (fieldLabel){
+  fieldLabel.textContent = text
+  fieldLabel.removeAttribute('style')
+  fieldLabel.classList.remove('wobble')
+}
+}
+}
+const GetOptionalInformation = (ids_data = [])=>{
+let data = {}
+if (Array.isArray(ids_data) && ids_data.length){
+ids_data.forEach(each_id=>{const field = document.getElementById(`${each_id}_input`);if (field){if (ValidData(field)){data[each_id] = field.value}}})
+}
+return data;
+};
+const ValidateShippingAddress = (of_user_action=true)=>{
+const field_ids = ['firstname', 'lastname', 'address', 'country', 'zipcode', 'city', 'state', 'apartment_suite', 'phone_number']
+const required_ids = ['firstname', 'address', 'country', 'zipcode', 'city', 'state', 'phone_number']
+const options_ids = field_ids.filter(id => !required_ids.includes(id));
+let valids = 0;
+let collected_data = {};
+required_ids.forEach(each=>{
+const field = document.getElementById(`${each}_input`);
+const number_field = each == 'phone_number';
+const zipcode_field = each == 'zipcode';
+if (!ValidData(field) && !number_field){ShowShippingFormFieldError(each);}
+if (number_field){const isValidNumber = validateUSPhoneNumber(field.value);if (!isValidNumber){ShowShippingFormFieldError(each, true, "Please enter a valid phone number.");}else{resetErrorState(each, 'Phone Number'), collected_data[each] = field.value; valids += 1;}}
+if (zipcode_field){const isValidzipcode = validateUSZipcode(field.value);if (!isValidzipcode){ShowShippingFormFieldError(each, true, "Please enter a valid ZIP code.");}else{resetErrorState(each, 'Zip code'), collected_data[each] = field.value; valids += 1;}}
+else{ShowShippingFormFieldError(each, false);}
+if (ValidData(field) && !number_field && !zipcode_field){valids += 1; collected_data[each] = field.value}
+})
+if (valids >= required_ids.length){
+ShowConfirmationOneMoreTime({...collected_data, ...GetOptionalInformation(options_ids)})
+};
+if (!(valids >= 7) && of_user_action){ShowError('Please complete all fields.');setTimeout(() => {ValidateShippingAddress(false);}, 3499);}
+};
+
+const ImportConfirmationStyles = ()=>{if (!imported_confirmation_assets){importCSS('/static/css/shipment_confirmation.css');importCSS('/static/css/order_check_error.css');imported_confirmation_assets = true;};};
+
+const placeShipmentForm = (window, coming_back=false)=>{
+function GetStates(selected_state=null) {
+const states = [
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+    "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+    "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+    "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+    "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+    "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+    "Wisconsin", "Wyoming"
+];
+return [`<option ${!selected_state ? 'selected' : ''}></option>`, ...states.map(state => `<option ${state == selected_state ? 'selected' : ''} value="${state}">${state}</option>`)].join('');
+}
+if (window){
+const structure = `
+<div id="main">
+  <div class="shipment-form-container showSlowly">
+    <div class="after2seconds" onclick="ReLoad()" style="left: 3px; top: 3px; width: 30px; height: 30px; cursor: pointer; z-index:99; position: absolute;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#464646" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+      </svg>
+    </div>
+    <h1 class="h1">Shipping</h1>
+    <p>Please enter your shipping details.</p>
+    <hr class="hr"/>
+    <div class="form">   
+    <div class="fields fields--2">
+      <label class="field">
+        <span id="firstname_label" class="field__label" for="firstname">First name</span>
+        <input id="firstname_input" class="field__input" type="text" ${coming_back ? `value="${saved_address.firstname ? saved_address.firstname : ''}"` : ''} />
+      </label>
+      <label class="field">
+        <span id="lastname_label"  class="field__label" for="lastname">Last name</span>
+        <input id="lastname_input" class="field__input" type="text" placeholder="(Optional)" ${coming_back ? `value="${saved_address.lastname ? saved_address.lastname : ''}"` : ''}/>
+      </label>
+    </div>
+    <label class="field">
+      <span id="address_label" class="field__label" for="address">Address</span>
+      <input id="address_input" class="field__input" type="text" ${coming_back ? `value="${saved_address.address}"` : ''}/>
+    </label>
+    <label class="field">
+      <span id="apartment_suite_label" class="field__label">Apartment/Suite/Unit Number</span>
+      <input id="apartment_suite_input" class="field__input" type="text" placeholder="(Optional)" ${coming_back ? `value="${saved_address.apartment_suite ? saved_address.apartment_suite : ''}"` : ''} />
+    </label>
+    <label class="field">
+      <span id="country_label" class="field__label" for="country">Country</span>
+      <select data-type="choicefield" id="country_input" class="field__input">
+        <option></option>
+        <option selected value="United States">United States</option>
+      </select>
+    </label>
+    <label class="field">
+      <span id="phone_number_label" class="field__label">Phone Number</span>
+      <input id="phone_number_input" class="field__input" type="text" maxlength="15" ${coming_back ? `value="${saved_address.phone_number}"` : "value='+1'"}/>
+    </label>
+    <div class="fields fields--3">
+      <label class="field">
+        <span id="zipcode_label" class="field__label" for="zipcode">Zip code</span>
+        <input class="field__input" type="text" id="zipcode_input" ${coming_back ? `value="${saved_address.zipcode}"` : ''}/>
+      </label>
+      <label class="field">
+        <span id="city_label" class="field__label" for="city">City</span>
+        <input id="city_input" class="field__input" type="text" ${coming_back ? `value="${saved_address.city}"` : ''}/>
+      </label>
+      <label class="field">
+        <span id="state_label" class="field__label" for="state">State</span>
+        <select data-type="choicefield" id="state_input" class="field__input" id="state">
+          ${GetStates(coming_back ? saved_address.state : null)}
+        </select>
+      </label>
+    </div>
+    </div>
+    <hr class="hr">
+    <button onclick="ValidateShippingAddress();" class="button">Continue</button>
+  </div>
+</div>
+`
+window.innerHTML = structure;
+ImportConfirmationStyles();
+}
+};
+
+const returnToForm = ()=>{
+setTimeout(() => {showShipmentForm(true, true);}, 49);
+};
+
+const ShowConfirmationOneMoreTime = (data=null)=>{
+if (data){
+saved_address=data
+const window = document.getElementById('shipmentFormWindow');
+if (data.firstname && String(data.firstname).length){customerName=data.firstname}
+const structure = `
+    <div class="confirmation-container centered-div">
+        <h2>Please Confirm Your Shipment Address</h2>
+        <div id="LastPaymentWindow" class="address-details">
+            <p><strong>Name:</strong> <span id="name">${data.firstname} ${data.lastname ? data.lastname : ''}</span></p>
+            <p><strong>Address:</strong> <span id="address">${data.address}</span></p>
+            ${data.apartment_suite ? `<p><strong>Apartment/Suite/Unit Number:</strong> <span id="state">${data.apartment_suite}</span></p>` : ''}
+            <p><strong>City:</strong> <span id="city">${data.city}</span></p>
+            <p><strong>State:</strong> <span id="state">${data.state}</span></p>
+            <p><strong>Your Phone Number:</strong> <span id="country">${data.phone_number}</span></p>
+            <p><strong>Zip Code:</strong> <span id="zip">${data.zipcode}</span></p>
+            <p><strong>Country:</strong> <span id="country">${data.country}</span></p>
+        </div>
+        <div id="confirmation-window" class="confirmation-buttons">
+            <button class="confirm-button" onclick="handleCheckout()">YES</button>
+            <button class="cancel-button" onclick="returnToForm()">NO</button>
+        </div>
+    </div>
+  `;
+window.innerHTML = structure;
+}
+};
+
+function animateBrandOnClick(){
+discountClickHandled = false;
+const focusedWindow = document.getElementById('both_container') 
+if (focusedWindow){
+focusedWindow.addEventListener('click', ()=>{
+  if (!discountClickHandled){
+    AnimateLogo()
+    discountClickHandled = true;
+  }
+})
+}
+}
+
+const showShipmentForm = (enable=true, coming_back=false)=>{
+window.recordEvent('button', 'reached till shipping form')
+ShowFirstStepLoading();
+const Elementwindow = document.getElementById('shipmentFormWindow');
+if (Elementwindow && enable){
+Elementwindow.removeAttribute('style')
+setTimeout(() => {importCSS('/static/css/shipmentform.css', ()=>placeShipmentForm(Elementwindow, coming_back))}, 499);
+}else{
+Elementwindow.style.display = 'none';
+}
+};
+window.addEventListener('pageshow', ()=>{getCheckData();})
