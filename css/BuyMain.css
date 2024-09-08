@@ -827,10 +827,14 @@ main{
   height: 75px;
 }
 
-#showcaseImage{
+.showcaseImage {
   display: block;
   margin: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
+
 #SecondaryProductView{
   height: 136px;
   max-width: 546px;
@@ -1026,6 +1030,22 @@ figure, header, nav, section, article, aside, footer, figcaption {
 }
 
 .header-area .main-nav .nav li a {
+  display: block;
+  font-weight: 600;
+  font-size: 15px;
+  color: #2a2a2a;
+  text-transform: capitalize;
+  -webkit-transition: all 0.3s ease 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  height: 40px;
+  line-height: 40px;
+  border: transparent;
+  letter-spacing: 1px;
+}
+
+.header-area .main-nav .nav li small {
   display: block;
   font-weight: 600;
   font-size: 15px;
@@ -1557,7 +1577,21 @@ a.active{
 
 @media (min-width:800px) and (max-width:999px){
   #SecondaryProductView div{
-    max-width: 335px;
+    max-width: 360px;
+  }
+  #PrimaryDesktopChairImage{
+    min-width: 360px;
+    min-height: 360px;
+    object-fit: cover; 
+    display: block;
+    margin: auto;
+    border: none;
+  }
+}
+
+@media (min-width:1000px) and (max-width:1299px){
+  #SecondaryProductView div{
+    max-width: 380px;
   }
   #PrimaryDesktopChairImage{
     min-width: 360px;

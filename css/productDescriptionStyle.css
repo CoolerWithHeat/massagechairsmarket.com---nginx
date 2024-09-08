@@ -50,8 +50,8 @@
 }
 
 .product-text {
-  padding: 10px;
-  width: 80%;
+  padding: 5px;
+  width: 100%;
   text-align: left;
 }
 
@@ -61,8 +61,18 @@
 }
 
 .product-text p {
-  margin: 10px 0;
+  margin: 5px 0;
 }
+
+@media (min-width:767px){
+  .product-text{
+    width: 80%;
+  }
+  .product-text h1 {
+    margin: 0;
+    font-size: 27px;
+  }
+};
 
 .product-price-btn {
   display: flex;
@@ -123,7 +133,7 @@
   }
 
   .product-text {
-    padding: 16px;
+    padding: 10px;
     min-height: 250px;
   }
 }

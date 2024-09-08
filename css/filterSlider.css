@@ -39,7 +39,7 @@
     }
 }
 
-@media (min-width:260px) and (max-width:770px){
+@media (min-width:260px) and (max-width:769px){
     .Filters_And_Products_Together{
       display: flex;
       flex-direction: column;
@@ -116,12 +116,12 @@
         height: 100%;
     }
     .filterWindow{
-        width: 39%;
+        width: 30%;
         position: fixed;
         left: 0;
     }
     .ProductsListingWindow{
-        width: 60%;
+        width: 67%;
         margin-right: 15px;
     }
 }
@@ -162,7 +162,7 @@
     }
     
     .ProductsListingWindow{
-        width: 80%;
+        width: 90%;
         margin-left: 15px;
         z-index: 1;
     }

@@ -93,7 +93,8 @@ function GetProductByID(product_ids=[]){
                     UpdateProductStatus();
                     PlaceBrandsAvailable(productFound.FilterOptions.Brands)
                 }else{
-                    window.location.href = '/FindProduct/';
+                    console.log(product_ids)
+                    // window.location.href = '/FindProduct/';
                 }
             }
         });
@@ -966,7 +967,7 @@ function PlaceShowcaseCard(data) {
     else{
         const image_tag = `
             <div class="product-img">
-                <img id="showcaseImage" src="${image_url}" height="420" width="327" alt="Feature Image">
+                <img class="showcaseImage" src="${image_url}" height="420" width="327" alt="Feature Image">
             </div>
         `;
         const description_tag = `

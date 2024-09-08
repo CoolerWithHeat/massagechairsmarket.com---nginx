@@ -38,7 +38,6 @@
                                 <img id="BrandImage" src="/static/images/companyLogo.png" alt="Brand Logo">
                             </div> 
                         </a>
-                        
 
                         <ul class="nav">
                             <li class="scroll-to-section">
@@ -50,16 +49,16 @@
                                 </div>
                             </li>
                             <li class="scroll-to-section"><a href="#top">Home</a></li>
-                                <li class="submenu">
-                                    <a class="hyper-sign" href="javascript:void();">Pages</a>
-                                    <ul>
-                                        <li><a href="../../../">Home</a></li>
-                                        <li><a href="../../FindProduct/">Products</a></li>
-                                        <li><a href="../../../FAQ/">FAQ</a></li>
-                                    </ul>
-                                </li>
+                            <li class="submenu">
+                                <small class="hyper-sign">Pages</small>
+                                <ul>
+                                    <li><a href="../../../">Home</a></li>
+                                    <li><a href="../../FindProduct/">Products</a></li>
+                                    <li><a href="../../../FAQ/">FAQ</a></li>
+                                </ul>
+                            </li>
                             <li class="submenu">                               
-                                <a class="hyper-sign" href="javascript:void();">Brands</a>
+                                <small class="hyper-sign">Brands</small>
                                 <ul id="BrandsSection"></ul>
                             </li>
                             <li class="scroll-to-section onpage"><a href="#explore">Explore</a></li>
@@ -100,54 +99,11 @@
         </div>
         <div class="Filters_And_Products_Together">
             <div id="FilterSection">
-                <div class="filterWindow">
+                <div id="FilterParentWindow" class="filterWindow">
                     <div class="filter-header">
                         <img style="margin-left: 7px;" width="16px" height="16px" src="/images/filter.png" alt="filter icon">
                         <h3>Filters</h3>
                         <span class="arrow"></span>
-                    </div>
-                    <div class="filter-content-parent open">
-                        <br>
-                        <div id="FiltersBase" class="filter-container">
-                            <div class="fast-delivery">
-                                <div class="toggle"></div>
-                                <span class="fast-delivery-text">Fast Delivery to: <span class="zipcode">67346</span></span>
-                            </div>
-                            <div class="filter-section">
-                                <div class="filter-header">
-                                    <h3>Price Range</h3>
-                                    <span class="arrow"></span>
-                                </div>
-                                <div id="PriceFilterBoundary" class="filter-content open">
-                                    <div class="slider-container">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <div style="margin-left: -7px;" id="slider-range"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <form>
-                                                    <input id="PriceSliderMin" type="hidden" name="min-value" value="">
-                                                    <input id="PriceSliderMax" type="hidden" name="max-value" value="">
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label class="MinLabel">Min</label>
-                                            <input data-id="minPrice" id="MinPriceHub" type="text" class="form__field" placeholder="$0" />
-                                        </div>
-                                        <div class="form-group text-right col-md-6">
-                                            <label class="MaxLabel">Max</label>
-                                            <input data-id="maxPrice" id="MaxPriceHub" type="text" class="form__field" placeholder="$15999" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -164,11 +120,10 @@
             </div>
         </div>
     </section>
-
-    <script src="/static/js/jquery-2.1.0.min.js" defer></script>
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.22.1/dist/algoliasearch.umd.min.js" defer></script>
     <script src="/static/js/searchPageBase.js" defer></script>
-    <script src="/static/js/custom.js" defer></script>
+    <script src="/static/js/SliderHandler.js" defer></script>
     <script>        
         function importScript(pathname, callback) {
             const existingScript = document.querySelector(`script[src="${pathname}"]`)
@@ -196,9 +151,10 @@
                 if (callback){callback()}
             }
         };
-        importScript('/static/js/SliderHandler.js')
-        importCSS('/static/css/masterCardAnimation.css')
-        importCSS('/static/css/cart.css')
+
+        importScript("/static/js/custom.js");
+        importCSS('/static/css/masterCardAnimation.css');
+        importCSS('/static/css/cart.css');
         importCSS('/static/css/CartAnimation.css')
         importScript('/static/js/analytics.js')
     </script>

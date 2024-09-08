@@ -1,7 +1,8 @@
 
+GetFiltersReady();
 var MinPriceRepresentor = document.getElementById("MinPriceHub");
 var MaxPriceRepresentor = document.getElementById("MaxPriceHub");
-
+var firstTimeVisit = true;
 function RedirectCustomer(url, productTitle) {localStorage.setItem('productTitle', productTitle);window.location.href = url;}
 
 window.recordEvent = ()=>{};
@@ -38,17 +39,18 @@ window.addEventListener('load', function() {
         }, 0);
     }
 });
-const SaveBrandsCached = (hits)=>{
-    console.log('saving brands for cache just in case')
-    let brands = hits[0].FilterOptions.Brands
-    brands = brands.map(each_brand_name=>Object.keys(each_brand_name)[0]);
-    localStorage.setItem('cached-brands', (brands || []))
+
+const SaveSubfilterCached = (hits)=>{
+    let filters = hits[0].FilterOptions
+    localStorage.setItem('cached-filters', JSON.stringify(filters))
 };
+
 var MinPriceDemonstration;
 var MaxPriceDemonstration;
 var WindowFilters;
 let requested_page = 0;
 const host = window.location.protocol + "//" + window.location.host + '/serverdestination/'
+
 function debounce(func, delay) {
     let timeoutId;
     return function(...args) {
@@ -59,9 +61,7 @@ function debounce(func, delay) {
     };
 }
 
-function ValidateSearchParam(data) {
-    return typeof data === 'string' ? [data] : data
-}
+function ValidateSearchParam(data) {return typeof data === 'string' ? [data] : data};
 
 function EnableErrorForProductContainer(enable=true){
     const productContainer = document.getElementById('ProductContainer');
@@ -101,8 +101,10 @@ function removeNoResultMessage(){
 let filtersReady = false;
 function searchAlgoliaWithParams(RequestedProperties){
     UpdateLoadingStatus(false);
+    const possiblyByCache = firstTimeVisit;
+    const premiumOnes = RequestedProperties.Product == 'Elite';
     const client = algoliasearch('K7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948');
-    const products = client.initIndex('MassageChair');
+    const products = client.initIndex(premiumOnes ? 'products_price_desc' : 'MassageChair');
     const minPrice = parseFloat(RequestedProperties.minPrice)  || 0;
     const maxPrice = parseFloat(RequestedProperties.maxPrice) || 16000;
     const brandFilters = ValidateSearchParam(RequestedProperties.Brands); 
@@ -110,8 +112,8 @@ function searchAlgoliaWithParams(RequestedProperties){
     const featureFilters = ValidateSearchParam(RequestedProperties.Features);
     let brand_filters = '';
     let feature_filters = '';
+    products.setSettings({ranking: [premiumOnes ? "desc(price)" : 'desc(rating)']})
     const price_filters = `${brandFilters ? ' AND ' : ''}(price > ${minPrice} AND price <= ${maxPrice})${featureFilters ? ' AND ' : ''}`;
-    
     if (brandFilters && Array.isArray(brandFilters)){
         const filter = brandFilters.map(each=>`brand: '${each}' `)
         const finalBrandFilter = `(${filter.join('OR ')}) `;
@@ -129,6 +131,7 @@ function searchAlgoliaWithParams(RequestedProperties){
         filters: brand_filters+price_filters+feature_filters,
         page: requested_page,
     };
+    if (premiumOnes){products.setSettings({ranking: ['desc(price)']})};
     if (searchOptions.filters){
         products.search(KeywordSearch, searchOptions).then((response) => {
             const hits = response.hits;
@@ -140,7 +143,7 @@ function searchAlgoliaWithParams(RequestedProperties){
                 if (hits.length) {
                     removeNoResultMessage();
                     hits.forEach(Each => {
-                        if (!filtersReady){if (Each.FilterOptions) PlaceSubFilters(Each.FilterOptions); PlaceBrandsAvailable(Each.FilterOptions.Brands); SaveBrandsCached(hits); filtersReady=true};
+                        if (!filtersReady){if (Each.FilterOptions) PlaceSubFilters(Each.FilterOptions); PlaceBrandsAvailable(Each.FilterOptions.Brands); SaveSubfilterCached(hits); filtersReady=true};
                         const container = EnableErrorForProductContainer(false);
                         const product = extractProductData(Each);
                         container.innerHTML += product;
@@ -153,7 +156,7 @@ function searchAlgoliaWithParams(RequestedProperties){
                     const currentKeywordValue = SearchKeywordHolder.value;
                     const searchKeywordFound = KeywordSearch && `${KeywordSearch}`.length && !(KeywordSearch == '*')
                     ShowNoResults(searchKeywordFound ? KeywordSearch: null);
-                    PlaceSubFiltersByCache();
+                    if(possiblyByCache){PlaceSubFiltersByCache(); filtersReady=true}
                     if (window.innerWidth >= 770){OpenSearchBar(true, true);}
                 }
             }, 499);
@@ -163,6 +166,59 @@ function searchAlgoliaWithParams(RequestedProperties){
         });
     }
 }
+
+function GetFiltersReady(){
+    const filtersBase = document.getElementById('FilterParentWindow');
+    const onDesktop = window.innerWidth >= 770;
+    const premiumSelected = getUrlParams().Product == 'Elite';
+    if (filtersBase){
+        filtersBase.innerHTML += `
+            <div id="FiltersDropDown" class="filter-content-parent ${onDesktop ? 'open' : ''}">
+                <br>
+                <div id="FiltersBase" class="filter-container">
+                    <div class="fast-delivery">
+                        <div id="PremiumFirst" class="toggle ${premiumSelected ? 'active' : ''}"></div>
+                        <span class="fast-delivery-text">Elite Collection</span>
+                    </div>
+                    <div class="filter-section">
+                        <div class="filter-header">
+                            <h3>Price Range</h3>
+                            <span class="arrow"></span>
+                        </div>
+                        <div id="PriceFilterBoundary" class="filter-content open">
+                            <div class="slider-container">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="slider-range"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <form>
+                                            <input id="PriceSliderMin" type="hidden" name="min-value" value="">
+                                            <input id="PriceSliderMax" type="hidden" name="max-value" value="">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="MinLabel">Min</label>
+                                    <input data-id="minPrice" id="MinPriceHub" type="text" class="form__field" placeholder="$0" />
+                                </div>
+                                <div class="form-group text-right col-md-6">
+                                    <label class="MaxLabel">Max</label>
+                                    <input data-id="maxPrice" id="MaxPriceHub" type="text" class="form__field" placeholder="$15999" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+};
 
 function generatePagination(currentPage, totalPages) {
     const paginationContainer = document.querySelector('.pagination ul');
@@ -277,7 +333,7 @@ function extractProductData(algoliaData) {
                                     <div onclick="RedirectCustomer('/Buy/${product_id}/${createSlug(title)}/', '${title}');" class="hoverMenuChild">
                                         <img style="width: 19px; height: 19px;" src="/images/observe.png" alt="icon 1">
                                     </div>
-                                    <div onclick="RedirectToReviews('../Buy/92/super-novo-x-massage-chair/', '${title}');" href="javascript:void(0)" class="hoverMenuChild">
+                                    <div onclick="RedirectToReviews('/Buy/${product_id}/${createSlug(title)}/', '${title}');" href="javascript:void(0)" class="hoverMenuChild">
                                         <img style="width: 18px; height: 18px;" src="/images/rateProduct.png" alt="icon 1">
                                     </div>
                                     <div id="object-${product_id}" data-id="${product_id}" data-type="listed-product" data-color="${availableColors[0][0]}" onclick="AddToCard(event, ${product_id})" class="hoverMenuChild">
@@ -498,22 +554,25 @@ function OpenSearchBar(fadeout=true, OpenOnlyIfValue=false){
         if (currentKeywordValue.length){
             searchIcon.src = '/images/search-black.png';
             searchBar.classList.add('openedSearch');
+            SetSearchIconColor('black');
             AnimateSearchIcon();
         }
     }else{
+        SetSearchIconColor('black');
         if ((first_time && !currentKeywordValue)){}
         else{
             if (!same){
                 AddSearchKeyword(currentKeywordValue);
                 setTimeout(() => {
                     searchBar.classList.remove('openedSearch');
+                    SetSearchIconColor('white');
                     searchIcon.src = '/images/search-white.png';
                 }, 333);
             }
         }
         if (in_closed_state){
             searchBar.classList.add('openedSearch')
-            searchIcon.src = '/images/search-black.png';
+            setTimeout(() => {SetSearchIconColor('black');}, 299);
             AnimateSearchIcon();
         }
     }
@@ -532,15 +591,16 @@ const FadaAwaySearch = (fadeout=true)=>{
     }
 }
 
-function CloseSearchBar(fadeout=true){
+function CloseSearchBar(fadeout=true, avoid_white=false){
     const searchBar = document.getElementsByClassName('searchBox')[0];
     const in_open_state = searchBar.classList.contains('openedSearch');
     if (in_open_state){
         searchBar.classList.remove('openedSearch')
         AnimateSearchIcon()
         SetSearchIconColor('white');
+        console.log(avoid_white)
     }
-    }
+}
 
 function AnimateSearchIcon() {
     const SearchIcon = document.getElementById('SearchIconFA');
@@ -690,12 +750,12 @@ function HandleSearchBarState(){
         window.addEventListener("scroll", function() {
                 const searchBar = document.getElementsByClassName('searchBox')[0];
                 const in_open_state = searchBar.classList.contains('openedSearch');
-                if (window.scrollY > 100) {
+                if (window.scrollY > 11 && window.scrollY < 100) {
                     if (in_open_state){
                         CloseSearchBar();
                     }
                 }
-                if (window.scrollY < 50) {
+                if (window.scrollY < 10) {
                     if (!in_open_state)
                         OpenSearchBar();
                 }
@@ -763,7 +823,6 @@ function checkIfActivated(data, comparisonValue) {
     }
 }
 
-
 function isObject(variable) {
     return variable instanceof Object && variable !== null;
 }
@@ -794,10 +853,10 @@ function ApplyPrice(){
         addPriceFilters(max_price, min_price);
 };
 
-function HandleFilterCheckbox(is_checked, filterData, FilterParent){
+function HandleFilterCheckbox(is_checked, filterData, FilterParent, TopTier=false){
     window.recordEvent('checkbox', 'Filter Option')
-    setUrlParam(FilterParent, filterData, true, is_checked);
-    const infrequest_request =  debounce(TriggerFilter, 599);
+    if (!TopTier){setUrlParam(FilterParent, filterData, true, is_checked);} else{setUrlParam(FilterParent, filterData, false, is_checked)}
+    const infrequest_request = debounce(TriggerFilter, 799);
     infrequest_request();
 }
 
@@ -807,11 +866,14 @@ function removeMoneyFormat(moneyString) {
     return numericValue;
 }
 
+const debouncedSearch = debounce(searchAlgoliaWithParams, 599);
+const immediateSearch = searchAlgoliaWithParams;
 function TriggerFilter(updatedProperties){
     const params = getUrlParams();
     const finalParams = isObject(updatedProperties) ? {...params, ...updatedProperties} : params;
-    searchAlgoliaWithParams(finalParams);
-}; 
+    firstTimeVisit ? immediateSearch(finalParams) : debouncedSearch(finalParams);
+    firstTimeVisit = false;
+};
 
 function handleSlider(event) {
     const dataId = event.target.getAttribute('data-id');
@@ -928,11 +990,12 @@ function SubFiltersExist(){
 function PlaceSubFilters(filters){
     GenerateFilter(filters);
 }
-function PlaceSubFiltersByCache(filters){
-    console.log('cache filter retrieval triggered and its below')
-    console.log(filters)
+function PlaceSubFiltersByCache(){
+    const filtersFound = localStorage.getItem('cached-filters');
+    if (filtersFound){
+        GenerateFilter(JSON.parse(filtersFound))
+    }
 }
-
 
 setTimeout(() => {
     SetSearchValue();
@@ -989,6 +1052,14 @@ function AnimateLogo() {
     }
 }
 
+function SetPremiumFirst(element=null, selected){
+    const PremiumFirst = element || document.getElementById('PremiumFirst');
+    if(PremiumFirst){
+        const premiumSelected = PremiumFirst.classList.contains('active');
+        HandleFilterCheckbox(premiumSelected, 'Elite', 'Product', true)
+    }
+};
+
 function listenToFilters() {
     document.querySelectorAll('.filter-header').forEach(header => {
         header.addEventListener('click', () => {
@@ -1002,14 +1073,13 @@ function listenToFilters() {
                 content.style.maxHeight = content.scrollHeight + "px";
                 content.classList.add('open');
             }
-
             arrow.classList.toggle('up');
         });
     });
 
     document.querySelector('.toggle').addEventListener('click', function() {
-        console.log('Toggle clicked');
         this.classList.toggle('active');
+        SetPremiumFirst();
     });
 
     document.querySelectorAll('.filter-option').forEach(option => {
@@ -1019,7 +1089,7 @@ function listenToFilters() {
             checkbox.classList.toggle('checked');
             const filterData = checkbox.getAttribute('name')  
             const FilterParent = checkbox.getAttribute('data-parent') 
-            HandleFilterCheckbox(is_checked, filterData, FilterParent)
+            HandleFilterCheckbox(is_checked, filterData, FilterParent);
         });
     });
 
@@ -1039,29 +1109,35 @@ const validFilterData = (data) => typeof data === 'object';
 
 function GenerateFilter(filterData) {
     const filtersWindow = document.getElementById('FiltersBase');
+    const params = getUrlParams();
     if (!validFilterData(filterData) || !filtersWindow) {
         return console.log('invalid filter');
     }
 
     const generateParentFilter = (allFilters) => `<div class="filter-section additionalSubFilters">${allFilters}</div>`;
 
-        const generateFilterHeader = (headerName) => `
-            <div data-filtername="SubFilterElement" class="filter-header">
-                <h3>${headerName}</h3>
-                <span class="arrow"></span>
-            </div>`;
+    const generateFilterHeader = (headerName) => `
+        <div data-filtername="SubFilterElement" class="filter-header">
+            <h3>${headerName}</h3>
+            <span class="arrow"></span>
+        </div>`;
         
     const generateFilterBody = (filters) => `
         <div class="filter-content">
             ${filters}
         </div>`;
         
-    const generateFilterOption = (optionName, optionQuantity, parent) => `
-        <div class="filter-option">
-            <div name="${optionName}" data-parent="${parent}" class="checkbox"></div>
-            <span class="filter-name">${optionName}</span>
-            <span class="filter-count">${optionQuantity}</span>
-        </div>`;
+    const generateFilterOption = (optionName, optionQuantity, parent) => {
+        let optionSelected = false;
+        const currentSelected = params[parent];
+        if (currentSelected){const isSelected = currentSelected.includes(optionName); if(isSelected){optionSelected=true}}
+        return `
+            <div class="filter-option">
+                <div name="${optionName}" data-parent="${parent}" class="checkbox ${optionSelected ? 'checked' : ''}"></div>
+                <span class="filter-name">${optionName}</span>
+                <span class="filter-count">${optionQuantity}</span>
+            </div>`
+        ;}
         
     const FiltersCombined = Object.keys(filterData).map(each => {
         const filterHeader = each;
@@ -1070,7 +1146,7 @@ function GenerateFilter(filterData) {
             const option = headerFilters[each];
             const optionName = Object.keys(option)[0];
             const optionQuantity = option[optionName];
-            return generateFilterOption(optionName, optionQuantity, filterHeader);
+            return optionQuantity ? generateFilterOption(optionName, optionQuantity, filterHeader) : '';
         });
         const Filter = `
             ${generateFilterHeader(filterHeader)}
@@ -1080,7 +1156,8 @@ function GenerateFilter(filterData) {
     });
     
     const processedFilters = FiltersCombined.join('');
-    filtersWindow.innerHTML += processedFilters;
+    filtersWindow.insertAdjacentHTML('beforeend', processedFilters);
     listenToFilters();
 }
+
 TriggerFilter();

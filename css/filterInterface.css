@@ -12,9 +12,9 @@ body {
     width: 360px;
     overflow-y: scroll;
 }
-@media (max-width:767px){
+@media (max-width:769px){
     .filter-container{
-        min-height: 400px;
+        min-height: 380px;
         max-height: 500px;
     }
     #FilterSection{
@@ -22,10 +22,10 @@ body {
         display: flex;
         justify-content: center;
     }
-    #PriceFilterBoundary{height: 160px; min-width: 280px; padding: 15px;}
+    #PriceFilterBoundary{height: 160px; min-width: 90%; padding: 15px;}
 }
 
-@media (min-width:767px){
+@media (min-width:770px){
     .filter-container{
         min-height: 535px;
         max-height: 535px;
@@ -117,6 +117,11 @@ body {
     padding: 3px;
     transform: rotate(45deg);
     transition: 0.3s;
+}
+@media (min-width:1000px) and (max-wisth:1499px){
+    .arrow{
+        margin-right: 50px;
+    }
 }
 .arrow.up {
     transform: rotate(-135deg);
