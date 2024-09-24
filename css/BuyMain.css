@@ -70,7 +70,6 @@ main{
    width: 96%;;
 }
 
-
 .imgs-col{
    display: flex;
    flex-direction: column;
@@ -189,7 +188,7 @@ main{
 /*//////////////////////////////////////////////////////////// text Style ///////////////////////////////////////////////////////////////////////////*/
 .text-col{
  min-width: 95%;
- min-height: 500px;
+ min-height: 600px;
 }
 
 #highlight{
@@ -461,8 +460,9 @@ main{
 
 #commentsContent{
     animation: added-reverse 17s;
-    min-height: 361px;
-    max-height: 361px;
+    height: 320px;
+    max-height: 400px;
+    font-family: 'Poppins', sans-serif;
 }
 
 #SavingStatusBoundary{
@@ -512,7 +512,7 @@ main{
 .cart-button {
     position: relative;
     outline: 0;
-    background-color: blue;
+    background-color: #7b189f;
     color: #fff;
     border: none;
     height: 48px;
@@ -522,7 +522,11 @@ main{
     overflow: hidden;
     cursor: pointer
 }
-
+@media (max-width:330px){
+  .cart-button{
+    max-width: 135px;
+  }
+}
 .cart-button:focus {
     outline: none !important
 }
@@ -938,6 +942,7 @@ figure, header, nav, section, article, aside, footer, figcaption {
   padding: 0;
   border: 0;
   outline: 0;
+  max-width: 100%;
 }
 
 .background-header {
@@ -983,6 +988,7 @@ figure, header, nav, section, article, aside, footer, figcaption {
 .header-area .main-nav {
   min-height: 80px;
   background: transparent;
+  min-width: 100%;
 }
 
 .header-area .main-nav .logo {
@@ -1043,6 +1049,7 @@ figure, header, nav, section, article, aside, footer, figcaption {
   line-height: 40px;
   border: transparent;
   letter-spacing: 1px;
+  text-decoration: none;
 }
 
 .header-area .main-nav .nav li small {
@@ -1068,11 +1075,6 @@ figure, header, nav, section, article, aside, footer, figcaption {
 a.active{
   color: #aaa!important;
   opacity: 1;
-}
-
-.header-area .main-nav .nav li:hover a,
-.header-area .main-nav .nav li {
-  color: #ff9c62!important;
 }
 
 .background-header .main-nav .nav li:hover a,
@@ -1394,7 +1396,7 @@ a.active{
 
 @media (min-width: 767px) {
   .header-area .main-nav .nav {
-    display: flex !important;
+    /* display: flex !important; */
   }
 }
 
@@ -1552,7 +1554,19 @@ a.active{
   }
 }
 
-@media (max-width:767px){
+@media (max-width:460px){
+  main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin:0 2vw;
+    column-gap: 15px;
+    width: 96%;
+  }
+}
+
+@media (min-width:460px) and (max-width:767px){
   main{
     display: flex;
     flex-direction: column;
@@ -1601,4 +1615,107 @@ a.active{
     margin: auto;
     border: none;
   }
+}
+.star-rating {
+  display: inline-block;
+}
+
+.individual-star {
+  display: inline-block;
+  margin-right: 2px;
+  width: 24px;
+  height: 24px;
+}
+@media (min-width:287px) and (max-width:360px){
+  .individual-star{
+    width: 18px; height: 18px;
+  }
+}
+
+@media (max-width:286px){
+  .primary-star{display: none}
+};
+
+.individual-star svg {
+  width: 100%;
+  height: 100%;
+}
+.individual-star-review {
+  display: inline-block;
+  width: 21px;
+  height: 21px;
+  margin-right: 2px;
+}
+
+#ReviewsRatingInput div{
+  display: inline-block;
+}
+
+.reviews-members-body {
+  max-width: 100%;
+}
+
+.reviews-members-body p {
+  max-width: 100%;
+  display: inline-block;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.animateStar {
+  display: inline-block;
+  animation: growShrink 0.5s ease;
+}
+@keyframes growShrink {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.4);
+  }
+  100% {
+      transform: scale(1);
+  }
+}
+
+
+.reviewPoster{
+  width: calc(100% - 120px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+}
+.reviewPoster::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 50px;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+  pointer-events: none;
+}
+
+.hyper-sign{
+  cursor: pointer;
+}
+@media (max-width: 800px){
+  .hyper-sign{
+    background-color: #f7f7f7 !important;
+  }
+}
+.submenu ul{min-width: 180px;}
+#BrandsSection{
+  min-width: 180px;
+}
+
+.header-area .main-nav .nav li:hover a,
+.header-area .main-nav .nav li {
+  color: #ff9c62!important;
 }

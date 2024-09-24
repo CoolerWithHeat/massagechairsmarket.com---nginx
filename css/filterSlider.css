@@ -70,7 +70,7 @@
 
 }
 
-@media (min-width:770px) and (max-width:900px){
+@media (min-width:770px) and (max-width:899px){
   .MaxLabel, .MinLabel{
     background: #995afd;
     border-radius: 6px;
@@ -88,7 +88,7 @@
     height: 100%;
   }
   .filterWindow{
-      width: 39%;
+      width: 40%;
       position: fixed;
       left: 0;
   }
@@ -101,11 +101,11 @@
 @media (min-width:900px) and (max-width:1500px){
     .MaxLabel, .MinLabel{
       background: #995afd;
-      border-radius: 8px;
+      border-radius: 6px;
       color: white;
-      font-size: 15px;
-      width: 35px;
-      height: 12px;
+      font-size: 14px;
+      width: 30px;
+      max-height: 23px;
       text-align: center;
       display: none;
     }
@@ -116,12 +116,12 @@
         height: 100%;
     }
     .filterWindow{
-        width: 30%;
+        width: 35%;
         position: fixed;
         left: 0;
     }
     .ProductsListingWindow{
-        width: 67%;
+        width: 64%;
         margin-right: 15px;
     }
 }
@@ -268,7 +268,7 @@
   }
   
   .noUi-connect {
-    background: #904bff;
+    background: #995afd;
     -webkit-transition: background 450ms;
     transition: background 450ms;
   }

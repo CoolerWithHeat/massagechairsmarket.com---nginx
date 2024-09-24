@@ -1,10 +1,10 @@
 
 .button-23 {
   background-color: #FFFFFF;
-  border: 1px solid #222222;
+  border: 1px solid #FF0000;
   border-radius: 8px;
   box-sizing: border-box;
-  color: #222222;
+  color: #FF0000;
   cursor: pointer;
   display: inline-block;
   font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
@@ -25,21 +25,22 @@
 }
 
 .button-23:focus-visible {
-  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  box-shadow: #F7F7F7 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
   transition: box-shadow .2s;
 }
 
 .button-23:active {
   background-color: #F7F7F7;
-  border-color: #000000;
+  border-color: none;
   transform: scale(.96);
 }
 
 .button-23:disabled {
-  border-color: #DDDDDD;
+  border-color: #ffffff;
   color: #DDDDDD;
   cursor: not-allowed;
   opacity: 1;
+  border-style: none;
 }
 
 #errorCard{
@@ -185,3 +186,24 @@
     background: linear-gradient(90deg, yellow, transparent);
     z-index: 1;
   }
+
+  .review-button {
+    background-color: #8A2BE2;
+    color: white;
+    font-weight: bold;
+    padding: 9px 9px;
+    border-radius: 9999px;
+    border: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.review-button:hover {
+    background-color: #7B1FA2;
+}
+.review-button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}

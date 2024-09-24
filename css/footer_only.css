@@ -66,3 +66,20 @@ footer {
     color: #c66;
   }
   
+@media (max-width: 767px) {
+    .main-banner .left-content .thumb .inner-content {
+      left: 50%;
+      top: 47.5%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+    }
+    .subscribe form button {
+      width: 100%;
+    }
+    footer {
+      text-align: center;
+    }
+    footer h4 {
+      margin-top: 30px;
+    }
+}

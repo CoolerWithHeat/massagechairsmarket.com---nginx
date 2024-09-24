@@ -142,12 +142,14 @@ function searchAlgoliaWithParams(RequestedProperties){
                 UpdateLoadingStatus(true);
                 if (hits.length) {
                     removeNoResultMessage();
+                    let processedProducts = [];
                     hits.forEach(Each => {
                         if (!filtersReady){if (Each.FilterOptions) PlaceSubFilters(Each.FilterOptions); PlaceBrandsAvailable(Each.FilterOptions.Brands); SaveSubfilterCached(hits); filtersReady=true};
-                        const container = EnableErrorForProductContainer(false);
                         const product = extractProductData(Each);
-                        container.innerHTML += product;
+                        processedProducts.push(product)
                     });
+                    const container = EnableErrorForProductContainer(false);
+                    if (processedProducts.length){container.innerHTML = processedProducts.join('');}
                     setTimeout(() => {
                         SetProductCard();
                     }, 699);
@@ -1021,7 +1023,7 @@ function EnableDiscountBanner(discountData={}){
     if (available('importCSS') && available('importScript') ){
         importScript('https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js', 'application/javascript')
         importCSS('/static/css/EmailSubscription.css')
-        importScript('/static/js/DiscountOffer.js', ()=>{setTimeout(() => {DecideIfDiscountNeeded(discountData)}, 299);})
+        importScript('/static/js/DiscountOffer.js', ()=>{setTimeout(() => {DecideIfDiscountNeeded(discountData)}, 299);});
     }else{
         console.log('importCSS and importScript fetchers should be available first !!!')
     }

@@ -6,6 +6,12 @@
     }
     .ratingsSign{
         padding: 15px;
+        display: flex;
+        justify-content: left;
+        flex-wrap: wrap;
+    }
+    .ratingsSign .star-rating{
+        margin-top: 5px;
     }
 }
 
@@ -102,7 +108,7 @@
 
 .bar-container {
     width: 100%;
-    background-color: #bdbdbd;
+    background-color: #c7c7c7;
     text-align: center;
     color: white;
     border-radius: 15px;
@@ -130,6 +136,6 @@
     }
     100% {
       width: var(--progress);
-      background-color: #7f187f;
+      background-color: #7b189f;
     }
   }

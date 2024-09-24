@@ -163,8 +163,8 @@ body {
     justify-content: center;
 }
 .checkbox.checked {
-    background-color: #6200ee;
-    border-color: #6200ee;
+    background-color: #995afd;
+    border-color: #995afd;
 }
 .checkbox.checked::after {
     content: '';

@@ -1282,7 +1282,7 @@ Products Page
 }
 
 #products .item .down-content h4 {
-  font-size: 22px;
+  font-size: 21px;
   color: #2a2a2a;
   font-weight: 700;
   margin-bottom: 8px;
@@ -2219,13 +2219,20 @@ contact Us Page
   font-family: Arial, sans-serif;
   font-size: 16px;
   text-align: center;
+  cursor: pointer;
 }
 
+@media (max-width: 800px){
+  .hyper-sign{
+    background-color: #f7f7f7 !important;
+  }
+}
 @media (min-width: 800px){
   .hyper-sign{
     padding-right: 15px;
   }
 }
+
 .hyper-sign::after {
   content: "";
   position: absolute;
@@ -2234,13 +2241,25 @@ contact Us Page
   transform: translateY(-50%) rotate(45deg);
   width: 6px;
   height: 6px;
-  border-right: 2px solid black; /* Line color */
-  border-bottom: 2px solid black; /* Line color */
-  margin-left: 5px; /* Space between text and arrow */
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  margin-left: 5px;
 }
 
 @media (max-width:800px){
   .hyper-sign::after {
     right: 2%;
   }
+};
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.FadeSlowly{
+  animation: fadeOut 0.7s forwards;
 };

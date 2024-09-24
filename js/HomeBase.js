@@ -1,4 +1,6 @@
 function createSlug(title) {return title.trim().toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');}
+const available = (functionName) => typeof window[functionName] === 'function';
+let newCustomersDiscount = null;
 window.addEventListener('load', function() {
     var cover = document.querySelector('.cover');
     if (cover) {
@@ -365,18 +367,53 @@ const GenerateProducts = (productData) => {
     return null
 }
 
+function handlePromotion(id, op) {
+    const key = 'promoData';
+    const ms24h = 24 * 60 * 60 * 1000;
+    id = String(id);
+    if (op === 'store') {
+        localStorage.setItem(key, JSON.stringify({ id, t: Date.now() }));
+    } else if (op === 'check') {
+        const data = JSON.parse(localStorage.getItem(key));
+        if (!data) {
+            return true;
+        }
+        if (data.id === id) {
+            return (Date.now() - data.t) >= ms24h;
+        } else {
+            return true;
+        }
+    }
+}
+
+
 function HandlePageDetails(data) {
     const products = data.products || [];
     const partners = data.partners || [];
     const received_discounts = data.available_discounts;
-    const contact_information = data.company_contact
-    localStorage.setItem('SavedDiscounts', JSON.stringify(received_discounts))
+    const contact_information = data.company_contact;
+    localStorage.setItem('SavedDiscounts', JSON.stringify(received_discounts));
     PlaceContactInformation(contact_information);
     localStorage.setItem('cached-brands', (data.brand_names || []))
-    if (data.brand_names) { PlaceBrandsAvailable(data.brand_names) }
-    if (received_discounts.new_customers_discount) {
-        EnableDiscountBanner(received_discounts.new_customers_discount);
-        SetMembershipBenifits(received_discounts.new_customers_discount.discount_amount, received_discounts.new_customers_discount.discount_type);
+    if (data.brand_names) { PlaceBrandsAvailable(data.brand_names)};
+    if (received_discounts) {
+        let offer_done = false;
+        if (received_discounts.special_event){
+            const eventID = received_discounts.special_event.identifier;
+            const okeyToShow = handlePromotion(eventID, 'check');
+            console.log(okeyToShow ? 'showing offer' : 'ignoring offer')
+            if(okeyToShow){
+                importScript('/static/js/SpecialEvent.js', ()=>showPromotion(received_discounts.special_event, ()=>handlePromotion(eventID, 'store')));
+                offer_done = true;
+            }
+        };
+        if(received_discounts.new_customers_discount){
+            newCustomersDiscount = received_discounts.new_customers_discount;
+            SetMembershipBenifits(received_discounts.new_customers_discount.discount_amount, received_discounts.new_customers_discount.discount_type);
+        };
+        if ((received_discounts.new_customers_discount) && (!offer_done)) {
+            EnableDiscountBanner(received_discounts.new_customers_discount);
+        };
     }
     if (products.length) {
         const ProductCards = GenerateProducts(products);
@@ -449,7 +486,6 @@ const AnimateBrands = () => {
 };
 
 function EnableDiscountBanner(discountData) {
-    const available = (functionName) => typeof window[functionName] === 'function';
     if (available('importCSS') && available('importScript')) {
         importScript('https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js')
         importCSS('static/css/EmailSubscription.css')
@@ -461,10 +497,16 @@ function EnableDiscountBanner(discountData) {
 
 function ManualBannerTrigger() {
     window.recordEvent('Button', 'Discount Offer Button')
-    const discounts = localStorage.getItem('SavedDiscounts')
-    const NewUsersDiscount = discounts ? JSON.parse(discounts) : null
-    if (NewUsersDiscount) {
-        ShowDiscountOffer(NewUsersDiscount.new_customers_discount);
+    if (newCustomersDiscount) {
+        if(!(available('ShowDiscountOffer'))){
+            importScript('https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js')
+            importCSS('static/css/EmailSubscription.css')
+            importScript('/static/js/DiscountOffer.js', ()=>{
+                ShowDiscountOffer(newCustomersDiscount);
+            })
+        }else{
+            ShowDiscountOffer(newCustomersDiscount);
+        }
     }
 };
 

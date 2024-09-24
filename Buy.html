@@ -10,10 +10,10 @@
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link preload rel="stylesheet" href="/static/css/BuyMain.css">
     <link rel="preconnect" href="https://massagechairs.s3.amazonaws.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 </head>
 
 <body>
-
     <div id="preloader">
         <div class="jumper">
             <div></div>
@@ -21,10 +21,9 @@
             <div></div>
         </div>  
     </div>
-
     <header class="header-area header-sticky">
         <div class="container">
-            <div class="row">
+            <div style="min-width: 106%;" class="row">
                 <div class="col-12">
                     <nav class="main-nav">
 
@@ -137,8 +136,6 @@
 
         </main>
         <div id="ShowcaseHub"></div>
-        <br>
-        <br>
         <div id="RatingLoadingWindow"></div>
         <div id="RatingsClosure"></div>
         <hr style="border:3px solid #f1f1f1">
@@ -181,6 +178,7 @@
                 if (callback){callback()}
             }
 		};
+
         importScript('/static/js/custom.js')
         importCSS('/static/css/comments.css')
         importCSS('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap')
@@ -188,12 +186,12 @@
         importCSS('/static/css/ratings.css')
         importCSS('/static/css/CartAnimation.css')
         importCSS('/static/css/productDescriptionStyle.css')
-
         importCSS('https://cdn.jsdelivr.net/npm/@mdi/font@5.4.55/css/materialdesignicons.min.css')
         importCSS('/static/css/cart.css')
         importCSS('/static/css/slider.css')
         importCSS('/static/css/custombuttons.css')
         importCSS('/static/css/warnings.css')
+        importCSS('/static/css/reviewForm.css')
         importCSS('/static/css/skeletonLoading.css')
         importScript('/static/js/Buy_Base.js')
         importScript('/static/js/analytics.js')

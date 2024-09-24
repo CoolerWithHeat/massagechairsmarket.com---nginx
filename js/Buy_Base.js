@@ -1,4 +1,5 @@
 window.recordEvent = ()=>{};
+customer_posted = false;
 function RecordAction(action_index) {
     const indices = {
         1: 'add_to_cart',
@@ -75,6 +76,26 @@ window.addEventListener('DOMContentLoaded', function () {
         logoElement.classList.remove('active');
     }, 1699);
 });
+
+function SetBorderColors(){
+    const SetBorderGlow = (field)=>{
+        if (field){
+            field.addEventListener("focus", function() {
+                field.style.boxShadow = "none";
+                field.style.borderRadius = '5px';
+                field.style.borderWidth = '1px';
+                field.style.borderColor = '#9e9e9e';
+              });
+            field.addEventListener("blur", function() {
+                field.style.boxShadow = "";
+            });
+        };
+    };
+    const nameField = document.getElementById("Namefield");
+    const commentField = document.getElementById("UserTextfield");
+    SetBorderGlow(nameField);
+    SetBorderGlow(commentField);
+};
 
 function setProductMetaTags(metaData){function setMetaTag(name,content){let tag=document.querySelector(`meta[name="${name}"]`);if(tag){tag.setAttribute('content',content);}else{tag=document.createElement('meta');tag.setAttribute('name',name);tag.setAttribute('content',content);document.head.appendChild(tag);}}function setOgTag(property,content){let tag=document.querySelector(`meta[property="${property}"]`);if(tag){tag.setAttribute('content',content);}else{tag=document.createElement('meta');tag.setAttribute('property',property);tag.setAttribute('content',content);document.head.appendChild(tag);}}if(metaData.meta_description){setMetaTag('description',metaData.meta_description);}if(metaData.meta_keywords){setMetaTag('keywords',metaData.meta_keywords);}if(metaData.og_title){setOgTag('og:title',metaData.og_title);}if(metaData.og_description){setOgTag('og:description',metaData.og_description);}if(metaData.og_image){setOgTag('og:image',metaData.og_image);}if(metaData.og_url){setOgTag('og:url',metaData.og_url||window.location.href);}if(metaData.og_type){setOgTag('og:type',metaData.og_type);}}
 
@@ -170,37 +191,6 @@ const fadeAwayText = (div, fadeout = true) => {
             div.classList.add('defaultCartState')
     }
 }
-
-const ResetCommentFields = () => {
-    const window = document.getElementById('commentsBoundary');
-    const DefaultStructure = `
-        <div id="SavingStatusBoundary"></div>  
-        <div id="commentsContent">
-                <h5 class="mb-4">Leave a Review</h5>
-                <p class="mb-2">Rate Our Chair</p>
-                    <div style="cursor: pointer; width: 135px;" class="mb-4">
-                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='1' class="fa fa-star"></span>
-                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='2' class="fa fa-star"></span>
-                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='3' class="fa fa-star"></span>
-                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='4' class="fa fa-star"></span>
-                        <span data-endpoint="0" onclick="SelectRate(event);" data-rate='5' class="fa fa-star"></span>
-                    </div>
-                <form>
-                    <div class="form-group">
-                        <label>Your Name</label>
-                        <input id="Namefield" style="width: 175px;" class="form-control"></input>
-                        <label>Your Comment</label>
-                        <textarea id="UserTextfield" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <button onclick="SubmitReview();" class="button-23" type="button"> Submit </button>
-                    </div>
-                </form>  
-        </div>
-    `;
-    if (window)
-        window.innerHTML = DefaultStructure;
-}
 function debounce(func, delay) {
     let timeoutId;
     return function(...args) {
@@ -286,12 +276,14 @@ const SelectRate = (propertyBase) => {
     }
 }
 
-const GetRate = () => {
-    const search = document.querySelectorAll('[data-endpoint="1"]');
-    const rateTag = search.length > 0 ? search[search.length - 1] : null;
-    const FinalRate = rateTag ? rateTag.dataset.rate : null;
-    return FinalRate ? FinalRate : 0;
-}
+function GetRate(){
+    const ratingData = document.querySelector('[data-selected-rate="true"]');
+    if (ratingData){
+        const selectedRate = ratingData.getAttribute('data-rate');
+        return selectedRate || 0;
+    }
+    return 0;
+};
 
 const GetName = () => {
     const field = document.getElementById('Namefield');
@@ -330,16 +322,15 @@ async function MakeRequest(pathname, body, type, callback, additional_callback=n
 }
 
 function SubmitReview() {
-    const wholeWindow = document.getElementById('commentsBoundary');
     const statusWindow = document.getElementById('SavingStatusBoundary');
     const commentsField = document.getElementById('commentsContent');
-    const Button = document.getElementById('EnablerButton');
-    const errorField = document.getElementById('errorMessage');
     const product_rate = GetRate();
     const name = GetName();
     const text = GetText();
     function placeNewReview(response){
+        if (!response){return 'failed'};
         if (response.is_the_first){
+            customer_posted =  true;
             setTimeout(() => {
                 EnableLoading(false);
             }, 699);
@@ -354,28 +345,25 @@ function SubmitReview() {
                 ManageRatingAndReviews();
             }, 2399);
         }
-    else{
-            setTimeout(() => {
-                    EnableLoading(false);
-                    LetKnowSuccess();
-                    placeReviews([response], false)
-                    UpdateFilteredReviews(response)
-                }, 699);
-            
-            setTimeout(() => {
-                LetKnowSuccess(false);
-            }, 1999);
+        else{
+                setTimeout(() => {
+                        EnableLoading(false);
+                        LetKnowSuccess();
+                        placeReviews([response], false)
+                        UpdateFilteredReviews(response)
+                    }, 699);
                 
-        }
+                setTimeout(() => {
+                    LetKnowSuccess(false);
+                }, 1999);
+            }
     }
     if (product_rate && name) {
         EnableLoading();
         CloseAlert();
-        const path = window.location.pathname;
         const product_path = `/RecordReview/${product_id}/`;
         const expectedForm = {rate: product_rate, sender_name: name};
         if ((text instanceof String) && (text.length)){expectedForm[text] = text;}
-        console.log(expectedForm)
         statusWindow.style.display = 'block';
         commentsField.style.display = 'none';
         const poster_text_exists = text && String(text).length
@@ -387,6 +375,8 @@ function SubmitReview() {
         }
         MakeRequest(product_path, prepared_data, 'POST', placeNewReview)
     } else {
+        const errorField = document.getElementById('errorMessage');
+        errorField.classList.remove('popDissappear');
         errorField.style.removeProperty('display');
         setTimeout(() => {
             window.scrollTo({
@@ -412,7 +402,12 @@ const enableComments = (event) => {
                 top: document.body.scrollHeight,
                 behavior: 'smooth',
             });
-        }, 777);
+            SetBorderColors();
+            ResizeReviewArea();
+            setTimeout(() => {
+                AnimateStars();
+            }, 699);
+        }, 399);
         setTimeout(() => {
             loader.classList.remove('loader');
         }, 999);
@@ -582,16 +577,30 @@ const generateStar = (lit_up = true, forGeneral = false) => {
     }
 };
 
-const makeGeneralStar = (max_rate) => {
-    var stringStars = ``;
-    const needHalf = max_rate % 1 !== 0;
-    const maxRate = Number(max_rate);
-    for (let rate = 1; rate <= maxRate; rate++) {
-        stringStars += generateOverviewStar(false);
+const makeGeneralStar = (rating, forReview=false, primary=false) => {
+    const full_star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>`;
+    const half_star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M288 376.4l.1-.1 26.4 14.1 85.2 45.5-16.5-97.6-4.8-28.7 20.7-20.5 70.1-69.3-96.1-14.2-29.3-4.3-12.9-26.6L288.1 86.9l-.1 .3 0 289.2zm175.1 98.3c2 12-3 24.2-12.9 31.3s-23 8-33.8 2.3L288.1 439.8 159.8 508.3C149 514 135.9 513.1 126 506s-14.9-19.3-12.9-31.3L137.8 329 33.6 225.9c-8.6-8.5-11.7-21.2-7.9-32.7s13.7-19.9 25.7-21.7L195 150.3 259.4 18c5.4-11 16.5-18 28.8-18s23.4 7 28.8 18l64.3 132.3 143.6 21.2c12 1.8 22 10.2 25.7 21.7s.7 24.2-7.9 32.7L438.5 329l24.6 145.7z"/></svg>`;
+    const empty_star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/></svg>`;
+
+    const maxStars = 5;
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 > 0;
+    const review_class = 'individual-star-review';
+    const header_class = 'individual-star';
+    const object_class = forReview ? review_class : primary ? `${header_class} primary-star` : header_class;
+    let starsHtml = '';
+    for (let i = 1; i <= maxStars; i++) {
+        if (i <= fullStars) {
+            starsHtml += `<span class="${object_class}">${full_star}</span>`;
+        } else if (i === fullStars + 1 && hasHalfStar) {
+            starsHtml += `<span class="${object_class}">${half_star}</span>`;
+        } else {
+            starsHtml += `<span class="${object_class}">${empty_star}</span>`;
+        }
     }
-    if (needHalf)
-        stringStars += generateOverviewStar(true);
-    return stringStars;
+    
+    return `<div class="star-rating">${starsHtml}</div>`;
+
 };
 
 const makeStar = (max_rate) => {
@@ -640,7 +649,7 @@ const placeReviews = (reviewsList, clearFirst=true) => {
                 const likes_and_dislikes = Each.customers_reaction;
                 const review_id = Each.id;
                 const date = formatDate(Each.posted_date)
-                const stars = makeGeneralStar(Each.customer_rate);
+                const stars = makeGeneralStar(Each.customer_rate, true);
                 const Review = `
                     <div id="${highlight}" class="reviews-members pt-4 pb-4">
                         <div class="media">
@@ -651,7 +660,7 @@ const placeReviews = (reviewsList, clearFirst=true) => {
                                             ${stars}
                                         </div>
                                     </span>
-                                    <h6 class="mb-1"><a class="text-black" href="#">${Each.poster}</a></h6>
+                                    <h6 class="mb-1 reviewPoster">${Each.poster}</p></h6>
                                     ${Each.poster_location ? `<h6 style="font-size: 11px;" class="mb-1"><a class="text-black" href="#">${Each.poster_location}</a></h6>` : ''}
                                     <p class="text-gray">${date}</p>
                                 </div>
@@ -735,15 +744,53 @@ const SetLoading = (Enable = true) => {
     SkilitonWindow.innerHTML = SkilitonBody;
 }
 
+function hoverRating(hoveredRating=0){
+    const startParent = document.getElementById('ReviewsRatingInput');
+    const stars = startParent.querySelectorAll('svg');
+    const full_star_path = `M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z`;
+    const empty_star_path = `M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z`;
+    stars.forEach((each_star, index)=>{
+        each_star.removeAttribute('data-selected-rate')
+        const rating = Number(each_star.getAttribute('data-rate') || 0);
+        each_star.querySelectorAll('path').forEach((path) => {
+            if (rating <= hoveredRating){path.setAttribute('d', full_star_path);}
+            else{path.setAttribute('d', empty_star_path);}
+        });
+        if(rating == hoveredRating){each_star.setAttribute('data-selected-rate', true);}
+    })
+};
 
-function setDownBelowPage(CommentsExist = true) {
-    try{window.recordEvent('interaction', 'scrolled till reviews')}catch{}
+function removeStarListeners() {
+    for (let i = 1; i <= 5; i++) {
+        const starElement = document.querySelector(`[data-position="${i}"]`);
+        starElement.removeEventListener('mouseover', starElement.hoverHandler);
+        starElement.removeEventListener('mouseout', starElement.hoverOutHandler);
+    }
+}
+
+function setRatingHover() {
+    for (let i = 1; i <= 5; i++) {
+        const starElement = document.querySelector(`[data-position="${i}"]`);
+        const starRating = Number(starElement.getAttribute('data-rate'));
+        starElement.hoverHandler = () => hoverRating(starRating);
+        starElement.hoverOutHandler = () => hoverRating(0);
+        starElement.addEventListener('mouseover', starElement.hoverHandler);
+        starElement.addEventListener('mouseout', starElement.hoverOutHandler);
+        starElement.addEventListener('click', () => AdjustRating(starRating));
+        starElement.addEventListener('click', removeStarListeners);
+    }
+}
+
+
+function setDownBelowPage(CommentsExist = true, post_restricted=false) {
+    const empty_star = (star_index=1)=>`<svg data-position='${star_index}' data-rate='${star_index}' style="width:22px; height:22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/></svg>`;
+    try{window.recordEvent('interaction', 'scrolled till reviews')}catch{};
     const reviewsSection = document.getElementById('ReviewsBody');
     const ReviewsHeader = `
         <div class="tab-pane fade active show" id="pills-reviews" role="tabpanel"
             aria-labelledby="pills-reviews-tab">
             <div id="ReviewsWindow"
-                class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                class="bg-white rounded shadow-sm mb-4 restaurant-detailed-ratings-and-reviews">
                 ${CommentsExist ? `<a onclick="FilterReviews();" class="btn btn-outline-primary btn-sm float-right">Top Rated</a>` : ''}
                 ${CommentsExist ? `<h5 class="mb-1">All Ratings and Reviews</h5><br><hr>` : ''}
                 <div id="user-reviews"></div>
@@ -752,10 +799,14 @@ function setDownBelowPage(CommentsExist = true) {
     `;
     const reviewsButton = `
         <div id="commentsbutton">
-            <button id="EnablerButton" onclick="enableComments(event);" class="button-23" role="button">${CommentsExist ? 'Leave a Review' : 'Be The First To Review'}</button>
+            <button style="padding: ${CommentsExist ? '11px 11px' : '9px 9px'}" id="EnablerButton" onclick="enableComments(event);" class="review-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                ${CommentsExist ? 'Leave a Review' : 'Be The First To Review'}
+            </button>
             <div id="loader" class="loaderdisabled"></div>
         </div>
-        <br>
     `;
     const errorWindowBody = `
         <div style="display: none; margin: auto;" id="errorMessage">
@@ -784,33 +835,47 @@ function setDownBelowPage(CommentsExist = true) {
         <div id="commentsBoundary" class='invisibleField'>
             <div id="SavingStatusBoundary"></div>
             <div id="commentsContent">
-                <h5 class="mb-4">Leave a Review</h5>
-                <p class="mb-2">Rate Our Chair</p>
-                <div style="cursor: pointer; width: 135px;" class="mb-4">
-                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='1' class="fa fa-star"></span>
-                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='2' class="fa fa-star"></span>
-                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='3' class="fa fa-star"></span>
-                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='4' class="fa fa-star"></span>
-                    <span data-endpoint="0" onclick="SelectRate(event);" data-rate='5' class="fa fa-star"></span>
+                <h5 class="fw-bold mb-4"">Leave a Review</h5>
+                <p class="fw-bold mb-2">Rate Our Chair</p>
+                <div id="ReviewsRatingInput" style="cursor: pointer; width: 135px;" class="mb-4">
+                    ${empty_star(1)}
+                    ${empty_star(2)}
+                    ${empty_star(3)}
+                    ${empty_star(4)}
+                    ${empty_star(5)}
                 </div>
-                <form>
-                    <div class="form-group">
-                        <label>Your Name</label>
-                        <input id="Namefield" style="width: 175px;" class="form-control"></input>
-                        <label>Your Comment</label>
-                        <textarea id="UserTextfield" class="form-control"></textarea>
+                <div class="form-group">
+                    <div class="review-form1">
+                        <input maxlength="35" id="Namefield" type="text" name="text" autocomplete="off" required />
+                        <label for="text" class="label-name">
+                        <span class="content-name">
+                            Your Name
+                        </span>
+                        </label>
                     </div>
-                    <div class="form-group">
-                        <button onclick="SubmitReview();" class="button-23" type="button"> Submit </button>
+                    <div class="review-form2">
+                        <textarea id="UserTextfield" placeholder=" "></textarea>
+                        <label for="review">Your Review</label>
                     </div>
-                </form>
+                </div>
+                <div class="form-group">
+                    <button style="padding: 10px 11px;" onclick="SubmitReview();" class="review-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        Submit
+                    </button>
+                </div>
             </div>
             <br>
     `;
     reviewsSection.innerHTML += ReviewsHeader
-    reviewsSection.innerHTML += reviewsButton
+    if (!post_restricted){reviewsSection.innerHTML += reviewsButton}
     reviewsSection.innerHTML += errorWindowBody
     reviewsSection.innerHTML += CommentLeavingPanel
+    setTimeout(() => {
+        setRatingHover();
+    }, 99);
 }
 
 function sortReviewsByRating(reviews) {
@@ -833,14 +898,15 @@ function setRating(data) {
     const rate = rateBase[0];
     const reviews_count = rateBase[1];
     const ratingRations = getRation(reviews);
-    const overviewStars = makeGeneralStar(rate);
+    const overviewStars = makeGeneralStar(rate, true, false);
+    const headerStars = makeGeneralStar(rate, false, true);
     const percentages = calculatePercentages(reviews_count, ratingRations);
     const sortedReviews = getPercentRation(reviews);
     const ratingStructure = `
         <div class="ratingsSign">
             <span class="heading">User Rating</span>
-            ${overviewStars}
-            <p>${rate} average based on ${reviews_count} reviews.</p>
+            ${headerStars}
+            <p id="ratingInsight">${rate} average based on ${reviews_count} reviews.</p>
         </div>
         <div class="ratings">
             <div class="firstReviewSection">
@@ -921,7 +987,7 @@ function setRating(data) {
 function PlaceCommentProcessingLoading() {
     const window = document.getElementById('user-reviews')
     const loading = `
-        <div id="status-loader" class="loader"></div>
+        <div style="margin-top:25px;" class="loader"></div>
     `
     window.innerHTML = loading;
 }
@@ -1108,7 +1174,6 @@ function UpdateFilteredReviews(newReview){
     localStorage.setItem('filteredReviews', JSON.stringify(updatedReviews))
 }
 
-
 function FilterReviews() {
     window.recordEvent('button', 'top reviews filter')
     const data = localStorage.getItem('filteredReviews')
@@ -1117,7 +1182,7 @@ function FilterReviews() {
         PlaceCommentProcessingLoading();
         setTimeout(() => {
             placeReviews(processed_data);
-        }, 777);
+        }, 599);
 }
 
 const ManageRatingAndReviews = (callback=null, additional_callback=null)=>{
@@ -1126,7 +1191,7 @@ const ManageRatingAndReviews = (callback=null, additional_callback=null)=>{
         if (data.length){
             setTimeout(() => {
                 SetLoading(false);
-                setDownBelowPage(data.length);
+                setDownBelowPage(data.length, customer_posted);
                 setRating(data);
             }, 0);
         }
@@ -1481,7 +1546,6 @@ const ButtonStatus = (animate=true, deanimate=false, add_status_text=false)=>{
     }
 };
 
-
 function loadReviewsWhenInterested(){
     const targetElement = document.getElementById('RevealTriggerPoint');
     const secondaryDesktopWindow = document.getElementById('imagesScrollableWindow');
@@ -1510,6 +1574,43 @@ function loadReviewsWhenInterested(){
     }
     window.addEventListener('scroll', TriggerReviews);
 }
+
+function AdjustRating(selectedRate=4){
+    removeStarListeners();
+    const startParent = document.getElementById('ReviewsRatingInput');
+    const stars = startParent.querySelectorAll('svg');
+    const full_star_path = `M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z`;
+    const empty_star_path = `M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z`;
+    stars.forEach((each_star, index)=>{
+        const rating = Number(each_star.getAttribute('data-rate') || 0);
+        each_star.querySelectorAll('path').forEach((path) => {
+            if (rating <= selectedRate){path.setAttribute('d', full_star_path);}
+            else{path.setAttribute('d', empty_star_path);}
+        });
+        if(rating == selectedRate){each_star.setAttribute('data-selected-rate', true);}
+    })
+};
+
+function AnimateStars(){
+    for (let rate=1; rate <= 5; rate++){
+        const star = document.querySelector(`[data-rate="${rate}"]`);
+        setTimeout(() => {
+            star.classList.remove('animateStar');
+            star.classList.add('animateStar');
+        }, rate == 1 ? 0 : (129 * (rate-1)));
+    }
+};
+
+function ResizeReviewArea(){
+    const textarea = document.getElementById('UserTextfield');
+    function resizeTextarea() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+    resizeTextarea();
+    textarea.addEventListener('input', resizeTextarea);
+};
+
 setTimeout(() => {
     AnimateLogo();
 }, 999);

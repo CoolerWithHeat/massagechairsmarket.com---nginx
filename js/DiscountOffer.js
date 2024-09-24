@@ -6,12 +6,13 @@ const GetOfferId = ()=>{
 
 function PriorityPanel(data=null, enable=true, closed_immediately=false){
     const panel = document.getElementById('OfferPanel');
-    if (data && enable){
+    if (data && panel && enable){
+        panel.removeAttribute('style');
         panel.classList.remove('DeanimatedAppear')
         panel.classList.remove('HideIt');
         panel.innerHTML = data;
     }
-    if (!enable){
+    if (!enable && panel){
         panel.classList.add('DeanimatedAppear')
         setTimeout(() => {
             panel.innerHTML = '';
@@ -86,7 +87,7 @@ const HandleEmailEvent = ()=>{
     const email = document.querySelector('#e-mail');
     const update = document.querySelector('.emailbutton');
 
-    email.addEventListener('input', inputEmail);
+    if(email){email.addEventListener('input', inputEmail);}
 
     function inputEmail(e) {
         const input = e.target.value;
@@ -118,7 +119,7 @@ function DiscountError(errorText){
     const MessageWindow = document.getElementById('OfferPanel');
     const structure = `
         <div class="wholeoffercard">
-            <div class="">
+            <div>
                 <div class="row justify justify-content-center">
                     <div class="col-12 col-md-10 col-lg-9 col-xl-8">
                         <div class="offer-card">
@@ -366,7 +367,6 @@ function WasPreviousSuccess(){
 
 function DecideIfDiscountNeeded(offer){
     let previously_acted = localStorage.getItem('userInfo');
-    console.log(previously_acted);
     previously_acted = previously_acted ? JSON.parse(previously_acted) : null;
     const previousRedeemded = WasPreviousSuccess();
     if (previously_acted && !previousRedeemded){
