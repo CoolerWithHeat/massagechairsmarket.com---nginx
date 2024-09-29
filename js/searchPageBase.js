@@ -423,7 +423,6 @@ function RedirectToReviews(url, product_title=null){
     window.location.href = url;
 };
 
-
 function addPriceFilters(maxPrice, minPrice = 0) {
     if (maxPrice){
         setUrlParam('maxPrice', maxPrice || 16000, false, true);

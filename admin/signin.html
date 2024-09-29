@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="images/favicon.svg" type="image/x-icon" />
+    <title>Sign In | PlainAdmin Demo</title>
+
+    <!-- ========== All CSS files linkup ========= -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/lineicons.css" />
+    <link rel="stylesheet" href="css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="css/fullcalendar.css" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <!-- ======== Preloader =========== -->
+    <div id="preloader">
+      <div class="spinner"></div>
+    </div>
+    <div id="MessagesWindow"></div>
+    <section class="signin-section">
+      <div class="container-fluid">
+        <!-- ========== title-wrapper start ========== -->
+        <div class="title-wrapper pt-30">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="title">
+                <h2>Sign in</h2>
+              </div>
+            </div>
+            <!-- end col -->
+            <!-- end col -->
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- ========== title-wrapper end ========== -->
+
+        <div class="row g-0 auth-row">
+          <div class="col-lg-6">
+            <div class="auth-cover-wrapper bg-primary-100">
+              <div class="auth-cover">
+                <div class="title text-center">
+                  <h1 class="text-primary mb-10">Welcome Back</h1>
+                  <p class="text-medium">
+                    Sign in to your admin account to continue
+                  </p>
+                </div>
+                <div class="cover-image">
+                  <img src="images/signin-image.svg" alt="" />
+                </div>
+                <div class="shape-image">
+                  <img src="images/shape.svg" alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end col -->
+          <div class="col-lg-6">
+            <div class="signin-wrapper">
+              <div class="form-wrapper">
+                <h6 class="mb-15">Sign In</h6>
+                <p class="text-sm mb-25">
+                  MassageChairsMarket administration
+                </p>
+                <form action="#">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="input-style-1">
+                        <label>Email</label>
+                        <input id="EmailField" type="email" placeholder="Email" />
+                      </div>
+                    </div>
+                    <!-- end col -->
+                    <div class="col-12">
+                      <div class="input-style-1">
+                        <label>Password</label>
+                        <input id="PasswordField" type="password" placeholder="Password" />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="button-group d-flex justify-content-center flex-wrap">
+                        <button onclick="ValidateAndSubmit(event);" class="main-btn primary-btn btn-hover w-100 text-center">
+                          Sign In
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end row -->
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- end col -->
+        </div>
+        <!-- end row -->
+      </div>
+    </section>
+    <script src="js/Globals.js"></script>
+     <script>
+        const preloader = document.querySelectorAll('#preloader')
+        window.addEventListener('load', function () {
+          if (preloader.length) {
+            this.document.getElementById('preloader').style.display = 'none'
+          }
+        })
+        const ValidateData = ()=>{
+          const emailField = document.getElementById('EmailField');
+          const passwordField = document.getElementById('PasswordField');
+          if (emailField && passwordField){
+            const email = emailField.value;
+            const password = passwordField.value;
+            return (email.includes('@') && String(password).length) ? {email, password} : null;
+          }
+        };
+        function debounceImmediate(func, wait) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                if (!timeout) {
+                    func.apply(context, args);
+                }
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    timeout = null;
+                }, wait);
+            };
+        }
+        function ValidateAndSubmit(event){
+          event.preventDefault();
+          const dataToSubmit = ValidateData();
+          if (!dataToSubmit) {
+              ShowMessage('error', 'Invalid Credentials!');
+              return '';
+        }
+
+        const doAfter = (response) => {
+            console.log(response);
+            if (response && response.token) {
+              localStorage.setItem('MC-admin', response.token)
+              ShowMessage('success', 'Successfully Authenticated!');
+              setTimeout(() => {
+                window.location.href = '/administration/';
+              }, 499);
+            } else {
+                ShowMessage('error', 'Invalid Credentials!');
+            }
+        };
+        MakeRequest('AuthenticateAdmin/', dataToSubmit, 'POST', debounceImmediate(doAfter, 1999));
+      }
+     </script>
+  </body>
+</html>

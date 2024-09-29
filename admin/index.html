@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="images/favicon.svg" type="image/x-icon" />
+    <title>PlainAdmin Demo | Bootstrap 5 Admin Template</title>
+
+    <!-- ========== All CSS files linkup ========= -->
+
+    <link rel="stylesheet" href="/adminstatics/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/adminstatics/css/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/adminstatics/css/materialdesignicons.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/adminstatics/css/fullcalendar.css" />
+    <link rel="stylesheet" href="/adminstatics/css/main.css" />
+  </head>
+  <body>
+    <!-- ======== Preloader =========== -->
+    <div id="preloader">
+      <div class="spinner"></div>
+    </div>
+    <!-- ======== Preloader =========== --> 
+    <div id="WarningWindow" style="display: none;"></div>
+    <div id="MessagesWindow"></div>
+    <!-- ======== sidebar-nav start =========== -->
+    <aside id="SidebarHeader" class="sidebar-nav-wrapper">
+      <div class="navbar-logo">
+        <a href="/" class="logo">
+          <div id="LogoPoint">
+              <img id="BrandImage" src="/static/images/companyLogo.png" alt="Brand Logo">
+          </div> 
+        </a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="nav-item nav-item-has-children">
+            <a
+              data-bs-toggle="collapse"
+              data-bs-target="#ddmenu_1"
+              aria-controls="ddmenu_1"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M8.74999 18.3333C12.2376 18.3333 15.1364 15.8128 15.7244 12.4941C15.8448 11.8143 15.2737 11.25 14.5833 11.25H9.99999C9.30966 11.25 8.74999 10.6903 8.74999 10V5.41666C8.74999 4.7263 8.18563 4.15512 7.50586 4.27556C4.18711 4.86357 1.66666 7.76243 1.66666 11.25C1.66666 15.162 4.83797 18.3333 8.74999 18.3333Z" />
+                  <path
+                    d="M17.0833 10C17.7737 10 18.3432 9.43708 18.2408 8.75433C17.7005 5.14918 14.8508 2.29947 11.2457 1.75912C10.5629 1.6568 10 2.2263 10 2.91665V9.16666C10 9.62691 10.3731 10 10.8333 10H17.0833Z" />
+                </svg>
+              </span>
+              <span id="StatMenuHeader" class="text">Dashboard</span>
+            </a>
+            <ul id="ddmenu_1" class="collapse show dropdown-nav">
+              <li>
+                <a href="javascript:void(0);" onclick="OpenWindow(8);" class="active"> Business Stats </a>
+              </li>
+            </ul>
+          </li>
+          <span class="divider">
+            <hr />
+          </span>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(1);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-card-heading" viewBox="0 0 16 16">
+                  <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                  <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+              </span>
+              <span class="text">Brands</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(2);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-box2" viewBox="0 0 16 16">
+                  <path d="M2.95.4a1 1 0 0 1 .8-.4h8.5a1 1 0 0 1 .8.4l2.85 3.8a.5.5 0 0 1 .1.3V15a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4.5a.5.5 0 0 1 .1-.3zM7.5 1H3.75L1.5 4h6zm1 0v3h6l-2.25-3zM15 5H1v10h14z"/>
+                </svg>
+              </span>
+              <span class="text">Products</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(3);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-qr-code-scan" viewBox="0 0 16 16">
+                  <path d="M0 .5A.5.5 0 0 1 .5 0h3a.5.5 0 0 1 0 1H1v2.5a.5.5 0 0 1-1 0zm12 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0V1h-2.5a.5.5 0 0 1-.5-.5M.5 12a.5.5 0 0 1 .5.5V15h2.5a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1H15v-2.5a.5.5 0 0 1 .5-.5M4 4h1v1H4z"/>
+                  <path d="M7 2H2v5h5zM3 3h3v3H3zm2 8H4v1h1z"/>
+                  <path d="M7 9H2v5h5zm-4 1h3v3H3zm8-6h1v1h-1z"/>
+                  <path d="M9 2h5v5H9zm1 1v3h3V3zM8 8v2h1v1H8v1h2v-2h1v2h1v-1h2v-1h-3V8zm2 2H9V9h1zm4 2h-1v1h-2v1h3zm-4 2v-1H8v1z"/>
+                  <path d="M12 9h2V8h-2z"/>
+                </svg>
+              </span>
+              <span class="text">Discounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(13);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="17" fill="currentColor" class="bi bi-gift" viewBox="0 0 16 16">
+                  <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 14.5V7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A3 3 0 0 1 3 2.506zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43zM9 3h2.932l.023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0zM1 4v2h6V4zm8 0v2h6V4zm5 3H9v8h4.5a.5.5 0 0 0 .5-.5zm-7 8V7H2v7.5a.5.5 0 0 0 .5.5z"/>
+                </svg>
+              </span>
+              <span class="text">Special Offers</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(12);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-currency-dollar" viewBox="0 0 16 16">
+                  <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"/>
+                </svg>
+              </span>
+              <span class="text">Price Management</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(4);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+                  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+                </svg>
+              </span>
+              <span class="text">Orders</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(5);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
+                  <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+                </svg>
+              </span>
+              <span class="text">Order Tracking</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(6);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-headset" viewBox="0 0 16 16">
+                  <path d="M8 1a5 5 0 0 0-5 5v1h1a1 1   0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a6 6 0 1 1 12 0v6a2.5 2.5 0 0 1-2.5 2.5H9.366a1 1 0 0 1-.866.5h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 .866.5H11.5A1.5 1.5 0 0 0 13 12h-1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1V6a5 5 0 0 0-5-5"/>
+                </svg>
+              </span>
+              <span class="text">Contact Info</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(10);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
+                </svg>
+              </span>
+              <span class="text">Inquiries</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(11);">
+              <span class="icon">
+                <img width="24px" height="24px" src="images/faq.png" alt="">
+              </span>
+              <span class="text">FAQs</span>
+            </a>
+          </li>
+          <span class="divider">
+            <hr />
+          </span>
+  
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(7);">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" fill="currentColor" class="bi bi-graph-down-arrow" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5"/>
+                </svg>
+              </span>
+              <span class="text">Analytics</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" onclick="OpenWindow(9);">
+              <span class="icon">
+                <img width="26px" height="26px" src="/adminstatics/images/reviews.png" alt="">
+              </span>
+              <span class="text">Product Reviews</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+    <div id="MainContentParent" class="overlay"></div>
+    <!-- ======== sidebar-nav end =========== -->
+
+    <!-- ======== main-wrapper start =========== -->
+    <main class="main-wrapper">
+      <!-- ========== header start ========== -->
+      <header class="header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-5 col-md-5 col-6">
+              <div class="header-left d-flex align-items-center">
+                <div class="menu-toggle-btn mr-15">
+                  <button id="menu-toggle" class="main-btn primary-btn btn-hover">
+                    <i class="lni lni-chevron-left me-2"></i> Menu
+                  </button>
+                </div>
+                <div class="header-search d-none d-md-flex">
+                  <form action="#">
+                    <input type="text" placeholder="Search..." />
+                    <button><i class="lni lni-search-alt"></i></button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <!-- ========== header end ========== -->
+      <section class="section">
+        <div class="container-fluid">
+          <!-- ========== title-wrapper start ========== -->
+          <!-- meta_description, meta_keywords, og_title, og_image, og_url, og_type -->
+          <div class="title-wrapper pt-30">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <div class="title">
+                  <h2 id="MenuHeader">Products</h2>
+                </div>
+              </div>
+              <!-- my code !!!!!!!!!!!!!!!!!!!!! -->
+              <div id="ProductListWindow"></div>
+              <div id="FieldWindow"></div>
+              <!-- my code end !!!!!!!!!!!!!!!!!!!! -->
+              <!-- end col -->
+            </div>
+            <!-- end row -->
+          </div>
+          <!-- ========== title-wrapper end ========== -->
+        </div>
+        <!-- end container -->
+      </section>
+      <!-- ========== section start ========== -->
+      <div id="OpenedWindow"></div>
+      <!-- <div id="ProductListWindow"></div>
+      <div id="FieldWindow"></div> -->
+      <!-- ========== section end ========== -->
+
+      <!-- ========== footer start =========== -->
+      <footer class="footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-6 order-last order-md-first">
+              <div class="copyright text-center text-md-start">
+                <p class="text-sm">Developed by <bigger>Mansur</bigger>
+                </p>
+              </div>
+            </div>
+            <!-- end col-->
+            <div class="col-md-6">
+              <div class="terms d-flex justify-content-center justify-content-md-end">
+                <a href="https://MassageChairsMarket.com" class="text-sm">MassageChairsMarket.com</a>
+              </div>
+            </div>
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- end container -->
+      </footer>
+      <!-- ========== footer end =========== -->
+    </main>
+    <!-- ======== main-wrapper end =========== -->
+
+    <!-- ========= All Javascript files linkup ======== -->
+    <script src="/adminstatics/js/bootstrap.bundle.min.js"></script>
+    <script src="/adminstatics/js/Chart.min.js"></script>
+    <script src="/adminstatics/js/dynamic-pie-chart.js"></script>
+    <script src="/adminstatics/js/moment.min.js"></script>
+    <!-- <script src="js/fullcalendar.js"></script> -->
+    <!-- <script src="js/jvectormap.min.js"></script> -->
+    <!-- <script src="js/world-merc.js"></script> -->
+    <script src="/adminstatics/js/polyfill.js"></script>
+    <script src="/adminstatics/js/main.js"></script>
+    <script src="/adminstatics/js/Globals.js"></script>
+    <script src="/adminstatics/js/analyticsDashboard.js"></script>  
+    <script src="/adminstatics/js/Brands.js"></script>
+    <script src="/adminstatics/js/Discounts.js"></script>
+    <script src="/adminstatics/js/Products.js"></script>
+    <script src="/adminstatics/js/Orders.js"></script>
+    <script src="/adminstatics/js/CompanyContact.js"></script>
+    <script src="/adminstatics/js/Tracking.js"></script>
+    <script src="/adminstatics/js/adminAnalytics.js"></script>
+    <script src="/adminstatics/js/reviews.js"></script>
+    <script src="/adminstatics/js/Inquiries.js"></script>
+    <script src="/adminstatics/js/FAQs.js"></script>
+    <script src="/adminstatics/js/MetaData.js"></script>
+    <script src="/adminstatics/js/PriceManagement.js"></script>
+    <script src="/adminstatics/js/SpecialEvent.js"></script>
+    <script>      
+      function onMobile() {return window.innerWidth < 460;}
+      function closeSideBar() {document.getElementById('menu-toggle').click(); document.getElementById('MainContentParent').classList.remove('active')}
+      const sidebarIsOpen = ()=>document.getElementById('SidebarHeader').className.includes('active');
+      const MenuOption = {
+        1: GetBrands,
+        2: FetchAllProducts,
+        3: GetDiscounts,
+        4: ListOrders,
+        5: GetTrackingData,
+        6: GetCompanyContact,
+        7: runAnalytics,
+        8: RunDashboard,
+        9: getReviews,
+        10: FetchAllQuestions,
+        11: GetFAQs,
+        12: PlacePricingBar,
+        13: GetSpecialEvent,
+      }
+      const MenuHeaders = {
+        1: 'Brands',
+        2: 'Products',
+        3: 'Discounts',
+        4: 'Orders',
+        5: 'Tracking',
+        6: 'Contact Info',
+        7: 'Today',
+        8: 'Dashboard',
+        9: 'Reviews',
+        10: 'Inquiries',
+        11: 'FAQs',
+        12: 'Price Management',
+        13: 'Special Offer',
+      }
+      const SideBySideView = (enable=true) =>{
+        const requestedWindow = document.getElementById('ProductListWindow');
+        if (enable && requestedWindow){requestedWindow.classList.add('MoreInOne')}
+        else{requestedWindow.classList.remove('MoreInOne')}
+      };
+
+      const AnimateWindows = ()=>{
+        const window1 = document.getElementById('ProductListWindow');
+        const window2 = document.getElementById('FieldWindow');
+        window1.classList.remove('animatedAppear');
+        window2.classList.remove('animatedAppear');
+        setTimeout(() => {
+            window1.classList.add('animatedAppear');
+            window2.classList.add('animatedAppear');
+        }, 50);
+      };
+
+      function OpenWindow(window_id){
+        if (onMobile() && sidebarIsOpen()){closeSideBar()}
+        const collable  = MenuOption[window_id];
+        const ClearAllFirst = ()=> (document.getElementById('ProductListWindow').innerHTML = '', document.getElementById('FieldWindow').innerHTML = '', document.getElementById('OpenedWindow').innerHTML = '');
+        const sideables = [1, 3, 4, 5, 9];
+        if (sideables.includes(window_id)){SideBySideView()}else{SideBySideView(false)}
+        if (collable){
+          SetMenuHeader(MenuHeaders[window_id])
+          ClearAllFirst();
+          collable();
+          localStorage.setItem('lastTab', window_id)
+        }
+        AnimateWindows();
+      }
+      const lastInteraction = JSON.parse(localStorage.getItem('lastTab')) || 8;
+      OpenWindow(lastInteraction);
+    </script>
+  </body>
+</html>
