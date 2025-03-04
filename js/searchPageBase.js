@@ -103,7 +103,7 @@ function searchAlgoliaWithParams(RequestedProperties){
     UpdateLoadingStatus(false);
     const possiblyByCache = firstTimeVisit;
     const premiumOnes = RequestedProperties.Product == 'Elite';
-    const client = algoliasearch('K7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948');
+    const client = algoliasearch('aK7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948a');
     const products = client.initIndex(premiumOnes ? 'products_price_desc' : 'MassageChair');
     const minPrice = parseFloat(RequestedProperties.minPrice)  || 0;
     const maxPrice = parseFloat(RequestedProperties.maxPrice) || 16000;
