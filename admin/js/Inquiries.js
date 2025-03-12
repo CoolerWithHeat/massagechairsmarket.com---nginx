@@ -70,7 +70,7 @@ function listQuestions(data=[]){
         <div style="height:236px;" class="card-style-5 mb-30">
           <div class="card-content">
             <h4><a>Question By ${inquiry_sender}</a></h4>
-            <a href="javascript:void(0);" class="main-btn primary-btn btn-hover" onclick="openInquiryMode(${id})">Change</a>
+            <a href="javascript:void(0);" class="main-btn primary-btn btn-hover" onclick="openInquiryMode(${id})">See</a>
             <div style="width:100%; heigh:50px; display:flex; justify-content:right; margin-top:-15%">
               ${handled ? '<small style="color:white; background-color:#28a745; width:65px; border-radius:46%; height:40px; display:flex; justify-content:center; align-items:center;">handled</small>' : ''}
             </div>

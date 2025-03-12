@@ -146,19 +146,24 @@ global styles
 }
 
 .section-heading h2 {
-  font-size: 34px;
   font-weight: 700;
   color: #2a2a2a;
 }
 
 .section-heading span {
-  font-size: 15px; /* Font size */
-  color: #333333; /* Darker text color for better contrast */
-  font-style: italic; /* Maintain italic style */
-  font-weight: 500; /* Medium font weight */
-  background-color: #f5f5f5; /* Light background color for contrast */
-  padding: 5px; /* Optional padding to separate text from the background */
-  border-radius: 4px; /* Optional rounded corners for a modern look */
+  color: #333333;
+  font-style: italic;
+  font-weight: 500;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+@media (max-height:820px){
+  .section-heading h2{
+    font-size: 28px;
+  }
+  .section-heading span{
+    font-size: 13px;
+  }
 }
 
 
@@ -313,16 +318,6 @@ a.active{
 .header-area .main-nav .nav li.submenu {
   position: relative;
   padding-right: 30px;
-}
-
-.header-area .main-nav .nav li.submenu:after {
-  font-family: FontAwesome;
-  content: "\f107";
-  font-size: 12px;
-  color: #2a2a2a;
-  position: absolute;
-  right: 18px;
-  top: 12px;
 }
 
 .background-header .main-nav .nav li.submenu:after {
@@ -1282,14 +1277,12 @@ Products Page
 }
 
 #products .item .down-content h4 {
-  font-size: 21px;
   color: #2a2a2a;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
 #products .item .down-content span {
-  font-size: 18px;
   color: #a1a1a1;
   font-weight: 500;
   display: block;
@@ -1304,6 +1297,36 @@ Products Page
 #products .item .down-content ul.stars li {
   display: inline;
   font-size: 13px;
+}
+
+@media (min-width:1201px){
+  .searchRatingIcon{width: 15px; height: 15px;}
+  #products .item .down-content h4 {
+    font-size: 21px;
+  }
+  #products .item .down-content span {
+    font-size: 18px;
+  }
+}
+
+@media (min-width:460px) and (max-width:1200px){
+  .searchRatingIcon{width: 13px; height: 13px;}
+  #products .item .down-content h4 {
+    font-size: 18px;
+  }
+  #products .item .down-content span {
+    font-size: 15px;
+  }
+}
+
+@media (max-width:459px){
+  .searchRatingIcon{width: 15px; height: 15px;}
+  #products .item .down-content h4 {
+    font-size: 21px;
+  }
+  #products .item .down-content span {
+    font-size: 18px;
+  }
 }
 
 #products .item .thumb .hover-content {
@@ -2212,31 +2235,30 @@ contact Us Page
 
 .hyper-sign {
   position: relative;
-  display: inline-block;
+  display: block;
   text-decoration: none;
-  color: black;
-  font-weight: bold;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
+  color: #2a2a2a;
+  text-transform: capitalize;
+  -webkit-transition: all 0.3s ease 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 15px;
   text-align: center;
   cursor: pointer;
+  border: transparent;
+  line-height: 40px;
 }
 
-@media (max-width: 800px){
-  .hyper-sign{
-    background-color: #f7f7f7 !important;
-  }
-}
-@media (min-width: 800px){
-  .hyper-sign{
-    padding-right: 15px;
-  }
+.hyper-sign:hover{
+  color: #ff9c62!important;
 }
 
 .hyper-sign::after {
   content: "";
   position: absolute;
-  top: 50%;
   right: 0;
   transform: translateY(-50%) rotate(45deg);
   width: 6px;
@@ -2246,11 +2268,33 @@ contact Us Page
   margin-left: 5px;
 }
 
-@media (max-width:800px){
-  .hyper-sign::after {
-    right: 2%;
+@media (min-width: 800px){
+  .hyper-sign::after{
+    margin-left: 10px;
+    top: 50%;
   }
-};
+  .hyper-sign{
+    padding-right: 15px;
+  }
+}
+@media (min-width: 768px) and (max-width: 799px){
+  .hyper-sign::after{
+    margin-left: 10px;
+    top: 50%;
+  }
+  .hyper-sign{
+    padding-right: 15px;
+  }
+}
+@media (max-width: 767px){
+  .hyper-sign::after{
+    margin-right: 10px;
+    top: 50%;
+  }
+  .hyper-sign{
+    background-color: #f7f7f7 !important;
+  }
+}
 @keyframes fadeOut {
   0% {
     opacity: 1;

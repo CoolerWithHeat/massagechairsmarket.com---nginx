@@ -15,7 +15,7 @@ function setOrderFields(data) {
     const shippingField = GetShippingData(data.shipping_address) || '';
     const structure = `
           <div style="width:100%; height:50px; display:flex; justify-content:right;">
-            <a href="${host_itself}Order/${data.order_number}/" class="main-btn warning-btn-outline square-btn btn-hover">Check</a>
+            <a href="/Order/${data.order_number}/" class="main-btn warning-btn-outline square-btn btn-hover">Check</a>
           </div>
           <br>
           <div style="width:100%; height:50px; display:flex; justify-content:right;">

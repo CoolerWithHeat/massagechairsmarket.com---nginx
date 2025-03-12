@@ -112,6 +112,7 @@ function searchAlgoliaWithParams(RequestedProperties){
     const featureFilters = ValidateSearchParam(RequestedProperties.Features);
     let brand_filters = '';
     let feature_filters = '';
+    console.log(maxPrice)
     products.setSettings({ranking: [premiumOnes ? "desc(price)" : 'desc(rating)']})
     const price_filters = `${brandFilters ? ' AND ' : ''}(price > ${minPrice} AND price <= ${maxPrice})${featureFilters ? ' AND ' : ''}`;
     if (brandFilters && Array.isArray(brandFilters)){
@@ -390,7 +391,6 @@ const SetPagination = (page)=>{
 function setUrlParam(key, value, multi = false, remove = false) {
     const existingParams = getUrlParams();
     var url = new URL(window.location.href);
-
     if (url.searchParams.has(key)) {
         var existingValue = url.searchParams.get(key);
         var existingValues = existingValue.split(',');
@@ -412,7 +412,6 @@ function setUrlParam(key, value, multi = false, remove = false) {
     } else {
         url.searchParams.set(key, value);
     }
-
     window.history.pushState({ path: url.href }, '', url.href);
 }
 
@@ -467,7 +466,7 @@ const getRating = (rating) => {
     for (let i = 0; i < wholeRating; i++) {
         const star = document.createElement('li');
         const icon = document.createElement('i');
-        icon.innerHTML = '<img alt="Product Rating Star" style="width:14px; height:14px;" src="/images/rateProduct.png">';
+        icon.innerHTML = '<img alt="Product Rating Star" class="searchRatingIcon" src="/images/rateProduct.png">';
         star.appendChild(icon);
         StarsHub.appendChild(star);
     }
@@ -867,7 +866,7 @@ function removeMoneyFormat(moneyString) {
     return numericValue;
 }
 
-const debouncedSearch = debounce(searchAlgoliaWithParams, 599);
+const debouncedSearch = debounce(searchAlgoliaWithParams, 0);
 const immediateSearch = searchAlgoliaWithParams;
 function TriggerFilter(updatedProperties){
     const params = getUrlParams();
@@ -881,7 +880,7 @@ function handleSlider(event) {
     const decided_price = removeMoneyFormat(event.target.value);
     const for_max_price = dataId == 'maxPrice';
     TriggerFilter({[dataId]: decided_price});
-    const update_price = debounce(addPriceFilters, 999);
+    const update_price = addPriceFilters;
     if (for_max_price){
         update_price(decided_price);
     }else{
@@ -958,7 +957,7 @@ function AppendLatestAlert(){
         const window = document.getElementById('LatestAlert');
         if (NoFiltersYet){
             window.innerHTML = `
-                <h2>Explore Latest Products</h2>
+                <h2>Discover Top Products</h2>
                 <span>By MassageChairsMarket.com</span>
             `;
         }else{

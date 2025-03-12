@@ -441,7 +441,7 @@ function PlaceContactInformation(contactInformation){
                                     </svg>
                                     <div style="width: 4px;"></div> 
                                 </p>
-                                <p id="PhoneNumberSection">Call Us</p>
+                                <p id="PhoneNumberSection2">Call Us</p>
                             </div>
                             <div style="height:27px;"></div>
                         `;
@@ -561,7 +561,7 @@ function PhoneCallManager(phone_number){
     if (String(contact_number).length >= 10){
         let call_number = String(contact_number).replace(/\s+/g, '')
         if (call_number[0] == "+"){
-            const numberButton = document.getElementById('PhoneNumberSection');
+            const numberButton = document.getElementById('PhoneNumberSection2');
             call_number = call_number.substring(2);
             const result = redirectToDialer(call_number);
             if (!result){

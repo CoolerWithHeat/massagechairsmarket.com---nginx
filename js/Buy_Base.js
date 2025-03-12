@@ -1,5 +1,7 @@
 window.recordEvent = ()=>{};
 customer_posted = false;
+var filtered_reviews = [];
+
 function RecordAction(action_index) {
     const indices = {
         1: 'add_to_cart',
@@ -108,14 +110,14 @@ function GetProductByID(product_ids=[]){
                 const productFound = results[0];
                 if (productFound){
                     const productMetaData = productFound ? productFound.meta_data : null;
-                    console.log(productFound)
+                    const product_id = productFound.id || 0;
+                    
                     if (productMetaData){setProductMetaTags(productMetaData)};
                     PageManagement(productFound)
                     UpdateProductStatus();
                     PlaceBrandsAvailable(productFound.FilterOptions.Brands)
                 }else{
-                    console.log(product_ids)
-                    // window.location.href = '/FindProduct/';
+                    window.location.href = '/FindProduct/';
                 }
             }
         });
@@ -346,17 +348,20 @@ function SubmitReview() {
             }, 2399);
         }
         else{
-                setTimeout(() => {
-                        EnableLoading(false);
-                        LetKnowSuccess();
-                        placeReviews([response], false)
-                        UpdateFilteredReviews(response)
-                    }, 699);
-                
-                setTimeout(() => {
-                    LetKnowSuccess(false);
-                }, 1999);
-            }
+            filtered_reviews.push(response)
+            const refiltered = sortReviewsByRating(filtered_reviews)
+            filtered_reviews = refiltered
+            setTimeout(() => {
+                EnableLoading(false);
+                LetKnowSuccess();
+                placeReviews([response], false)
+                UpdateFilteredReviews(response)
+            }, 699);
+            
+            setTimeout(() => {
+                LetKnowSuccess(false);
+            }, 1999);
+        }
     }
     if (product_rate && name) {
         EnableLoading();
@@ -981,7 +986,7 @@ function setRating(data) {
 
     rating_space.innerHTML = ratingStructure;
     placeReviews(reviews);
-    localStorage.setItem('filteredReviews', JSON.stringify(sortReviewsByRating(data)))
+    filtered_reviews = sortReviewsByRating(data);
 }
 
 function PlaceCommentProcessingLoading() {
@@ -1176,9 +1181,9 @@ function UpdateFilteredReviews(newReview){
 
 function FilterReviews() {
     window.recordEvent('button', 'top reviews filter')
-    const data = localStorage.getItem('filteredReviews')
-    const processed_data = data ? JSON.parse(data) : []
+    const processed_data = filtered_reviews.length ? filtered_reviews : []
     if (processed_data)
+        console.log(processed_data)
         PlaceCommentProcessingLoading();
         setTimeout(() => {
             placeReviews(processed_data);

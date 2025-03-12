@@ -138,16 +138,6 @@ a.active{
   padding-right: 30px;
 }
 
-.header-area .main-nav .nav li.submenu:after {
-  font-family: FontAwesome;
-  content: "\f107";
-  font-size: 12px;
-  color: #2a2a2a;
-  position: absolute;
-  right: 18px;
-  top: 12px;
-}
-
 .background-header .main-nav .nav li.submenu:after {
   color: #2a2a2a;
 }
@@ -432,12 +422,6 @@ a.active{
   }
   .header-area .main-nav .nav li.submenu ul.active {
     height: auto !important;
-  }
-  .header-area .main-nav .nav li.submenu:after {
-    color: #3B566E;
-    right: 25px;
-    font-size: 14px;
-    top: 15px;
   }
   .header-area .main-nav .nav li.submenu:hover ul, .header-area .main-nav .nav li.submenu:focus ul {
     height: 0px;

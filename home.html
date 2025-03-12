@@ -36,23 +36,23 @@
                         <ul class="nav">
                             <li class="scroll-to-section">
                                 <div class="neutralCart" style="cursor: pointer;">
-                                    <a href="../../Cart/">
-                                        <i class="fa" style="font-size:25px">&#xf07a;</i>
+                                    <a href="/Cart/">
+                                        <img style="width:25px; height:25px;" src="/images/cart-icons.png" alt="Shopping Cart">
                                         <span id="lblCartCount" class='badge badge-warning'> 0 </span>
                                     </a>
                                 </div>
                             </li>
                             <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
                             <li class="submenu">
-                                <a onclick="event.preventDefault()" href="#">Pages</a>
+                                <div class="hyper-sign" href="javascript:void();">Pages</div>
                                 <ul>
-                                    <li><a href="/">Home</a></li>
-                                    <li><a href="/FindProduct/">Products</a></li>
-                                    <li><a href="/FAQ/">FAQ</a></li>
+                                    <li><a href="../../../">Home</a></li>
+                                    <li><a href="../../FindProduct/">Products</a></li>
+                                    <li><a href="../../../FAQ/">FAQ</a></li>
                                 </ul>
                             </li>
                             <li class="submenu">
-                                <a onclick="event.preventDefault()" href="#">Brands</a>
+                                <div class="hyper-sign" href="javascript:void(0);">Brands</div>
                                 <ul id="BrandsSection"></ul>
                             </li>
                             <li class="scroll-to-section"><a href="../../FindProduct/">Explore</a></li>
@@ -442,7 +442,7 @@
         
         importScript('/static/js/custom.js')
         importCSS('https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,700&subset=latin-ext')
-        importCSS('/static/css/font-awesome.css')
+        
         importCSS('/static/css/productsuggestion.css')
         importCSS('/static/css/contactPopup.css')
         importCSS('/static/css/CartAnimation.css')

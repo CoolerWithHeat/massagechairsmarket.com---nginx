@@ -31,8 +31,8 @@ $(document).ready(function() {
           const desired_price = event.target.value;
           const counterpart_price = moneyFormat.from(sliderMin.value);
           const concluded_price = moneyFormat.from(desired_price);
-          console.log(counterpart_price, concluded_price)
-          rangeSlider.noUiSlider.set([counterpart_price || 0, concluded_price]);
+          if (!concluded_price){return 0}
+          rangeSlider.noUiSlider.set([counterpart_price || 0, concluded_price]);  
       }else {
           const sliderMax = document.getElementsByName('max-value')[0];
           const desired_price = event.target.value;
@@ -44,7 +44,7 @@ $(document).ready(function() {
   if (MaxPriceRepresentor){MaxPriceRepresentor.addEventListener('input', (event)=>AdjustPriceSlider(event, true));MaxPriceRepresentor.value = formattedMax;}
   if (MinPriceRepresentor){MinPriceRepresentor.addEventListener('input', (event)=>AdjustPriceSlider(event, false));MinPriceRepresentor.value = formattedMin;}
 
-  function RangerHandler(values, handle) {
+  function RangerHandler(values, through_handle) {
     if (MaxPriceRepresentor && MinPriceRepresentor){
         const minPrice = values[0];
         const maxPrice = values[1];
@@ -52,8 +52,8 @@ $(document).ready(function() {
         const formattedMax = moneyFormat.from(maxPrice);
         const not_needed_refresh = !(formattedMax <= 100);
         MinPriceRepresentor.value = minPrice
-        MaxPriceRepresentor.value = maxPrice  
-        if (handle){
+        MaxPriceRepresentor.value = maxPrice
+        if (through_handle){
             const event = new Event('onchange');
             MaxPriceRepresentor.dispatchEvent(event);
         }
