@@ -102,7 +102,7 @@ function SetBorderColors(){
 function setProductMetaTags(metaData){function setMetaTag(name,content){let tag=document.querySelector(`meta[name="${name}"]`);if(tag){tag.setAttribute('content',content);}else{tag=document.createElement('meta');tag.setAttribute('name',name);tag.setAttribute('content',content);document.head.appendChild(tag);}}function setOgTag(property,content){let tag=document.querySelector(`meta[property="${property}"]`);if(tag){tag.setAttribute('content',content);}else{tag=document.createElement('meta');tag.setAttribute('property',property);tag.setAttribute('content',content);document.head.appendChild(tag);}}if(metaData.meta_description){setMetaTag('description',metaData.meta_description);}if(metaData.meta_keywords){setMetaTag('keywords',metaData.meta_keywords);}if(metaData.og_title){setOgTag('og:title',metaData.og_title);}if(metaData.og_description){setOgTag('og:description',metaData.og_description);}if(metaData.og_image){setOgTag('og:image',metaData.og_image);}if(metaData.og_url){setOgTag('og:url',metaData.og_url||window.location.href);}if(metaData.og_type){setOgTag('og:type',metaData.og_type);}}
 
 function GetProductByID(product_ids=[]){
-    const client = algoliasearch('K7LWE7RYA4', '1bd3f01a834995a69d5a68d696bfb948');
+    const client = algoliasearch('K7LWE7RY', '1bd3f01a834995a69d5a68d696bfb9');
     const products = client.initIndex('MassageChair');
     if (product_ids.length){
         products.getObjects(product_ids).then(({ results }) => {
